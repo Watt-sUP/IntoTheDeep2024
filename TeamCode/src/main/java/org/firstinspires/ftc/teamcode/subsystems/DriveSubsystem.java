@@ -17,14 +17,12 @@ public class DriveSubsystem extends SubsystemBase {
 
     public DriveSubsystem(HardwareMap hardwareMap) {
         List<Motor> motors = Stream.of("leftFront", "rightFront", "leftBack", "rightBack")
-                .map(name -> new Motor(hardwareMap, name, Motor.GoBILDA.RPM_312))
+                .map(name -> new Motor(hardwareMap, name, Motor.GoBILDA.RPM_435))
                 .collect(Collectors.toList());
 
         drive = new MecanumDrive(
-                motors.get(0),
-                motors.get(1),
-                motors.get(2),
-                motors.get(3)
+                motors.get(0), motors.get(1),
+                motors.get(2), motors.get(3)
         );
 
         motors.forEach(motor -> motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE));
@@ -39,9 +37,9 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         drive.driveRobotCentric(
-                strafe.getAsDouble(),
-                forward.getAsDouble(),
-                rotation.getAsDouble(),
+                -strafe.getAsDouble(),
+                -forward.getAsDouble(),
+                -rotation.getAsDouble(),
                 false
         );
     }

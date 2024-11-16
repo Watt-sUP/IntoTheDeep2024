@@ -7,32 +7,29 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
-import org.firstinspires.ftc.teamcode.util.LABColor;
-import org.firstinspires.ftc.teamcode.util.SampleSensor;
-
-import java.util.concurrent.TimeUnit;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    public static double MOTOR_POWER = 0.25;
+    public static double MOTOR_POWER = 0.75;
+
+    public static double EXTENDO_IN = 0.12, EXTENDO_OUT = 1;
+    public static double PIVOT_DOWN = 85, PIVOT_UP = 63;
 
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
 
     private final MotorEx motor;
-    private final SampleSensor sensor;
+//    private final SampleSensor sensor;
 
     private boolean isCollecting = false;
     private boolean isRemoving = false;
-    private boolean hadBadSample = false;
-
-    private final Timing.Timer timer = new Timing.Timer(250, TimeUnit.MILLISECONDS);
+//    private boolean hadBadSample = false;
+//
+//    private final Timing.Timer timer = new Timing.Timer(250, TimeUnit.MILLISECONDS);
 
     public IntakeSubsystem(HardwareMap hardwareMap) {
         motor = new MotorEx(hardwareMap, "active_motor", Motor.GoBILDA.RPM_1150);
@@ -74,9 +71,9 @@ public class IntakeSubsystem extends SubsystemBase {
                 new Pair<>(180.0, 211.0)
         );
 
-        sensor = new SampleSensor(hardwareMap);
+//        sensor = new SampleSensor(hardwareMap);
 
-        timer.pause();
+//        timer.pause();
     }
 
     public void startCollecting() {
@@ -101,31 +98,48 @@ public class IntakeSubsystem extends SubsystemBase {
         isRemoving = false;
     }
 
-    public SampleSensor.SampleType getSampleDetected() {
-        return sensor.getSampleType();
+    public boolean isRemoving() {
+        return isRemoving;
     }
 
-    public LABColor getColorDetected() {
-        return sensor.getColor();
-    }
-
-    public double getSensorDistance(DistanceUnit unit) {
-        return sensor.getDistance(unit);
-    }
+//    public SampleSensor.SampleType getSampleDetected() {
+//        return sensor.getSampleType();
+//    }
+//
+//    public LABColor getColorDetected() {
+//        return sensor.getColor();
+//    }
+//
+//    public double getSensorDistance(DistanceUnit unit) {
+//        return sensor.getDistance(unit);
+//    }
 
     @Override
     public void periodic() {
         if (isCollecting || isRemoving) {
-            extLeft.setToPosition(1);
-            extRight.setToPosition(1);
+            extLeft.setToPosition(EXTENDO_OUT);
+            extRight.setToPosition(EXTENDO_OUT);
+
+            pivLeft.setToPosition(PIVOT_DOWN);
+            pivRight.setToPosition(PIVOT_DOWN);
+        } else {
+            extLeft.setToPosition(EXTENDO_IN);
+            extRight.setToPosition(EXTENDO_IN);
+
+            pivLeft.setToPosition(PIVOT_UP);
+            pivRight.setToPosition(PIVOT_UP);
         }
 
         if (isCollecting) {
-
+            motor.set(MOTOR_POWER);
+            return;
         }
 
-        extLeft.setToPosition(0);
-        extRight.setToPosition(0);
+        if (isRemoving) {
+            motor.set(-MOTOR_POWER);
+            return;
+        }
+
         motor.set(0);
     }
 }

@@ -24,8 +24,8 @@ public class OuttakeTest extends CommandOpMode {
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(outtake::nextSlidesState);
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(outtake::previousSlidesState);
 
-        driver2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whenPressed(outtake::toggleArm);
-        driver2.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whenPressed(outtake::togglePivot);
+        driver2.getGamepadButton(GamepadKeys.Button.Y).whenPressed(outtake::toggleArm);
+        driver2.getGamepadButton(GamepadKeys.Button.X).whenPressed(outtake::togglePivot);
 
         driver2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED));
         driver2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET));

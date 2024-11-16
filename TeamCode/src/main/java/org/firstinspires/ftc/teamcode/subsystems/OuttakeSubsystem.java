@@ -111,8 +111,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 0, ARM_OUT = 180;
-    public static double PIVOT_IN = 0.41, PIVOT_OUT = 0.80;
+    public static double ARM_IN = 2, ARM_OUT = 220;
+    public static double PIVOT_IN = 0.80, PIVOT_OUT = 0.4;
 
     public static double SLIDES_kP = 0;
     public static int SLIDES_LOWERED = 0,
@@ -143,17 +143,17 @@ public class OuttakeSubsystem extends SubsystemBase {
         armRight.setInverted(false);
 
         armLeft.generatePositions(
-                new Pair<>(0.0, 2.0),
-                new Pair<>(90.0, 93.0),
-                new Pair<>(180.0, 192.0),
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 90.0),
+                new Pair<>(180.0, 180.0),
                 new Pair<>(220.0, 220.0)
         );
 
         armRight.generatePositions(
-                new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 98.0),
-                new Pair<>(180.0, 193.0),
-                new Pair<>(220.0, 220.0)
+                new Pair<>(0.0, 14.0),
+                new Pair<>(90.0, 91.0),
+                new Pair<>(180.0, 175.0),
+                new Pair<>(220.0, 197.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
@@ -238,11 +238,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setArmState(ArmState state) {
         armState = state;
-
-        if (armState == ArmState.IN)
-            setPivotState(PivotState.IN);
-        if (armState == ArmState.OUT)
-            setPivotState(PivotState.OUT);
     }
 
     public void toggleArm() {
