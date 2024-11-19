@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
@@ -32,6 +32,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public enum ArmState {
         IN,
+        SPECIMEN,
         OUT;
 
         @NonNull
@@ -39,6 +40,8 @@ public class OuttakeSubsystem extends SubsystemBase {
             switch (this) {
                 case IN:
                     return "In";
+                case SPECIMEN:
+                    return "Specimen";
                 case OUT:
                     return "Out";
             }
@@ -48,6 +51,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public enum PivotState {
         IN,
+        SPECIMEN,
         OUT;
 
         @NonNull
@@ -55,6 +59,8 @@ public class OuttakeSubsystem extends SubsystemBase {
             switch (this) {
                 case IN:
                     return "In";
+                case SPECIMEN:
+                    return "Specimen";
                 case OUT:
                     return "Out";
             }
@@ -64,8 +70,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public enum SlidesState {
         LOWERED,
-        SPECIMEN,
         LOW_BASKET,
+        SPECIMEN,
         HIGH_BASKET;
 
         @NonNull
@@ -73,10 +79,10 @@ public class OuttakeSubsystem extends SubsystemBase {
             switch (this) {
                 case LOWERED:
                     return "Lowered";
-                case SPECIMEN:
-                    return "Specimen";
                 case LOW_BASKET:
                     return "Low Basket";
+                case SPECIMEN:
+                    return "Specimen";
                 case HIGH_BASKET:
                     return "High Basket";
             }
@@ -86,11 +92,11 @@ public class OuttakeSubsystem extends SubsystemBase {
         public SlidesState next() {
             switch (this) {
                 case LOWERED:
-                    return SPECIMEN;
-                case SPECIMEN:
                     return LOW_BASKET;
                 case LOW_BASKET:
+                    return SPECIMEN;
                 case HIGH_BASKET:
+                case SPECIMEN:
                     return HIGH_BASKET;
             }
             return LOWERED;
@@ -99,33 +105,32 @@ public class OuttakeSubsystem extends SubsystemBase {
         public SlidesState previous() {
             switch (this) {
                 case LOWERED:
-                case SPECIMEN:
-                    return LOWERED;
                 case LOW_BASKET:
-                    return SPECIMEN;
-                case HIGH_BASKET:
+                    return LOWERED;
+                case SPECIMEN:
                     return LOW_BASKET;
+                case HIGH_BASKET:
+                    return SPECIMEN;
             }
             return LOWERED;
         }
     }
 
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 2, ARM_OUT = 220;
-    public static double PIVOT_IN = 0.80, PIVOT_OUT = 0.4;
+    public static double ARM_IN = 2, ARM_SPECIMEN = 100, ARM_OUT = 220;
+    public static double PIVOT_IN = 0.80, PIVOT_OUT = 0.4, PIVOT_SPECIMEN = 0.6;
 
-    public static double SLIDES_kP = 0;
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 10,
             SLIDES_LOW_BASKET = 20,
-            SLIDES_HIGH_BASKET = 30;
+            SLIDES_SPECIMEN = 30,
+            SLIDES_HIGH_BASKET = 400;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
     private final SimpleServo armPivot;
 
     private final SimpleServo clawServo;
-    private final Motor slidesMotor;
+    private final DcMotor slidesMotor;
 
     private ClawState clawState = ClawState.CLOSED;
     private ArmState armState = ArmState.IN;
@@ -158,14 +163,15 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
 
-        slidesMotor = new Motor(hardwareMap, "slides");
-        slidesMotor.setRunMode(Motor.RunMode.PositionControl);
-        slidesMotor.setPositionCoefficient(SLIDES_kP);
-        slidesMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        slidesMotor = hardwareMap.dcMotor.get("slides");
+        slidesMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesMotor.setPower(1);
+        slidesMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    @Override
-    public void periodic() {
+    public void setClawState(ClawState state) {
+
+        clawState = state;
         switch (clawState) {
             case OPENED:
                 clawServo.setPosition(CLAW_OPEN);
@@ -174,51 +180,6 @@ public class OuttakeSubsystem extends SubsystemBase {
                 clawServo.setPosition(CLAW_CLOSED);
                 break;
         }
-
-        switch (armState) {
-            case IN:
-                armLeft.setToPosition(ARM_IN);
-                armRight.setToPosition(ARM_IN);
-                break;
-            case OUT:
-                armLeft.setToPosition(ARM_OUT);
-                armRight.setToPosition(ARM_OUT);
-                break;
-        }
-
-        switch (pivotState) {
-            case IN:
-                armPivot.setPosition(PIVOT_IN);
-                break;
-            case OUT:
-                armPivot.setPosition(PIVOT_OUT);
-                break;
-        }
-
-        switch (slidesState) {
-            case LOWERED:
-                slidesMotor.setTargetPosition(SLIDES_LOWERED);
-                break;
-            case SPECIMEN:
-                slidesMotor.setTargetPosition(SLIDES_SPECIMEN);
-                break;
-            case LOW_BASKET:
-                slidesMotor.setTargetPosition(SLIDES_LOW_BASKET);
-                break;
-            case HIGH_BASKET:
-                slidesMotor.setTargetPosition(SLIDES_HIGH_BASKET);
-                break;
-        }
-
-        if (!slidesMotor.atTargetPosition()) {
-            slidesMotor.set(1);
-        } else {
-            slidesMotor.set(0);
-        }
-    }
-
-    public void setClawState(ClawState state) {
-        clawState = state;
     }
 
     public void toggleClaw() {
@@ -238,6 +199,20 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setArmState(ArmState state) {
         armState = state;
+        switch (armState) {
+            case IN:
+                armLeft.setToPosition(ARM_IN);
+                armRight.setToPosition(ARM_IN);
+                break;
+            case SPECIMEN:
+                armLeft.setToPosition(ARM_SPECIMEN);
+                armRight.setToPosition(ARM_SPECIMEN);
+                break;
+            case OUT:
+                armLeft.setToPosition(ARM_OUT);
+                armRight.setToPosition(ARM_OUT);
+                break;
+        }
     }
 
     public void toggleArm() {
@@ -253,6 +228,17 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setPivotState(PivotState state) {
         pivotState = state;
+        switch (pivotState) {
+            case IN:
+                armPivot.setPosition(PIVOT_IN);
+                break;
+            case OUT:
+                armPivot.setPosition(PIVOT_OUT);
+                break;
+            case SPECIMEN:
+                armPivot.setPosition(PIVOT_SPECIMEN);
+                break;
+        }
     }
 
     public void togglePivot() {
@@ -275,7 +261,22 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setSlidesState(SlidesState state) {
+
         slidesState = state;
+        switch (slidesState) {
+            case LOWERED:
+                slidesMotor.setTargetPosition(SLIDES_LOWERED);
+                break;
+            case LOW_BASKET:
+                slidesMotor.setTargetPosition(SLIDES_LOW_BASKET);
+                break;
+            case HIGH_BASKET:
+                slidesMotor.setTargetPosition(SLIDES_HIGH_BASKET);
+                break;
+            case SPECIMEN:
+                slidesMotor.setTargetPosition(SLIDES_SPECIMEN);
+                break;
+        }
     }
 
     public void nextSlidesState() {

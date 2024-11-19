@@ -25,12 +25,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private final MotorEx motor;
 //    private final SampleSensor sensor;
 
-    private boolean isCollecting = false;
-    private boolean isRemoving = false;
-//    private boolean hadBadSample = false;
-//
-//    private final Timing.Timer timer = new Timing.Timer(250, TimeUnit.MILLISECONDS);
-
     public IntakeSubsystem(HardwareMap hardwareMap) {
         motor = new MotorEx(hardwareMap, "active_motor", Motor.GoBILDA.RPM_1150);
         motor.setRunMode(Motor.RunMode.RawPower);
@@ -72,34 +66,34 @@ public class IntakeSubsystem extends SubsystemBase {
         );
 
 //        sensor = new SampleSensor(hardwareMap);
-
-//        timer.pause();
     }
 
-    public void startCollecting() {
-        isCollecting = true;
-        isRemoving = false;
+    public void extend() {
+        extLeft.setToPosition(EXTENDO_OUT);
+        extRight.setToPosition(EXTENDO_OUT);
+
+        pivLeft.setToPosition(PIVOT_DOWN);
+        pivRight.setToPosition(PIVOT_DOWN);
     }
 
-    public void stopCollecting() {
-        isCollecting = false;
+    public void retract() {
+        extLeft.setToPosition(EXTENDO_IN);
+        extRight.setToPosition(EXTENDO_IN);
+
+        pivLeft.setToPosition(PIVOT_UP);
+        pivRight.setToPosition(PIVOT_UP);
     }
 
-    public boolean isCollecting() {
-        return isCollecting;
+    public void collect() {
+        motor.set(MOTOR_POWER);
     }
 
-    public void startRemoving() {
-        isRemoving = true;
-        isCollecting = false;
+    public void remove() {
+        motor.set(-MOTOR_POWER);
     }
 
-    public void stopRemoving() {
-        isRemoving = false;
-    }
-
-    public boolean isRemoving() {
-        return isRemoving;
+    public void stop() {
+        motor.set(0);
     }
 
 //    public SampleSensor.SampleType getSampleDetected() {
@@ -113,33 +107,4 @@ public class IntakeSubsystem extends SubsystemBase {
 //    public double getSensorDistance(DistanceUnit unit) {
 //        return sensor.getDistance(unit);
 //    }
-
-    @Override
-    public void periodic() {
-        if (isCollecting || isRemoving) {
-            extLeft.setToPosition(EXTENDO_OUT);
-            extRight.setToPosition(EXTENDO_OUT);
-
-            pivLeft.setToPosition(PIVOT_DOWN);
-            pivRight.setToPosition(PIVOT_DOWN);
-        } else {
-            extLeft.setToPosition(EXTENDO_IN);
-            extRight.setToPosition(EXTENDO_IN);
-
-            pivLeft.setToPosition(PIVOT_UP);
-            pivRight.setToPosition(PIVOT_UP);
-        }
-
-        if (isCollecting) {
-            motor.set(MOTOR_POWER);
-            return;
-        }
-
-        if (isRemoving) {
-            motor.set(-MOTOR_POWER);
-            return;
-        }
-
-        motor.set(0);
-    }
 }
