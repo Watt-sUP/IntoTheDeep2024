@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Vector;
 
+import java.util.Arrays;
+
 /**
  * This is the OTOSLocalizer class. This class extends the Localizer superclass and is a
  * localizer that uses the SparkFun OTOS. The diagram below, which is modified from
@@ -67,26 +69,21 @@ public class OTOSLocalizer extends Localizer {
     public OTOSLocalizer(HardwareMap map, Pose setStartPose) {
         hardwareMap = map;
 
-        /*
-         TODO: If you want to use the "SparkFunOTOSCorrected" version of OTOS, then replace the
-          'SparkFunOTOS.class' below with 'SparkFunOTOSCorrected.class' and set the OTOS as a
-          "SparkFunOTOS Corrected" in your robot config
-         */
-        // TODO: replace this with your OTOS port
         otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);
 
-        // TODO: replace this with your OTOS offset from the center of the robot
         // For the OTOS, left/right is the y axis and forward/backward is the x axis, with left being
         // positive y and forward being positive x. PI/2 radians is facing forward, and clockwise
         // rotation is negative rotation.
         otos.setOffset(new SparkFunOTOS.Pose2D(-6.91, 0, -Math.PI / 2));
 
-        // TODO: replace these with your tuned multipliers
-        otos.setLinearScalar(1.092);
-        otos.setAngularScalar(0.971);
+        double[] linearScalars = {0.980125};
+        double[] angularScalars = {0.9856, 0.9826, 0.964, 0.9226};
+
+        otos.setLinearScalar(Arrays.stream(linearScalars).sum() / linearScalars.length);
+        otos.setAngularScalar(Arrays.stream(angularScalars).sum() / angularScalars.length);
 
         otos.calibrateImu();
         otos.resetTracking();

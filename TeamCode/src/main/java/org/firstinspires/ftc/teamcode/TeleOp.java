@@ -60,8 +60,19 @@ public class TeleOp extends CommandOpMode {
         register(chassis, intake, outtake);
 
         schedule(
-                new InstantCommand(() -> hubs.forEach(LynxModule::clearBulkCache)),
-                new InstantCommand(runtime::reset),
+                new InstantCommand(() -> {
+                    waitForStart();
+
+                    hubs.forEach(LynxModule::clearBulkCache);
+                    runtime.reset();
+
+                    intake.retract();
+                    
+                    outtake.setArmState(OuttakeSubsystem.ArmState.IN);
+                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
+                    outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
+                    outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
+                }),
                 new RunCommand(() -> {
                     telemetry.addData("Status", "Running");
                     telemetry.addData("Runtime", runtime.toString());

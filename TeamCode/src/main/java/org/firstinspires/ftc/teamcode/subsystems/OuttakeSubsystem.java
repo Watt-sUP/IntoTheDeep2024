@@ -121,9 +121,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     public static double PIVOT_IN = 0.80, PIVOT_OUT = 0.4, PIVOT_SPECIMEN = 0.6;
 
     public static int SLIDES_LOWERED = 0,
-            SLIDES_LOW_BASKET = 20,
-            SLIDES_SPECIMEN = 30,
-            SLIDES_HIGH_BASKET = 400;
+            SLIDES_LOW_BASKET = 650,
+            SLIDES_SPECIMEN = 800,
+            SLIDES_HIGH_BASKET = 1500;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -164,6 +164,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
 
         slidesMotor = hardwareMap.dcMotor.get("slides");
+        slidesMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesMotor.setTargetPosition(0);
         slidesMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slidesMotor.setPower(1);
         slidesMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -261,7 +263,6 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void setSlidesState(SlidesState state) {
-
         slidesState = state;
         switch (slidesState) {
             case LOWERED:

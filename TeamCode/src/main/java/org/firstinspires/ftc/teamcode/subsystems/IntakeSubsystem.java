@@ -5,8 +5,6 @@ import android.util.Pair;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
@@ -22,12 +20,12 @@ public class IntakeSubsystem extends SubsystemBase {
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
 
-    private final MotorEx motor;
+//    private final MotorEx motor;
 //    private final SampleSensor sensor;
 
     public IntakeSubsystem(HardwareMap hardwareMap) {
-        motor = new MotorEx(hardwareMap, "active_motor", Motor.GoBILDA.RPM_1150);
-        motor.setRunMode(Motor.RunMode.RawPower);
+//        motor = new MotorEx(hardwareMap, "active_motor", Motor.GoBILDA.RPM_1150);
+//        motor.setRunMode(Motor.RunMode.RawPower);
 
         extLeft = new InterpolatedPositionServo(new SimpleServo(hardwareMap, "ext_left", 0, 220));
         extRight = new InterpolatedPositionServo(new SimpleServo(hardwareMap, "ext_right", 0, 220));
@@ -83,18 +81,18 @@ public class IntakeSubsystem extends SubsystemBase {
         pivLeft.setToPosition(PIVOT_UP);
         pivRight.setToPosition(PIVOT_UP);
     }
-
-    public void collect() {
-        motor.set(MOTOR_POWER);
-    }
-
-    public void remove() {
-        motor.set(-MOTOR_POWER);
-    }
-
-    public void stop() {
-        motor.set(0);
-    }
+//
+//    public void collect() {
+//        motor.set(MOTOR_POWER);
+//    }
+//
+//    public void remove() {
+//        motor.set(-MOTOR_POWER);
+//    }
+//
+//    public void stop() {
+//        motor.set(0);
+//    }
 
 //    public SampleSensor.SampleType getSampleDetected() {
 //        return sensor.getSampleType();
