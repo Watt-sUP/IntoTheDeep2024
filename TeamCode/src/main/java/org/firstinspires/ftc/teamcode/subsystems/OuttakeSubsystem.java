@@ -117,8 +117,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 2, ARM_SPECIMEN = 100, ARM_OUT = 220;
-    public static double PIVOT_IN = 0.80, PIVOT_OUT = 0.4, PIVOT_SPECIMEN = 0.6;
+    public static double ARM_IN = 10, ARM_SPECIMEN = 100, ARM_OUT = 220;
+    public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN = 0.6;
 
     public static int SLIDES_LOWERED = 0,
             SLIDES_LOW_BASKET = 650,

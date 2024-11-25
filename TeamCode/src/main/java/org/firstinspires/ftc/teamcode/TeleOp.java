@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -49,12 +50,22 @@ public class TeleOp extends CommandOpMode {
 
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
 
+        driver2.getGamepadButton(GamepadKeys.Button.B).whenPressed(intake::toggleClaw);
+
+        driver2.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(intake::toggleExtendo);
+        driver2.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(intake::togglePivot);
+
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap);
 
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_UP).whenPressed(outtake::nextSlidesState);
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whenPressed(outtake::previousSlidesState);
 
-        driver2.getGamepadButton(GamepadKeys.Button.Y).whenPressed(outtake::toggleArm);
+        driver2.getGamepadButton(GamepadKeys.Button.Y).whenPressed(
+                new SequentialCommandGroup(
+                        new InstantCommand(outtake::toggleArm),
+                        new InstantCommand(outtake::togglePivot)
+                )
+        );
         driver2.getGamepadButton(GamepadKeys.Button.A).whenPressed(outtake::toggleClaw);
 
         register(chassis, intake, outtake);
@@ -66,8 +77,11 @@ public class TeleOp extends CommandOpMode {
                     hubs.forEach(LynxModule::clearBulkCache);
                     runtime.reset();
 
-                    intake.retract();
-                    
+                    intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
+                    intake.setClawState(IntakeSubsystem.ClawState.CLOSED);
+                    intake.setPivotState(IntakeSubsystem.PivotState.UP);
+                    intake.setRotation(120);
+
                     outtake.setArmState(OuttakeSubsystem.ArmState.IN);
                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
@@ -78,10 +92,15 @@ public class TeleOp extends CommandOpMode {
                     telemetry.addData("Runtime", runtime.toString());
                     telemetry.addLine();
 
-                    telemetry.addData("Claw", outtake.getClawState().toString());
-                    telemetry.addData("Arm", outtake.getArmState().toString());
-                    telemetry.addData("Pivot", outtake.getPivotState().toString());
-                    telemetry.addData("Slides", outtake.getSlidesState().toString());
+                    telemetry.addData("Intake Extendo", intake.getExtendoState().toString());
+                    telemetry.addData("Intake Pivot", intake.getPivotState().toString());
+                    telemetry.addData("Intake Claw", intake.getClawState().toString());
+                    telemetry.addLine();
+
+                    telemetry.addData("Outtake Claw", outtake.getClawState().toString());
+                    telemetry.addData("Outtake Arm", outtake.getArmState().toString());
+                    telemetry.addData("Outtake Pivot", outtake.getPivotState().toString());
+                    telemetry.addData("Outtake Slides", outtake.getSlidesState().toString());
                     telemetry.addLine();
 
                     telemetry.update();

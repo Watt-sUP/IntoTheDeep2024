@@ -16,22 +16,26 @@ public class IntakePivotTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InterpolatedAngleServo pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 220));
-        InterpolatedAngleServo pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 220));
+        InterpolatedAngleServo pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 1800));
+        InterpolatedAngleServo pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 1800));
 
         pivLeft.setInverted(false);
         pivRight.setInverted(true);
 
         pivLeft.generatePositions(
-                new Pair<>(0.0, 28.0),
-                new Pair<>(90.0, 125.0),
-                new Pair<>(180.0, 218.0)
+                new Pair<>(0.0, 5.0),
+                new Pair<>(90.0, 94.0),
+                new Pair<>(180.0, 190.0),
+                new Pair<>(270.0, 286.0),
+                new Pair<>(360.0, 374.0)
         );
 
         pivRight.generatePositions(
-                new Pair<>(0.0, 20.0),
-                new Pair<>(90.0, 114.0),
-                new Pair<>(180.0, 211.0)
+                new Pair<>(0.0, 3.0),
+                new Pair<>(90.0, 90.0),
+                new Pair<>(180.0, 184.0),
+                new Pair<>(270.0, 283.0),
+                new Pair<>(360.0, 380.0)
         );
 
         waitForStart();

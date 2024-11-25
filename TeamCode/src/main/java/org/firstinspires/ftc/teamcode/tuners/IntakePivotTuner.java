@@ -15,8 +15,8 @@ public class IntakePivotTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        SimpleServo pivLeft = new SimpleServo(hardwareMap, "int_left", 0, 220);
-        SimpleServo pivRight = new SimpleServo(hardwareMap, "int_right", 0, 220);
+        SimpleServo pivLeft = new SimpleServo(hardwareMap, "int_left", 0, 1800);
+        SimpleServo pivRight = new SimpleServo(hardwareMap, "int_right", 0, 1800);
 
         pivLeft.setInverted(false);
         pivRight.setInverted(true);

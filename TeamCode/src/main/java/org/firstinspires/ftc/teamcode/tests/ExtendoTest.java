@@ -6,14 +6,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 
 @Config
-@Disabled
 @TeleOp(name = "Extendo Test", group = "Tests")
 public class ExtendoTest extends LinearOpMode {
     public static double POSITION = 0.0;
@@ -29,15 +27,15 @@ public class ExtendoTest extends LinearOpMode {
         extRight.setInverted(true);
 
         extLeft.generatePositions(
-                new Pair<>(0.0, 0.62),
-                new Pair<>(0.5, 0.76),
-                new Pair<>(1.0, 0.96)
+                new Pair<>(0.0, 0.53),
+                new Pair<>(0.5, 0.735),
+                new Pair<>(1.0, 0.92)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.52),
-                new Pair<>(0.5, 0.67),
-                new Pair<>(1.0, 0.87)
+                new Pair<>(0.0, 0.49),
+                new Pair<>(0.5, 0.66),
+                new Pair<>(1.0, 0.83)
         );
 
         waitForStart();
