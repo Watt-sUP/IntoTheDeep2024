@@ -30,14 +30,14 @@ public class ArmTest extends LinearOpMode {
                 new Pair<>(0.0, 0.0),
                 new Pair<>(90.0, 90.0),
                 new Pair<>(180.0, 180.0),
-                new Pair<>(220.0, 220.0)
+                new Pair<>(220.0, 214.0)
         );
 
         armRight.generatePositions(
-                new Pair<>(0.0, 14.0),
-                new Pair<>(90.0, 91.0),
-                new Pair<>(180.0, 175.0),
-                new Pair<>(220.0, 197.0)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 93.0),
+                new Pair<>(180.0, 182.0),
+                new Pair<>(220.0, 220.0)
         );
 
         waitForStart();

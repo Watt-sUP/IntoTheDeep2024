@@ -48,6 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public enum PivotState {
         DOWN,
+        COLLECT,
         UP;
 
         @NonNull
@@ -62,9 +63,64 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public enum RotationState {
+        STRAIGHT,
+        HORIZONTAL,
+        LEFT,
+        RIGHT;
+
+        @NonNull
+        public String toString() {
+            switch (this) {
+                case STRAIGHT:
+                    return "Straight";
+                case HORIZONTAL:
+                    return "Horizontal";
+                case LEFT:
+                    return "Left";
+                case RIGHT:
+                    return "Right";
+            }
+            return "";
+        }
+
+        public RotationState next() {
+            switch (this) {
+                case HORIZONTAL:
+                    return LEFT;
+                case LEFT:
+                    return STRAIGHT;
+                case STRAIGHT:
+                    return RIGHT;
+                case RIGHT:
+                    return HORIZONTAL;
+            }
+            return STRAIGHT;
+        }
+
+        public RotationState previous() {
+            switch (this) {
+                case HORIZONTAL:
+                    return RIGHT;
+                case RIGHT:
+                    return STRAIGHT;
+                case STRAIGHT:
+                    return LEFT;
+                case LEFT:
+                    return HORIZONTAL;
+            }
+            return STRAIGHT;
+        }
+    }
+
     public static double EXTENDO_IN = 0, EXTENDO_OUT = 1;
-    public static double PIVOT_DOWN = 90, PIVOT_UP = 270;
-    public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.4;
+    public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 165, PIVOT_UP = 250;
+    public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.52;
+    public static double
+            ROT_LEFT = 160,
+            ROT_STRAIGHT = 114,
+            ROT_RIGHT = 64,
+            ROT_HORIZONTAL = 14;
 
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
@@ -73,6 +129,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private ExtendoState extendoState = ExtendoState.IN;
     private ClawState clawState = ClawState.CLOSED;
     private PivotState pivotState = PivotState.UP;
+    private RotationState rotationState = RotationState.STRAIGHT;
 
 
     public IntakeSubsystem(HardwareMap hardwareMap) {
@@ -160,6 +217,10 @@ public class IntakeSubsystem extends SubsystemBase {
                 pivLeft.setToPosition(PIVOT_DOWN);
                 pivRight.setToPosition(PIVOT_DOWN);
                 break;
+            case COLLECT:
+                pivLeft.setToPosition(PIVOT_COLLECT);
+                pivRight.setToPosition(PIVOT_COLLECT);
+                break;
             case UP:
                 pivLeft.setToPosition(PIVOT_UP);
                 pivRight.setToPosition(PIVOT_UP);
@@ -170,9 +231,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void togglePivot() {
         switch (pivotState) {
             case DOWN:
-                setPivotState(PivotState.UP);
+                setPivotState(PivotState.COLLECT);
                 break;
             case UP:
+            case COLLECT:
                 setPivotState(PivotState.DOWN);
                 break;
         }
@@ -211,7 +273,34 @@ public class IntakeSubsystem extends SubsystemBase {
         return clawState;
     }
 
-    public void setRotation(double angle) {
-        rotateServo.turnToAngle(angle);
+    public void setRotation(RotationState state) {
+        rotationState = state;
+
+        switch (rotationState) {
+            case LEFT:
+                rotateServo.turnToAngle(ROT_LEFT);
+                break;
+            case STRAIGHT:
+                rotateServo.turnToAngle(ROT_STRAIGHT);
+                break;
+            case RIGHT:
+                rotateServo.turnToAngle(ROT_RIGHT);
+                break;
+            case HORIZONTAL:
+                rotateServo.turnToAngle(ROT_HORIZONTAL);
+                break;
+        }
+    }
+
+    public void nextRotation() {
+        setRotation(rotationState.next());
+    }
+
+    public void previousRotation() {
+        setRotation(rotationState.previous());
+    }
+
+    public RotationState getRotation() {
+        return rotationState;
     }
 }

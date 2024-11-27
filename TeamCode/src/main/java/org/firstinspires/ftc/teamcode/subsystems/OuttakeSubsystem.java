@@ -33,6 +33,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public enum ArmState {
         IN,
         SPECIMEN,
+        TRANSFER,
         OUT;
 
         @NonNull
@@ -42,6 +43,8 @@ public class OuttakeSubsystem extends SubsystemBase {
                     return "In";
                 case SPECIMEN:
                     return "Specimen";
+                case TRANSFER:
+                    return "Transfer";
                 case OUT:
                     return "Out";
             }
@@ -117,13 +120,13 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 10, ARM_SPECIMEN = 100, ARM_OUT = 220;
+    public static double ARM_IN = 40, ARM_SPECIMEN = 100, ARM_OUT = 220, ARM_TRANSFER = 120;
     public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN = 0.6;
 
     public static int SLIDES_LOWERED = 0,
-            SLIDES_LOW_BASKET = 650,
-            SLIDES_SPECIMEN = 800,
-            SLIDES_HIGH_BASKET = 1500;
+            SLIDES_LOW_BASKET = 1500,
+            SLIDES_SPECIMEN = 2000,
+            SLIDES_HIGH_BASKET = 4100;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -132,10 +135,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final SimpleServo clawServo;
     private final DcMotor slidesMotor;
 
-    private ClawState clawState = ClawState.CLOSED;
-    private ArmState armState = ArmState.IN;
-    private PivotState pivotState = PivotState.IN;
-    private SlidesState slidesState = SlidesState.LOWERED;
+    private ClawState clawState = null;
+    private ArmState armState = null;
+    private PivotState pivotState = null;
+    private SlidesState slidesState = null;
 
     public OuttakeSubsystem(HardwareMap hardwareMap) {
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
@@ -151,14 +154,14 @@ public class OuttakeSubsystem extends SubsystemBase {
                 new Pair<>(0.0, 0.0),
                 new Pair<>(90.0, 90.0),
                 new Pair<>(180.0, 180.0),
-                new Pair<>(220.0, 220.0)
+                new Pair<>(220.0, 214.0)
         );
 
         armRight.generatePositions(
-                new Pair<>(0.0, 14.0),
-                new Pair<>(90.0, 91.0),
-                new Pair<>(180.0, 175.0),
-                new Pair<>(220.0, 197.0)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 93.0),
+                new Pair<>(180.0, 182.0),
+                new Pair<>(220.0, 220.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
@@ -199,6 +202,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         return clawState;
     }
 
+    public double getClawPosition() {
+        return clawServo.getPosition();
+    }
+
     public void setArmState(ArmState state) {
         armState = state;
         switch (armState) {
@@ -214,6 +221,10 @@ public class OuttakeSubsystem extends SubsystemBase {
                 armLeft.setToPosition(ARM_OUT);
                 armRight.setToPosition(ARM_OUT);
                 break;
+            case TRANSFER:
+                armLeft.setToPosition(ARM_TRANSFER);
+                armRight.setToPosition(ARM_TRANSFER);
+                break;
         }
     }
 
@@ -226,6 +237,14 @@ public class OuttakeSubsystem extends SubsystemBase {
                 setArmState(ArmState.IN);
                 break;
         }
+    }
+
+    public ArmState getArmState() {
+        return armState;
+    }
+
+    public double[] getArmPosition() {
+        return new double[]{armLeft.getCurrentPosition(), armRight.getCurrentPosition()};
     }
 
     public void setPivotState(PivotState state) {
@@ -258,8 +277,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         return pivotState;
     }
 
-    public ArmState getArmState() {
-        return armState;
+    public double getPivotPosition() {
+        return armPivot.getPosition();
     }
 
     public void setSlidesState(SlidesState state) {
