@@ -54,7 +54,8 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public enum PivotState {
         IN,
-        SPECIMEN,
+        SPECIMEN_DEPOSIT,
+        SPECIMEN_COLLECT,
         OUT;
 
         @NonNull
@@ -62,8 +63,10 @@ public class OuttakeSubsystem extends SubsystemBase {
             switch (this) {
                 case IN:
                     return "In";
-                case SPECIMEN:
-                    return "Specimen";
+                case SPECIMEN_DEPOSIT:
+                    return "Specimen Deposit";
+                case SPECIMEN_COLLECT:
+                    return "Specimen Collect";
                 case OUT:
                     return "Out";
             }
@@ -97,9 +100,7 @@ public class OuttakeSubsystem extends SubsystemBase {
                 case LOWERED:
                     return LOW_BASKET;
                 case LOW_BASKET:
-                    return SPECIMEN;
                 case HIGH_BASKET:
-                case SPECIMEN:
                     return HIGH_BASKET;
             }
             return LOWERED;
@@ -107,25 +108,23 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         public SlidesState previous() {
             switch (this) {
-                case LOWERED:
-                case LOW_BASKET:
-                    return LOWERED;
-                case SPECIMEN:
-                    return LOW_BASKET;
                 case HIGH_BASKET:
-                    return SPECIMEN;
+                    return LOW_BASKET;
+                case LOW_BASKET:
+                case LOWERED:
+                    return LOWERED;
             }
             return LOWERED;
         }
     }
 
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 40, ARM_SPECIMEN = 100, ARM_OUT = 220, ARM_TRANSFER = 120;
-    public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN = 0.6;
+    public static double ARM_IN = 40, ARM_OUT = 220, ARM_TRANSFER = 120, ARM_SPECIMEN = 20;
+    public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.84, PIVOT_SPECIMEN_COLLECT = 0.45;
 
     public static int SLIDES_LOWERED = 0,
-            SLIDES_LOW_BASKET = 1500,
-            SLIDES_SPECIMEN = 2000,
+            SLIDES_SPECIMEN = 410,
+            SLIDES_LOW_BASKET = 1000,
             SLIDES_HIGH_BASKET = 4100;
 
     private final InterpolatedAngleServo armLeft;
@@ -213,10 +212,6 @@ public class OuttakeSubsystem extends SubsystemBase {
                 armLeft.setToPosition(ARM_IN);
                 armRight.setToPosition(ARM_IN);
                 break;
-            case SPECIMEN:
-                armLeft.setToPosition(ARM_SPECIMEN);
-                armRight.setToPosition(ARM_SPECIMEN);
-                break;
             case OUT:
                 armLeft.setToPosition(ARM_OUT);
                 armRight.setToPosition(ARM_OUT);
@@ -225,12 +220,17 @@ public class OuttakeSubsystem extends SubsystemBase {
                 armLeft.setToPosition(ARM_TRANSFER);
                 armRight.setToPosition(ARM_TRANSFER);
                 break;
+            case SPECIMEN:
+                armLeft.setToPosition(ARM_SPECIMEN);
+                armRight.setToPosition(ARM_SPECIMEN);
+                break;
         }
     }
 
     public void toggleArm() {
         switch (armState) {
             case IN:
+            case SPECIMEN:
                 setArmState(ArmState.OUT);
                 break;
             case OUT:
@@ -256,8 +256,11 @@ public class OuttakeSubsystem extends SubsystemBase {
             case OUT:
                 armPivot.setPosition(PIVOT_OUT);
                 break;
-            case SPECIMEN:
-                armPivot.setPosition(PIVOT_SPECIMEN);
+            case SPECIMEN_COLLECT:
+                armPivot.setPosition(PIVOT_SPECIMEN_COLLECT);
+                break;
+            case SPECIMEN_DEPOSIT:
+                armPivot.setPosition(PIVOT_SPECIMEN_DEPOSIT);
                 break;
         }
     }
@@ -265,9 +268,11 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void togglePivot() {
         switch (pivotState) {
             case IN:
+            case SPECIMEN_COLLECT:
                 setPivotState(PivotState.OUT);
                 break;
             case OUT:
+            case SPECIMEN_DEPOSIT:
                 setPivotState(PivotState.IN);
                 break;
         }
@@ -300,10 +305,18 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void nextSlidesState() {
+        if (slidesState == SlidesState.SPECIMEN) {
+            setSlidesState(SlidesState.LOW_BASKET);
+            return;
+        }
         setSlidesState(slidesState.next());
     }
 
     public void previousSlidesState() {
+        if (slidesState == SlidesState.SPECIMEN) {
+            setSlidesState(SlidesState.LOWERED);
+            return;
+        }
         setSlidesState(slidesState.previous());
     }
 

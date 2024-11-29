@@ -32,6 +32,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public enum ExtendoState {
         IN,
+        QUARTER,
+        HALF,
+        THREE_QUARTERS,
         OUT;
 
         @NonNull
@@ -39,16 +42,53 @@ public class IntakeSubsystem extends SubsystemBase {
             switch (this) {
                 case IN:
                     return "In";
+                case QUARTER:
+                    return "Quarter";
+                case HALF:
+                    return "Half";
+                case THREE_QUARTERS:
+                    return "Three Quarters";
                 case OUT:
                     return "Out";
             }
             return "";
+        }
+
+        public ExtendoState next() {
+            switch (this) {
+                case IN:
+                    return QUARTER;
+                case QUARTER:
+                    return HALF;
+                case HALF:
+                    return THREE_QUARTERS;
+                case THREE_QUARTERS:
+                case OUT:
+                    return OUT;
+            }
+            return IN;
+        }
+
+        public ExtendoState previous() {
+            switch (this) {
+                case OUT:
+                    return THREE_QUARTERS;
+                case THREE_QUARTERS:
+                    return HALF;
+                case HALF:
+                    return QUARTER;
+                case QUARTER:
+                case IN:
+                    return IN;
+            }
+            return IN;
         }
     }
 
     public enum PivotState {
         DOWN,
         COLLECT,
+        EXTENDING,
         UP;
 
         @NonNull
@@ -58,6 +98,10 @@ public class IntakeSubsystem extends SubsystemBase {
                     return "Down";
                 case UP:
                     return "Up";
+                case COLLECT:
+                    return "Collect";
+                case EXTENDING:
+                    return "Extending";
             }
             return "";
         }
@@ -113,8 +157,8 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public static double EXTENDO_IN = 0, EXTENDO_OUT = 1;
-    public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 165, PIVOT_UP = 250;
+    public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
+    public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 120, PIVOT_UP = 250, PIVOT_EXTENDING = 165;
     public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.52;
     public static double
             ROT_LEFT = 160,
@@ -187,6 +231,18 @@ public class IntakeSubsystem extends SubsystemBase {
                 extLeft.setToPosition(EXTENDO_IN);
                 extRight.setToPosition(EXTENDO_IN);
                 break;
+            case QUARTER:
+                extLeft.setToPosition(EXTENDO_QUARTER);
+                extRight.setToPosition(EXTENDO_QUARTER);
+                break;
+            case HALF:
+                extLeft.setToPosition(EXTENDO_HALF);
+                extRight.setToPosition(EXTENDO_HALF);
+                break;
+            case THREE_QUARTERS:
+                extLeft.setToPosition(EXTENDO_THREE_QUARTERS);
+                extRight.setToPosition(EXTENDO_THREE_QUARTERS);
+                break;
             case OUT:
                 extLeft.setToPosition(EXTENDO_OUT);
                 extRight.setToPosition(EXTENDO_OUT);
@@ -194,15 +250,12 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
-    public void toggleExtendo() {
-        switch (extendoState) {
-            case IN:
-                setExtendoState(ExtendoState.OUT);
-                break;
-            case OUT:
-                setExtendoState(ExtendoState.IN);
-                break;
-        }
+    public void nextExtendoState() {
+        setExtendoState(extendoState.next());
+    }
+
+    public void previousExtendoState() {
+        setExtendoState(extendoState.previous());
     }
 
     public ExtendoState getExtendoState() {
@@ -221,6 +274,10 @@ public class IntakeSubsystem extends SubsystemBase {
                 pivLeft.setToPosition(PIVOT_COLLECT);
                 pivRight.setToPosition(PIVOT_COLLECT);
                 break;
+            case EXTENDING:
+                pivLeft.setToPosition(PIVOT_EXTENDING);
+                pivRight.setToPosition(PIVOT_EXTENDING);
+                break;
             case UP:
                 pivLeft.setToPosition(PIVOT_UP);
                 pivRight.setToPosition(PIVOT_UP);
@@ -231,6 +288,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void togglePivot() {
         switch (pivotState) {
             case DOWN:
+            case EXTENDING:
                 setPivotState(PivotState.COLLECT);
                 break;
             case UP:

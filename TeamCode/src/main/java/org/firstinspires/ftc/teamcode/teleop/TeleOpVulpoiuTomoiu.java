@@ -21,8 +21,8 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp (Luca + Miron)", group = "TeleOp")
-public class TeleOpLucaMiron extends CommandOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp (Vulpoiu + Tomoiu)", group = "TeleOp")
+public class TeleOpVulpoiuTomoiu extends CommandOpMode {
     @Override
     public void initialize() {
         this.reset();
@@ -41,7 +41,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
         GamepadEx driver2 = new GamepadEx(gamepad2);
 
         Trigger leftTrigger1 = new Trigger(() -> gamepad1.left_trigger >= 0.3);
-        Trigger rightTrigger1 = new Trigger(() -> gamepad1.right_trigger >= 0.3);
+        Trigger rightTrigger1 = new Trigger(() -> gamepad2.right_trigger >= 0.3);
 
         Trigger leftTrigger2 = new Trigger(() -> gamepad2.left_trigger >= 0.3);
         Trigger rightTrigger2 = new Trigger(() -> gamepad2.right_trigger >= 0.3);
@@ -51,11 +51,11 @@ public class TeleOpLucaMiron extends CommandOpMode {
         chassis.setAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
         driver1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(() -> chassis.setMaxSpeed(0.4))
+                .whenPressed(() -> chassis.setMaxSpeed(0.5))
                 .whenReleased(() -> chassis.setMaxSpeed(1));
 
         driver1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(() -> chassis.setMaxSpeed(0.6))
+                .whenPressed(() -> chassis.setMaxSpeed(0.3))
                 .whenReleased(() -> chassis.setMaxSpeed(1));
 
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
@@ -73,15 +73,22 @@ public class TeleOpLucaMiron extends CommandOpMode {
                 .and(new Trigger(() -> intake.getPivotState() != IntakeSubsystem.PivotState.UP))
                 .whenActive(intake::previousRotation);
 
+        leftTrigger2
+                .and(isTransferringTrigger)
+                .whenActive(intake::togglePivot);
+
         rightTrigger1
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
+                        new WaitCommand(350),
                         new ConditionalCommand(
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
                                 () -> intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN
-                        )
+                        ),
+                        new WaitCommand(250),
+                        new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT))
                 ));
 
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap);
@@ -119,7 +126,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT))
                 ));
 
-        driver2.getGamepadButton(GamepadKeys.Button.B)
+        driver2.getGamepadButton(GamepadKeys.Button.Y)
                 .and(isTransferringTrigger)
                 .whenActive(
                         new SequentialCommandGroup(
@@ -127,7 +134,8 @@ public class TeleOpLucaMiron extends CommandOpMode {
                                 new InstantCommand(outtake::togglePivot)
                         )
                 );
-        driver2.getGamepadButton(GamepadKeys.Button.Y)
+
+        driver2.getGamepadButton(GamepadKeys.Button.B)
                 .and(isTransferringTrigger)
                 .whenActive(outtake::toggleClaw);
 
@@ -140,11 +148,6 @@ public class TeleOpLucaMiron extends CommandOpMode {
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                 ));
-
-        leftTrigger2
-                .and(isTransferringTrigger)
-                .and(new Trigger(() -> outtake.getArmState() != OuttakeSubsystem.ArmState.SPECIMEN))
-                .whenActive(intake::togglePivot);
 
         SequentialCommandGroup transferCommand = new SequentialCommandGroup(
                 new InstantCommand(() -> isTransferring.set(true)),
@@ -173,7 +176,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
 
         driver2.getGamepadButton(GamepadKeys.Button.X)
                 .and(new Trigger(() -> intake.getClawState() == IntakeSubsystem.ClawState.CLOSED))
-                .whenActive(transferCommand, true);
+                .whenActive(transferCommand);
 
         register(chassis, intake, outtake);
 
