@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
 /**
  * This is the Circle autonomous OpMode. It runs the robot in a PathChain that's actually not quite
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
  * @version 1.0, 3/12/2024
  */
 @Config
-@Autonomous (name = "Circle", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Circle", group = "Autonomous Pathing Tuning")
 public class Circle extends OpMode {
     private Telemetry telemetryA;
 
@@ -42,19 +43,22 @@ public class Circle extends OpMode {
     public void init() {
         follower = new Follower(hardwareMap);
 
+        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
+        intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
+
         circle = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(0,0, Point.CARTESIAN), new Point(RADIUS,0, Point.CARTESIAN), new Point(RADIUS, RADIUS, Point.CARTESIAN)))
-                .addPath(new BezierCurve(new Point(RADIUS, RADIUS, Point.CARTESIAN), new Point(RADIUS,2*RADIUS, Point.CARTESIAN), new Point(0,2*RADIUS, Point.CARTESIAN)))
-                .addPath(new BezierCurve(new Point(0,2*RADIUS, Point.CARTESIAN), new Point(-RADIUS,2*RADIUS, Point.CARTESIAN), new Point(-RADIUS, RADIUS, Point.CARTESIAN)))
-                .addPath(new BezierCurve(new Point(-RADIUS, RADIUS, Point.CARTESIAN), new Point(-RADIUS,0, Point.CARTESIAN), new Point(0,0, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(0, 0, Point.CARTESIAN), new Point(RADIUS, 0, Point.CARTESIAN), new Point(RADIUS, RADIUS, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(RADIUS, RADIUS, Point.CARTESIAN), new Point(RADIUS, 2 * RADIUS, Point.CARTESIAN), new Point(0, 2 * RADIUS, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(0, 2 * RADIUS, Point.CARTESIAN), new Point(-RADIUS, 2 * RADIUS, Point.CARTESIAN), new Point(-RADIUS, RADIUS, Point.CARTESIAN)))
+                .addPath(new BezierCurve(new Point(-RADIUS, RADIUS, Point.CARTESIAN), new Point(-RADIUS, 0, Point.CARTESIAN), new Point(0, 0, Point.CARTESIAN)))
                 .build();
 
         follower.followPath(circle);
 
         telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetryA.addLine("This will run in a roughly circular shape of radius " + RADIUS
-                            + ", starting on the right-most edge. So, make sure you have enough "
-                            + "space to the left, front, and back to run the OpMode.");
+                + ", starting on the right-most edge. So, make sure you have enough "
+                + "space to the left, front, and back to run the OpMode.");
         telemetryA.update();
     }
 

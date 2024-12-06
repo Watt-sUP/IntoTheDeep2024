@@ -6,14 +6,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 
 @Config
-@Disabled
 @TeleOp(name = "Arm Test", group = "Tests")
 public class ArmTest extends LinearOpMode {
     public static double DEGREES = 0;
@@ -30,16 +28,16 @@ public class ArmTest extends LinearOpMode {
 
         armLeft.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 90.0),
-                new Pair<>(180.0, 180.0),
-                new Pair<>(220.0, 214.0)
+                new Pair<>(90.0, 100.0),
+                new Pair<>(180.0, 196.0),
+                new Pair<>(220.0, 220.0)
         );
 
         armRight.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 93.0),
-                new Pair<>(180.0, 182.0),
-                new Pair<>(220.0, 220.0)
+                new Pair<>(90.0, 108.0),
+                new Pair<>(180.0, 198.0),
+                new Pair<>(220.0, 215.0)
         );
 
         waitForStart();

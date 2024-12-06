@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Drawing;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
 /**
  * This is the LocalizationTest OpMode. This is basically just a simple mecanum drive attached to a
@@ -38,9 +39,13 @@ public class LocalizationTest extends CommandOpMode {
         GamepadEx driver1 = new GamepadEx(gamepad1);
 
         DriveSubsystem drive = new DriveSubsystem(hardwareMap);
+        drive.setMaxSpeed(0.7);
         drive.setAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
-        register(drive);
+        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
+        intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
+
+        register(drive, intake);
 
         telemetryA = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetryA.addLine("This will print your robot's position to telemetry while "

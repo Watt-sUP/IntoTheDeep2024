@@ -77,10 +77,10 @@ public class OTOSLocalizer extends Localizer {
         // For the OTOS, left/right is the y axis and forward/backward is the x axis, with left being
         // positive y and forward being positive x. PI/2 radians is facing forward, and clockwise
         // rotation is negative rotation.
-        otos.setOffset(new SparkFunOTOS.Pose2D(-6.91, 0, -Math.PI / 2));
+        otos.setOffset(new SparkFunOTOS.Pose2D(-6.91, 0, 0));
 
-        double[] linearScalars = {0.980125};
-        double[] angularScalars = {0.9856, 0.9826, 0.964, 0.9226};
+        double[] linearScalars = {0.9561714294010888, 0.9492801037837837, 0.9492801037837837, 0.9666980873394494};
+        double[] angularScalars = {0.96, 0.9734, 0.98, 0.9407, 0.9837};
 
         otos.setLinearScalar(Arrays.stream(linearScalars).sum() / linearScalars.length);
         otos.setAngularScalar(Arrays.stream(angularScalars).sum() / angularScalars.length);

@@ -161,19 +161,19 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 120, PIVOT_UP = 250, PIVOT_EXTENDING = 165;
     public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.52;
     public static double
-            ROT_LEFT = 160,
-            ROT_STRAIGHT = 114,
-            ROT_RIGHT = 64,
-            ROT_HORIZONTAL = 14;
+            ROT_LEFT = 145,
+            ROT_STRAIGHT = 95,
+            ROT_RIGHT = 45,
+            ROT_HORIZONTAL = 0;
 
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
     private final SimpleServo rotateServo, clawServo;
 
-    private ExtendoState extendoState = ExtendoState.IN;
-    private ClawState clawState = ClawState.CLOSED;
-    private PivotState pivotState = PivotState.UP;
-    private RotationState rotationState = RotationState.STRAIGHT;
+    private ExtendoState extendoState = null;
+    private ClawState clawState = null;
+    private PivotState pivotState = null;
+    private RotationState rotationState = null;
 
 
     public IntakeSubsystem(HardwareMap hardwareMap) {
@@ -184,15 +184,15 @@ public class IntakeSubsystem extends SubsystemBase {
         extRight.setInverted(true);
 
         extLeft.generatePositions(
-                new Pair<>(0.0, 0.53),
-                new Pair<>(0.5, 0.735),
-                new Pair<>(1.0, 0.92)
+                new Pair<>(0.0, 0.5),
+                new Pair<>(0.5, 0.67),
+                new Pair<>(1.0, 0.85)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.49),
-                new Pair<>(0.5, 0.66),
-                new Pair<>(1.0, 0.83)
+                new Pair<>(0.0, 0.43),
+                new Pair<>(0.5, 0.625),
+                new Pair<>(1.0, 0.82)
         );
 
         pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 1800));

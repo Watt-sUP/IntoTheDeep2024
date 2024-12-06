@@ -75,7 +75,7 @@ public class PathBuilder {
      * This adds a default Path defined by a specified BezierLine to the PathBuilder.
      *
      * @param startPoint start point of the line.
-     * @param endPoint end point of the line.
+     * @param endPoint   end point of the line.
      * @return This returns itself with the updated data.
      */
     public PathBuilder addBezierLine(Point startPoint, Point endPoint) {
@@ -86,8 +86,8 @@ public class PathBuilder {
      * This sets a linear heading interpolation on the last Path added to the PathBuilder.
      *
      * @param startHeading The start of the linear heading interpolation.
-     * @param endHeading The end of the linear heading interpolation.
-     *         This will be reached at the end of the Path if no end time is specified.
+     * @param endHeading   The end of the linear heading interpolation.
+     *                     This will be reached at the end of the Path if no end time is specified.
      * @return This returns itself with the updated data.
      */
     public PathBuilder setLinearHeadingInterpolation(double startHeading, double endHeading) {
@@ -99,10 +99,10 @@ public class PathBuilder {
      * This sets a linear heading interpolation on the last Path added to the PathBuilder.
      *
      * @param startHeading The start of the linear heading interpolation.
-     * @param endHeading The end of the linear heading interpolation.
-     *         This will be reached at the end of the Path if no end time is specified.
-     * @param endTime The end time on the Path that the linear heading interpolation will end.
-     *         This value goes from [0, 1] since Bezier curves are parametric functions.
+     * @param endHeading   The end of the linear heading interpolation.
+     *                     This will be reached at the end of the Path if no end time is specified.
+     * @param endTime      The end time on the Path that the linear heading interpolation will end.
+     *                     This value goes from [0, 1] since Bezier curves are parametric functions.
      * @return This returns itself with the updated data.
      */
     public PathBuilder setLinearHeadingInterpolation(double startHeading, double endHeading, double endTime) {
@@ -125,7 +125,7 @@ public class PathBuilder {
      * This sets a reversed or tangent heading interpolation on the last Path added to the PathBuilder.
      *
      * @param set This sets the heading to reversed tangent following if this parameter is true.
-     *         Conversely, this sets a tangent following if this parameter is false.
+     *            Conversely, this sets a tangent following if this parameter is false.
      * @return This returns itself with the updated data.
      */
     public PathBuilder setReversed(boolean set) {
@@ -135,7 +135,7 @@ public class PathBuilder {
 
     /**
      * This sets the heading interpolation to tangential on the last Path added to the PathBuilder.
-     * There really shouldn't be a reason to use this since the default heading interpolation is
+     * There really sho§uldn't be a reason to use this since the default heading interpolation is
      * tangential but it's here.
      */
     public PathBuilder setTangentHeadingInterpolation() {
@@ -213,8 +213,8 @@ public class PathBuilder {
      * This adds a temporal callback on the last Path added to the PathBuilder.
      * This callback is set to run at a specified number of milliseconds after the start of the path.
      *
-     * @param time This sets the number of milliseconds of wait between the start of the Path and
-     *         the calling of the callback.
+     * @param time     This sets the number of milliseconds of wait between the start of the Path and
+     *                 the calling of the callback.
      * @param runnable This sets the code for the callback to run. Use lambda statements for this.
      * @return This returns itself with the updated data.
      */
@@ -227,7 +227,7 @@ public class PathBuilder {
      * This adds a parametric callback on the last Path added to the PathBuilder.
      * This callback is set to run at a certain point on the Path.
      *
-     * @param t This sets the t-value (parametric time) on the Path for when to run the callback.
+     * @param t        This sets the t-value (parametric time) on the Path for when to run the callback.
      * @param runnable This sets the code for the callback to run. Use lambda statements for this.
      * @return This returns itself with the updated data.
      */

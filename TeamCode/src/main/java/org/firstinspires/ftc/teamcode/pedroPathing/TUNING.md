@@ -1,4 +1,5 @@
 ## Prerequisites
+
 Obviously, you have to have a robot to use Pedro Pathing. Also, Pedro Pathing is only able to work
 with omnidirectional drives, like mecanum drive. There is currently no support for swerve drives.
 You must also have a localizer of some sort. Pedro Pathing has a drive encoder, a two tracking wheel,
@@ -14,6 +15,7 @@ that the tuners require you to push the robot or the tuners output will say "inc
 measurements will be in centimeters.
 
 ## Tuning
+
 * To start with, we need the mass of the robot in kg. This is used for the centripetal force correction,
   and the mass, with the variable name `mass`, should be put on line `86` in the `FollowerConstants`
   class under the `tuning` package.
@@ -49,12 +51,12 @@ measurements will be in centimeters.
 * After this, we will want to tune the translational PID. Go to FTC Dashboard and disable all but
   the `useTranslational` checkboxes under the `Follower` tab. Then, run `StraightBackAndForth`. Make
   sure you disable the timer on autonomous OpModes. The PID for the translational error is called
-  `translationalPIDF`.  If you need to add a feedforward value, use the `translationalPIDFFeedForward`
+  `translationalPIDF`. If you need to add a feedforward value, use the `translationalPIDFFeedForward`
   since that will add the feedforward in the direction the robot is trying to move, rather than the
   feedforward in the PIDF itself, since those will only add the feedforward one way. You can change
   the PIDF constants and feedforward values, under the `FollowerConstants` tab in FTC Dashboard.
   To tune the PID, push the robot off the path and see how corrects. You will want to alternate sides
-  you push to reduce field wear and tear as well as push with varying power and distance. I would 
+  you push to reduce field wear and tear as well as push with varying power and distance. I would
   recommend tuning the PID so that it is capable of correcting while minimizing oscillations and still
   achieving a satisfactory level of accuracy. Overall, try to tune for fewer oscillations rather than
   higher speeds or perfect accuracy, since this will make the robot run more smoothly under actual
@@ -107,6 +109,7 @@ measurements will be in centimeters.
   refer to the OVERVIEW readme file or the README readme file. Best of luck to your team this season! :)
 
 ## Note About the PIDs
+
 In versions of Pedro Pathing before early August 2024, there were 2 PIDs used in the translational,
 heading, and drive control. However, now there is only one main PID. The old system can still be used.
 Scroll down to the bottom of `FollowerConstants` and set all the booleans from lines `157` to `159`

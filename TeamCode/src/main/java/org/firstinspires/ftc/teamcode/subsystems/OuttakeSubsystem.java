@@ -8,6 +8,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
@@ -119,20 +120,21 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 40, ARM_OUT = 220, ARM_TRANSFER = 120, ARM_SPECIMEN = 20;
+    public static double ARM_IN = 30, ARM_OUT = 220, ARM_TRANSFER = 120, ARM_SPECIMEN = 15;
     public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.84, PIVOT_SPECIMEN_COLLECT = 0.45;
 
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 410,
-            SLIDES_LOW_BASKET = 1000,
-            SLIDES_HIGH_BASKET = 4100;
+            SLIDES_SPECIMEN = 145,
+            SLIDES_LOW_BASKET = 500,
+            SLIDES_HIGH_BASKET = 1300;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
     private final SimpleServo armPivot;
 
     private final SimpleServo clawServo;
-    private final DcMotor slidesMotor;
+
+    private final DcMotor slidesMotor1, slidesMotor2;
 
     private ClawState clawState = null;
     private ArmState armState = null;
@@ -151,30 +153,50 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         armLeft.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 90.0),
-                new Pair<>(180.0, 180.0),
-                new Pair<>(220.0, 214.0)
+                new Pair<>(90.0, 100.0),
+                new Pair<>(180.0, 196.0),
+                new Pair<>(220.0, 220.0)
         );
 
         armRight.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 93.0),
-                new Pair<>(180.0, 182.0),
-                new Pair<>(220.0, 220.0)
+                new Pair<>(90.0, 108.0),
+                new Pair<>(180.0, 198.0),
+                new Pair<>(220.0, 215.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
 
-        slidesMotor = hardwareMap.dcMotor.get("slides");
-        slidesMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slidesMotor.setTargetPosition(0);
-        slidesMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slidesMotor.setPower(1);
-        slidesMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        slidesMotor1 = hardwareMap.dcMotor.get("slides");
+        slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slidesMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        slidesMotor2 = hardwareMap.dcMotor.get("slides2");
+        slidesMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slidesMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        slidesMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        DcMotor slidesMotor1 = hardwareMap.dcMotor.get("slides");
+        slidesMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        DcMotor slidesMotor2 = hardwareMap.dcMotor.get("slides2");
+        slidesMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        slidesMotor1.setTargetPosition(SLIDES_LOWERED);
+        slidesMotor2.setTargetPosition(SLIDES_LOWERED);
+
+        slidesMotor1.setPower(1);
+        slidesMotor2.setPower(1);
+
+        slidesMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setClawState(ClawState state) {
-
         clawState = state;
         switch (clawState) {
             case OPENED:
@@ -243,10 +265,6 @@ public class OuttakeSubsystem extends SubsystemBase {
         return armState;
     }
 
-    public double[] getArmPosition() {
-        return new double[]{armLeft.getCurrentPosition(), armRight.getCurrentPosition()};
-    }
-
     public void setPivotState(PivotState state) {
         pivotState = state;
         switch (pivotState) {
@@ -282,24 +300,25 @@ public class OuttakeSubsystem extends SubsystemBase {
         return pivotState;
     }
 
-    public double getPivotPosition() {
-        return armPivot.getPosition();
-    }
 
     public void setSlidesState(SlidesState state) {
         slidesState = state;
         switch (slidesState) {
             case LOWERED:
-                slidesMotor.setTargetPosition(SLIDES_LOWERED);
+                slidesMotor1.setTargetPosition(SLIDES_LOWERED);
+                slidesMotor2.setTargetPosition(SLIDES_LOWERED);
                 break;
             case LOW_BASKET:
-                slidesMotor.setTargetPosition(SLIDES_LOW_BASKET);
+                slidesMotor1.setTargetPosition(SLIDES_LOW_BASKET);
+                slidesMotor2.setTargetPosition(SLIDES_LOW_BASKET);
                 break;
             case HIGH_BASKET:
-                slidesMotor.setTargetPosition(SLIDES_HIGH_BASKET);
+                slidesMotor1.setTargetPosition(SLIDES_HIGH_BASKET);
+                slidesMotor2.setTargetPosition(SLIDES_HIGH_BASKET);
                 break;
             case SPECIMEN:
-                slidesMotor.setTargetPosition(SLIDES_SPECIMEN);
+                slidesMotor1.setTargetPosition(SLIDES_SPECIMEN);
+                slidesMotor2.setTargetPosition(SLIDES_SPECIMEN);
                 break;
         }
     }
@@ -318,6 +337,21 @@ public class OuttakeSubsystem extends SubsystemBase {
             return;
         }
         setSlidesState(slidesState.previous());
+    }
+
+    public void adjustSlides(int ticks) {
+        slidesMotor1.setTargetPosition(slidesMotor1.getTargetPosition() + ticks);
+        slidesMotor2.setTargetPosition(slidesMotor2.getTargetPosition() + ticks);
+    }
+
+    public void resetSlidesEncoder() {
+        slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        setSlidesState(slidesState);
+
+        slidesMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slidesMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public SlidesState getSlidesState() {

@@ -4,14 +4,12 @@ import android.util.Pair;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 
 @Config
-@Disabled
 @TeleOp(name = "Intake Pivot Test", group = "Tests")
 public class IntakePivotTest extends LinearOpMode {
     public static double DEGREES = 0;
