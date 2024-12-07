@@ -133,6 +133,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
         leftStickUp2
                 .and(isTransferringTrigger)
                 .whenActive(() -> outtake.adjustSlides(20));
+
         driver2.getGamepadButton(GamepadKeys.Button.START)
                 .and(new Trigger(() -> outtake.getSlidesState() == OuttakeSubsystem.SlidesState.LOWERED))
                 .whenActive(outtake::resetSlidesEncoder);
@@ -142,7 +143,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                 ));
         rightTrigger2

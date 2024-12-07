@@ -161,10 +161,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 120, PIVOT_UP = 250, PIVOT_EXTENDING = 165;
     public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.52;
     public static double
-            ROT_LEFT = 145,
-            ROT_STRAIGHT = 95,
-            ROT_RIGHT = 45,
-            ROT_HORIZONTAL = 0;
+            ROT_LEFT = 155,
+            ROT_STRAIGHT = 102.5,
+            ROT_RIGHT = 52.5,
+            ROT_HORIZONTAL = 2.5;
 
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
