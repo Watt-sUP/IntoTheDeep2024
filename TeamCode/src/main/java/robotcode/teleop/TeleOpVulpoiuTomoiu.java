@@ -15,12 +15,12 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import robotcode.subsystems.DriveSubsystem;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @TeleOp(name = "TeleOp (Vulpoiu + Tomoiu)", group = "TeleOp")
 public class TeleOpVulpoiuTomoiu extends CommandOpMode {
@@ -245,7 +245,12 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                     telemetry.addData("Outtake Claw State", outtake.getClawState().toString());
                     telemetry.addData("Outtake Arm State", outtake.getArmState().toString());
                     telemetry.addData("Outtake Pivot State", outtake.getPivotState().toString());
+                    telemetry.addLine();
+
                     telemetry.addData("Outtake Slides State", outtake.getSlidesState().toString());
+                    telemetry.addData("Outtake Slides Position", outtake.getSlidesPosition());
+                    telemetry.addData("Outtake Slides Target", outtake.getSlidesTarget());
+                    telemetry.addData("Outtake Slides Current", "%.2f, %.2f", outtake.getSlidesCurrent()[0], outtake.getSlidesCurrent()[1]);
                     telemetry.addLine();
 
                     telemetry.update();

@@ -1,8 +1,10 @@
 package robotcode.subsystems;
 
+import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.core.math.MathUtils;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -20,13 +22,13 @@ import robotcode.util.InterpolatedAngleServo;
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
     public static double CLAW_CLOSED = 0, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 30, ARM_OUT = 220, ARM_TRANSFER = 120, ARM_SPECIMEN = 15;
+    public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 120, ARM_SPECIMEN = 15;
     public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.84, PIVOT_SPECIMEN_COLLECT = 0.45;
     public static double SLIDES_kP = 0.01, SLIDES_kI = 0.000049988, SLIDES_kD = 0.000024994, SLIDES_kF = 0, SLIDES_A = 0.8;
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 100,
+            SLIDES_SPECIMEN = 115,
             SLIDES_LOW_BASKET = 415,
-            SLIDES_HIGH_BASKET = 790;
+            SLIDES_HIGH_BASKET = 800;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -50,6 +52,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private double currentFilterEstimate;
     private ElapsedTime timer = new ElapsedTime();
 
+    @SuppressLint("NewApi")
     public OuttakeSubsystem(HardwareMap hardwareMap) {
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
         clawServo.setInverted(false);
@@ -61,17 +64,17 @@ public class OuttakeSubsystem extends SubsystemBase {
         armRight.setInverted(false);
 
         armLeft.generatePositions(
-                new Pair<>(0.0, 0.0),
+                new Pair<>(0.0, 5.0),
                 new Pair<>(90.0, 100.0),
-                new Pair<>(180.0, 196.0),
+                new Pair<>(180.0, 200.0),
                 new Pair<>(220.0, 220.0)
         );
 
         armRight.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 108.0),
-                new Pair<>(180.0, 198.0),
-                new Pair<>(220.0, 215.0)
+                new Pair<>(90.0, 100.0),
+                new Pair<>(180.0, 190.0),
+                new Pair<>(220.0, 210.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
@@ -130,6 +133,18 @@ public class OuttakeSubsystem extends SubsystemBase {
         timer.reset();
     }
 
+    public void setClawState(ClawState state) {
+        clawState = state;
+        switch (clawState) {
+            case OPENED:
+                clawServo.setPosition(CLAW_OPEN);
+                break;
+            case CLOSED:
+                clawServo.setPosition(CLAW_CLOSED);
+                break;
+        }
+    }
+
     public void toggleClaw() {
         switch (clawState) {
             case OPENED:
@@ -145,20 +160,31 @@ public class OuttakeSubsystem extends SubsystemBase {
         return clawState;
     }
 
-    public void setClawState(ClawState state) {
-        clawState = state;
-        switch (clawState) {
-            case OPENED:
-                clawServo.setPosition(CLAW_OPEN);
+    public double getClawPosition() {
+        return clawServo.getPosition();
+    }
+
+    public void setArmState(ArmState state) {
+        armState = state;
+        switch (armState) {
+            case IN:
+                _setArmPosition(ARM_IN);
                 break;
-            case CLOSED:
-                clawServo.setPosition(CLAW_CLOSED);
+            case OUT:
+                _setArmPosition(ARM_OUT);
+                break;
+            case TRANSFER:
+                _setArmPosition(ARM_TRANSFER);
+                break;
+            case SPECIMEN:
+                _setArmPosition(ARM_SPECIMEN);
                 break;
         }
     }
 
-    public double getClawPosition() {
-        return clawServo.getPosition();
+    public void _setArmPosition(double position) {
+        armLeft.setToPosition(MathUtils.clamp(position, 0, 220));
+        armRight.setToPosition(MathUtils.clamp(position, 0, 220));
     }
 
     public void toggleArm() {
@@ -177,26 +203,26 @@ public class OuttakeSubsystem extends SubsystemBase {
         return armState;
     }
 
-    public void setArmState(ArmState state) {
-        armState = state;
-        switch (armState) {
+    public void setPivotState(PivotState state) {
+        pivotState = state;
+        switch (pivotState) {
             case IN:
-                armLeft.setToPosition(ARM_IN);
-                armRight.setToPosition(ARM_IN);
+                _setPivotPosition(PIVOT_IN);
                 break;
             case OUT:
-                armLeft.setToPosition(ARM_OUT);
-                armRight.setToPosition(ARM_OUT);
+                _setPivotPosition(PIVOT_OUT);
                 break;
-            case TRANSFER:
-                armLeft.setToPosition(ARM_TRANSFER);
-                armRight.setToPosition(ARM_TRANSFER);
+            case SPECIMEN_COLLECT:
+                _setPivotPosition(PIVOT_SPECIMEN_COLLECT);
                 break;
-            case SPECIMEN:
-                armLeft.setToPosition(ARM_SPECIMEN);
-                armRight.setToPosition(ARM_SPECIMEN);
+            case SPECIMEN_DEPOSIT:
+                _setPivotPosition(PIVOT_SPECIMEN_DEPOSIT);
                 break;
         }
+    }
+
+    public void _setPivotPosition(double position) {
+        armPivot.setPosition(MathUtils.clamp(position, 0, 1));
     }
 
     public void togglePivot() {
@@ -216,22 +242,26 @@ public class OuttakeSubsystem extends SubsystemBase {
         return pivotState;
     }
 
-    public void setPivotState(PivotState state) {
-        pivotState = state;
-        switch (pivotState) {
-            case IN:
-                armPivot.setPosition(PIVOT_IN);
+    public void setSlidesState(SlidesState state) {
+        slidesState = state;
+        switch (slidesState) {
+            case LOWERED:
+                _setSlidesPosition(SLIDES_LOWERED);
                 break;
-            case OUT:
-                armPivot.setPosition(PIVOT_OUT);
+            case LOW_BASKET:
+                _setSlidesPosition(SLIDES_LOW_BASKET);
                 break;
-            case SPECIMEN_COLLECT:
-                armPivot.setPosition(PIVOT_SPECIMEN_COLLECT);
+            case HIGH_BASKET:
+                _setSlidesPosition(SLIDES_HIGH_BASKET);
                 break;
-            case SPECIMEN_DEPOSIT:
-                armPivot.setPosition(PIVOT_SPECIMEN_DEPOSIT);
+            case SPECIMEN:
+                _setSlidesPosition(SLIDES_SPECIMEN);
                 break;
         }
+    }
+
+    public void _setSlidesPosition(int position) {
+        slidesPosition = Math.max(position, 0);
     }
 
     public void nextSlidesState() {
@@ -256,24 +286,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public SlidesState getSlidesState() {
         return slidesState;
-    }
-
-    public void setSlidesState(SlidesState state) {
-        slidesState = state;
-        switch (slidesState) {
-            case LOWERED:
-                slidesPosition = SLIDES_LOWERED;
-                break;
-            case LOW_BASKET:
-                slidesPosition = SLIDES_LOW_BASKET;
-                break;
-            case HIGH_BASKET:
-                slidesPosition = SLIDES_HIGH_BASKET;
-                break;
-            case SPECIMEN:
-                slidesPosition = SLIDES_SPECIMEN;
-                break;
-        }
     }
 
     public Number[] getSlidesCurrent() {

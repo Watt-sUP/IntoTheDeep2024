@@ -15,7 +15,7 @@ import robotcode.util.InterpolatedPositionServo;
 @Config
 public class IntakeSubsystem extends SubsystemBase {
     public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
-    public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 120, PIVOT_UP = 250, PIVOT_EXTENDING = 165;
+    public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 130, PIVOT_UP = 265, PIVOT_EXTENDING = 180;
     public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.52;
     public static double
             ROT_LEFT = 155,
