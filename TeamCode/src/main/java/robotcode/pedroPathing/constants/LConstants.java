@@ -1,4 +1,4 @@
-package pedroPathing.constants;
+package robotcode.pedroPathing.constants;
 
 import com.pedropathing.localization.constants.OTOSConstants;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;

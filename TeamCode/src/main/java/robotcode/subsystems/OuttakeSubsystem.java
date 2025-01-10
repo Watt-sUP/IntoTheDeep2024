@@ -203,6 +203,10 @@ public class OuttakeSubsystem extends SubsystemBase {
         return armState;
     }
 
+    public double getArmPosition() {
+        return armLeft.getCurrentPosition();
+    }
+
     public void setPivotState(PivotState state) {
         pivotState = state;
         switch (pivotState) {
@@ -240,6 +244,10 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public PivotState getPivotState() {
         return pivotState;
+    }
+
+    public double getPivotPosition() {
+        return armPivot.getPosition();
     }
 
     public void setSlidesState(SlidesState state) {

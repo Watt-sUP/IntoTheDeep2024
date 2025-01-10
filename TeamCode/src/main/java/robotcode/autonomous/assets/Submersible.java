@@ -13,17 +13,16 @@ import com.pedropathing.pathgen.Point;
 public class Submersible {
     public static final double SUBMERSIBLE_DEPOSIT_X_OFFSET = 3;
     public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 3;
-    public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 6.5;
-    public static final Pose POSE = new Pose(39, 67.5);
+    public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 6.2;
+    public static final Pose POSE = new Pose(37.2, 67.6);
     public static PathChain startPathSpecimen = new PathBuilder()
             .addPath(
                     new BezierCurve(
                             new Point(START_POSE_SPECIMEN),
-                            new Point(21.927, 65.784, Point.CARTESIAN),
+                            new Point(24.078, 67.514, Point.CARTESIAN),
                             new Point(Submersible.depositPose(0, false))
                     )
             )
-            .setPathEndTimeoutConstraint(3)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .build();
     public static PathChain startPathBasket = new PathBuilder()
@@ -69,7 +68,6 @@ public class Submersible {
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .setPathEndTimeoutConstraint(10)
-                .setZeroPowerAccelerationMultiplier(10)
                 .build();
     }
 }

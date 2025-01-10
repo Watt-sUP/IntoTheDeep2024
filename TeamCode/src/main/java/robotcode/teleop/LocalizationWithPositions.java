@@ -4,9 +4,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.localization.PoseUpdater;
@@ -19,33 +22,24 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.List;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
 import robotcode.autonomous.assets.AutonomousConstants;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 import robotcode.subsystems.DriveSubsystem;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
-import robotcode.util.FixedSequentialCommandGroup;
 
 @Config
 @TeleOp(name = "Localization With Positions", group = "Utility")
 public class LocalizationWithPositions extends CommandOpMode {
     public static boolean SPECIMEN_START = true;
 
-    public static IntakeSubsystem.ExtendoState INTAKE_EXTENDO_STATE = IntakeSubsystem.ExtendoState.IN;
-    public static IntakeSubsystem.PivotState INTAKE_PIVOT_STATE = IntakeSubsystem.PivotState.UP;
-    public static IntakeSubsystem.ClawState INTAKE_CLAW_STATE = IntakeSubsystem.ClawState.OPENED;
-    public static IntakeSubsystem.RotationState INTAKE_ROTATION_STATE = IntakeSubsystem.RotationState.STRAIGHT;
-
     public static double OUTTAKE_ARM_POSITION = OuttakeSubsystem.ARM_SPECIMEN,
             OUTTAKE_ARM_PIVOT = OuttakeSubsystem.PIVOT_SPECIMEN_COLLECT;
     public static int OUTTAKE_SLIDES_POSITION = OuttakeSubsystem.SLIDES_LOWERED;
-    public static OuttakeSubsystem.ClawState OUTTAKE_CLAW_STATE = OuttakeSubsystem.ClawState.CLOSED;
 
     @Override
     public void initialize() {
-        this.reset();
-
         Constants.setConstants(FConstants.class, LConstants.class);
 
         PoseUpdater poseUpdater = new PoseUpdater(hardwareMap);
@@ -55,7 +49,13 @@ public class LocalizationWithPositions extends CommandOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
+        Trigger rightTrigger1 = new Trigger(() -> gamepad1.right_trigger >= 0.3);
+
+        Trigger leftTrigger2 = new Trigger(() -> gamepad2.left_trigger >= 0.3);
+        Trigger rightTrigger2 = new Trigger(() -> gamepad2.right_trigger >= 0.3);
+
         GamepadEx driver1 = new GamepadEx(gamepad1);
+        GamepadEx driver2 = new GamepadEx(gamepad2);
 
         DriveSubsystem chassis = new DriveSubsystem(hardwareMap);
 
@@ -69,39 +69,66 @@ public class LocalizationWithPositions extends CommandOpMode {
                 .whenReleased(() -> chassis.setMaxSpeed(1));
 
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
+
+        /* Claw */
+        leftTrigger2
+                .whenActive(intake::togglePivot);
+        driver2.getGamepadButton(GamepadKeys.Button.A)
+                .whenActive(intake::toggleClaw);
+
+        /* Claw Rotation */
+        driver2.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
+                .and(new Trigger(() -> intake.getPivotState() != IntakeSubsystem.PivotState.UP))
+                .whenActive(intake::nextRotation);
+        driver2.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
+                .and(new Trigger(() -> intake.getPivotState() != IntakeSubsystem.PivotState.UP))
+                .whenActive(intake::previousRotation);
+
+        rightTrigger1
+                .whenActive(new SequentialCommandGroup(
+                        new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
+                        new ConditionalCommand(
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
+                                () -> intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN
+                        )
+                ));
+
         OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap);
+
+        driver2.getGamepadButton(GamepadKeys.Button.Y)
+                .whenActive(outtake::toggleClaw);
 
         List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
         hubs.forEach(hub -> hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL));
 
         ElapsedTime runtime = new ElapsedTime();
 
-        register(intake, outtake);
+        register(chassis, intake, outtake);
 
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
 
         schedule(
-                new InstantCommand(() -> {
-                    telemetry.addData("Status", "Initialized");
-                    telemetry.update();
-                }),
-                new FixedSequentialCommandGroup(
+                new SequentialCommandGroup(
                         new WaitUntilCommand(this::opModeIsActive),
-                        new InstantCommand(runtime::reset),
-                        new RunCommand(() -> hubs.forEach(LynxModule::clearBulkCache)),
-                        new RunCommand(() -> {
-                            intake.setExtendoState(INTAKE_EXTENDO_STATE);
-                            intake.setPivotState(INTAKE_PIVOT_STATE);
-                            intake.setClawState(INTAKE_CLAW_STATE);
-                            intake.setRotation(INTAKE_ROTATION_STATE);
+                        new InstantCommand(() -> {
+                            runtime.reset();
 
-                            outtake.setClawState(OUTTAKE_CLAW_STATE);
+                            intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
+                            intake.setClawState(IntakeSubsystem.ClawState.OPENED);
+                            intake.setPivotState(IntakeSubsystem.PivotState.UP);
+                            intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
+
+                            outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
+                        }),
+                        new RunCommand(() -> {
+                            hubs.forEach(LynxModule::clearBulkCache);
+
                             outtake._setArmPosition(OUTTAKE_ARM_POSITION);
                             outtake._setPivotPosition(OUTTAKE_ARM_PIVOT);
                             outtake._setSlidesPosition(OUTTAKE_SLIDES_POSITION);
-                        }),
-                        new RunCommand(() -> {
+
                             telemetry.addData("Status", "Running");
                             telemetry.addData("Runtime", "%.0f seconds", runtime.seconds());
                             telemetry.addLine();
@@ -113,8 +140,8 @@ public class LocalizationWithPositions extends CommandOpMode {
                             telemetry.addLine();
 
                             telemetry.addData("Outtake Claw State", outtake.getClawState().toString());
-                            telemetry.addData("Outtake Arm Position", outtake.getArmState().toString());
-                            telemetry.addData("Outtake Pivot Position", outtake.getPivotState().toString());
+                            telemetry.addData("Outtake Arm Position", outtake.getArmPosition());
+                            telemetry.addData("Outtake Pivot Position", outtake.getPivotPosition());
                             telemetry.addLine();
 
                             telemetry.addData("Outtake Slides Position", outtake.getSlidesPosition());

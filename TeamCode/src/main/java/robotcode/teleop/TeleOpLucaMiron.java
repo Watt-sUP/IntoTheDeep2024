@@ -22,9 +22,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
 import robotcode.autonomous.assets.AutonomousConstants;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 import robotcode.subsystems.DriveSubsystem;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;

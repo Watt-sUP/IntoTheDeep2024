@@ -7,7 +7,6 @@ import com.arcrobotics.ftclib.hardware.ServoEx;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import java.util.stream.Stream;
 
@@ -73,6 +72,6 @@ public class InterpolatedAngleServo {
     }
 
     public Double getCurrentPosition() {
-        return servo.getAngle(AngleUnit.DEGREES);
+        return currentPosition;
     }
 }

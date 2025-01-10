@@ -1,4 +1,4 @@
-package pedroPathing.examples;
+package robotcode.pedroPathing.examples;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -13,8 +13,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 
 
 /**
@@ -27,12 +27,10 @@ import pedroPathing.constants.LConstants;
  */
 @Autonomous(name = "Triangle", group = "Examples")
 public class Triangle extends OpMode {
-    private Follower follower;
-
-    private final Pose startPose = new Pose(0,0, Math.toRadians(0));
+    private final Pose startPose = new Pose(0, 0, Math.toRadians(0));
     private final Pose interPose = new Pose(24, -24, Math.toRadians(90));
     private final Pose endPose = new Pose(24, 24, Math.toRadians(45));
-
+    private Follower follower;
     private PathChain triangle;
 
     private Telemetry telemetryA;

@@ -12,12 +12,12 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import pedroPathing.constants.FConstants;
-import pedroPathing.constants.LConstants;
 import robotcode.autonomous.assets.Observation;
 import robotcode.autonomous.assets.SpikeSpecificSamples;
 import robotcode.autonomous.assets.Submersible;
 import robotcode.commands.FollowPathCommand;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
 import robotcode.util.FixedSequentialCommandGroup;

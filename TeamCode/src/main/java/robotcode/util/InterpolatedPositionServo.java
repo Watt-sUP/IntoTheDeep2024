@@ -72,6 +72,6 @@ public class InterpolatedPositionServo {
     }
 
     public Double getCurrentPosition() {
-        return servo.getPosition();
+        return currentPosition;
     }
 }
