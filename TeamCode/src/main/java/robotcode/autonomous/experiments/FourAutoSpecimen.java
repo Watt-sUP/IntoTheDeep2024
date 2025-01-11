@@ -1,4 +1,4 @@
-package robotcode.autonomous;
+package robotcode.autonomous.experiments;
 
 import static robotcode.autonomous.assets.AutonomousConstants.START_POSE_SPECIMEN;
 
@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -21,8 +20,8 @@ import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
 import robotcode.util.FixedSequentialCommandGroup;
 
-@Autonomous(name = "Specimen Autonomous", group = "Autonomous")
-public class AutoSpecimen extends CommandOpMode {
+@Autonomous(name = "4 Specimen Autonomous", group = "Auto Experiments")
+public class FourAutoSpecimen extends CommandOpMode {
     @Override
     public void initialize() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -49,8 +48,6 @@ public class AutoSpecimen extends CommandOpMode {
                 new FixedSequentialCommandGroup(
                         new WaitUntilCommand(this::opModeIsActive),
 
-                        new InstantCommand(() -> follower.setMaxPower(0.9)),
-
                         new InstantCommand(() -> {
                             intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
                             intake.setPivotState(IntakeSubsystem.PivotState.UP);
@@ -68,9 +65,13 @@ public class AutoSpecimen extends CommandOpMode {
                             outtake._setPivotPosition(OuttakeSubsystem.PIVOT_OUT);
                             outtake._setArmPosition(OuttakeSubsystem.ARM_OUT);
                         }),
-                        new WaitCommand(180),
+                        new WaitCommand(250),
+
+                        new InstantCommand(() -> follower.setMaxPower(0.6)),
 
                         new FollowPathCommand(follower, Submersible.startPathSpecimen),
+
+                        new InstantCommand(() -> follower.setMaxPower(1)),
 
                         new InstantCommand(() -> outtake._setSlidesPosition(110)),
                         new InstantCommand(() -> outtake._setPivotPosition(OuttakeSubsystem.PIVOT_IN)),
@@ -78,7 +79,7 @@ public class AutoSpecimen extends CommandOpMode {
 
                         new FollowPathCommand(follower, Submersible.depositPath(0))
                                 .setHoldEnd(false)
-                                .withTimeout(500),
+                                .withTimeout(600),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
 
                         new FollowPathCommand(follower,
@@ -99,14 +100,15 @@ public class AutoSpecimen extends CommandOpMode {
                         new FollowPathCommand(follower, SpikeSpecificSamples.MIDDLE.getObservationToSamplePath(SpikeSpecificSamples.LEFT)),
                         new FollowPathCommand(follower, SpikeSpecificSamples.MIDDLE.getPathToObservation())
                                 .setHoldEnd(false),
-                        new FollowPathCommand(follower, SpikeSpecificSamples.MIDDLE.goIntoPrepareCollectPath()),
+                        new FollowPathCommand(follower, SpikeSpecificSamples.RIGHT.getObservationToSamplePath(SpikeSpecificSamples.MIDDLE))
+                                .withTimeout(1250),
+                        new FollowPathCommand(follower, SpikeSpecificSamples.RIGHT.getPathToObservation()).withTimeout(1400),
+                        new FollowPathCommand(follower, SpikeSpecificSamples.RIGHT.goIntoPrepareCollectPath()),
 
-                        new InstantCommand(() -> follower.setMaxPower(0.6)),
-
-                        new WaitCommand(150),
+                        new InstantCommand(() -> follower.setMaxPower(0.9)),
 
                         new FollowPathCommand(follower, Observation.collectPath)
-                                .withTimeout(1350),
+                                .withTimeout(800),
 
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
                         new WaitCommand(250),
@@ -118,22 +120,20 @@ public class AutoSpecimen extends CommandOpMode {
 
                         new InstantCommand(() -> outtake._setSlidesPosition(20)),
 
-                        new InstantCommand(() -> follower.setMaxPower(0.9)),
+                        new InstantCommand(() -> follower.setMaxPower(1)),
 
                         new FollowPathCommand(follower, Observation.toSubmersiblePath(1)),
 
                         new InstantCommand(() -> outtake._setSlidesPosition(110)),
                         new InstantCommand(() -> outtake._setPivotPosition(OuttakeSubsystem.PIVOT_IN)),
-                        new WaitCommand(350),
+                        new WaitCommand(200),
 
-                        new FollowPathCommand(follower, Submersible.depositPath(1)).setHoldEnd(false).withTimeout(750),
-                        new InstantCommand(() -> {
-                            outtake.setClawState(OuttakeSubsystem.ClawState.OPENED);
-                        }),
+                        new FollowPathCommand(follower, Submersible.depositPath(1)).setHoldEnd(false).withTimeout(600),
+                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
 
-                        new InstantCommand(() -> follower.setMaxPower(0.6)),
+                        new InstantCommand(() -> follower.setMaxPower(0.92)),
 
-                        new FollowPathCommand(follower, Submersible.toCollectPath(1)).withTimeout(3500)
+                        new FollowPathCommand(follower, Submersible.toCollectPath(1)).withTimeout(3000)
                                 .alongWith(
                                         new InstantCommand(() -> {
                                             outtake._setSlidesPosition(0);
@@ -144,13 +144,13 @@ public class AutoSpecimen extends CommandOpMode {
 
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
 
-                        new WaitCommand(250),
+                        new WaitCommand(175),
                         new InstantCommand(() -> {
                             outtake._setPivotPosition(OuttakeSubsystem.PIVOT_SPECIMEN_DEPOSIT);
                             outtake._setArmPosition(OuttakeSubsystem.ARM_OUT);
                         }),
 
-                        new InstantCommand(() -> follower.setMaxPower(0.9)),
+                        new InstantCommand(() -> follower.setMaxPower(1)),
 
                         new InstantCommand(() -> outtake._setSlidesPosition(20)),
 
@@ -158,30 +158,44 @@ public class AutoSpecimen extends CommandOpMode {
 
                         new InstantCommand(() -> outtake._setSlidesPosition(110)),
                         new InstantCommand(() -> outtake._setPivotPosition(OuttakeSubsystem.PIVOT_IN)),
-                        new WaitCommand(350),
+                        new WaitCommand(200),
 
-                        new FollowPathCommand(follower, Submersible.depositPath(2)).setHoldEnd(false).withTimeout(750),
+                        new FollowPathCommand(follower, Submersible.depositPath(2)).setHoldEnd(false).withTimeout(600),
+                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+
+                        new InstantCommand(() -> follower.setMaxPower(0.92)),
+
+                        new FollowPathCommand(follower, Submersible.toCollectPath(2)).withTimeout(3000)
+                                .alongWith(
+                                        new InstantCommand(() -> {
+                                            outtake._setSlidesPosition(0);
+                                            outtake._setArmPosition(OuttakeSubsystem.ARM_SPECIMEN);
+                                            outtake._setPivotPosition(OuttakeSubsystem.PIVOT_SPECIMEN_COLLECT);
+                                        })
+                                ),
+
+                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                        new WaitCommand(175),
+
                         new InstantCommand(() -> {
-                            outtake.setClawState(OuttakeSubsystem.ClawState.OPENED);
+                            outtake._setPivotPosition(OuttakeSubsystem.PIVOT_SPECIMEN_DEPOSIT);
+                            outtake._setArmPosition(OuttakeSubsystem.ARM_OUT);
                         }),
 
-                        new FollowPathCommand(follower, Submersible.toObservationParkPath(2))
-                                .alongWith(
-                                        new SequentialCommandGroup(
-                                                new InstantCommand(() -> {
-                                                    intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
-                                                    intake.setPivotState(IntakeSubsystem.PivotState.DOWN);
-                                                    intake.setClawState(IntakeSubsystem.ClawState.OPENED);
-                                                }),
-                                                new WaitCommand(500),
-                                                new InstantCommand(() -> {
-                                                    outtake._setSlidesPosition(0);
+                        new InstantCommand(() -> follower.setMaxPower(1)),
 
-                                                    outtake._setArmPosition(OuttakeSubsystem.ARM_IN);
-                                                    outtake._setPivotPosition(OuttakeSubsystem.PIVOT_IN);
-                                                })
-                                        )
-                                )
+                        new InstantCommand(() -> outtake._setSlidesPosition(20)),
+
+                        new FollowPathCommand(follower, Observation.toSubmersiblePath(3)),
+
+                        new InstantCommand(() -> outtake._setSlidesPosition(110)),
+                        new InstantCommand(() -> outtake._setPivotPosition(OuttakeSubsystem.PIVOT_IN)),
+                        new WaitCommand(200),
+
+                        new FollowPathCommand(follower, Submersible.depositPath(3)).setHoldEnd(false).withTimeout(500),
+                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+
+                        new InstantCommand(() -> outtake._setSlidesPosition(0))
                 )
         );
     }

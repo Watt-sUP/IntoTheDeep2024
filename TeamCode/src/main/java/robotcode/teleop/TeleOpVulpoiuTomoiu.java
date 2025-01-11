@@ -37,6 +37,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
         hubs.forEach(hub -> hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL));
 
         ElapsedTime runtime = new ElapsedTime();
+        ElapsedTime loopTime = new ElapsedTime();
 
         GamepadEx driver1 = new GamepadEx(gamepad1);
         GamepadEx driver2 = new GamepadEx(gamepad2);
@@ -252,6 +253,9 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                     telemetry.addData("Outtake Slides Target", outtake.getSlidesTarget());
                     telemetry.addData("Outtake Slides Current", "%.2f, %.2f", outtake.getSlidesCurrent()[0], outtake.getSlidesCurrent()[1]);
                     telemetry.addLine();
+
+                    telemetry.addData("Loop Time", loopTime.milliseconds());
+                    loopTime.reset();
 
                     telemetry.update();
                 })

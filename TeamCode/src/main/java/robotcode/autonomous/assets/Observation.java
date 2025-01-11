@@ -8,7 +8,7 @@ import robotcode.pedroPathing.pathGeneration.PathChain;
 import robotcode.pedroPathing.pathGeneration.Point;
 
 public class Observation {
-    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 43.1;
+    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 44.5;
 
     public static final Pose prepareCollectPose = new Pose(22, 29.2, Math.toRadians(180));
     public static final Pose collectPose = new Pose(6.6, 29.2, Math.toRadians(180));

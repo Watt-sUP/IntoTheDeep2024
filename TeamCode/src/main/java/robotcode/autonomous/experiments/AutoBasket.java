@@ -1,4 +1,4 @@
-package robotcode.autonomous;
+package robotcode.autonomous.experiments;
 
 import static robotcode.autonomous.assets.AutonomousConstants.START_POSE_BASKET;
 
@@ -18,7 +18,7 @@ import robotcode.subsystems.OuttakeSubsystem;
 import robotcode.util.FixedSequentialCommandGroup;
 
 @Disabled
-@Autonomous(name = "Basket Autonomous", group = "Autonomous")
+@Autonomous(name = "Basket Autonomous", group = "Auto Experiments")
 public class AutoBasket extends AutonomousCommandOpMode {
     @Override
     public void initialize() {

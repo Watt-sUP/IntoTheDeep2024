@@ -12,7 +12,7 @@ import robotcode.pedroPathing.pathGeneration.Point;
 
 public class Submersible {
     public static final double SUBMERSIBLE_DEPOSIT_X_OFFSET = 0.65;
-    public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 2.8;
+    public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 3;
     public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 5.2;
     public static final Pose POSE = new Pose(36, 68.5);
     public static PathChain startPathSpecimen = new PathBuilder()
@@ -23,7 +23,7 @@ public class Submersible {
                             new Point(Submersible.depositPose(0, false))
                     )
             )
-            .setPathEndTValueConstraint(0.83)
+            .setPathEndTValueConstraint(0.885)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .build();
     public static PathChain startPathBasket = new PathBuilder()
@@ -48,7 +48,7 @@ public class Submersible {
                         )
                 )
                 .setTangentHeadingInterpolation()
-                .setPathEndTimeoutConstraint(15)
+                .setPathEndTValueConstraint(0.86)
                 .build();
     }
 
@@ -60,7 +60,7 @@ public class Submersible {
                                 new Point(2.515, 50.148, Point.CARTESIAN),
                                 new Point(57.380, 22.795, Point.CARTESIAN),
                                 new Point(29.869, 29.240, Point.CARTESIAN),
-                                new Point(new Pose(Observation.collectPose.getX() - 0.6, Observation.collectPose.getY() - 2))
+                                new Point(new Pose(Observation.collectPose.getX() - 0.6 * pos, Observation.collectPose.getY() - 2))
                         )
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))

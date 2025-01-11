@@ -9,8 +9,8 @@ import robotcode.pedroPathing.pathGeneration.Point;
 
 public enum SpikeSpecificSamples {
     LEFT(55.6, 26.4),
-    MIDDLE(55.6, 16.9),
-    RIGHT(52.9, 11.8);
+    MIDDLE(55.6, 15),
+    RIGHT(55.6, 8);
 
     private final double x, y;
 
@@ -44,7 +44,7 @@ public enum SpikeSpecificSamples {
                         )
                 )
                 .setConstantHeadingInterpolation(Math.toRadians(180))
-                .setPathEndTValueConstraint(0.92)
+                .setPathEndTValueConstraint(0.9)
                 .build();
     }
 
