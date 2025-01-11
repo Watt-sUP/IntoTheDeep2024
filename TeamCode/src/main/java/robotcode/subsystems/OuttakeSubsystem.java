@@ -26,7 +26,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public static double PIVOT_IN = 0.87, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.84, PIVOT_SPECIMEN_COLLECT = 0.45;
     public static double SLIDES_kP = 0.01, SLIDES_kI = 0.000049988, SLIDES_kD = 0.000024994, SLIDES_kF = 0, SLIDES_A = 0.8;
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 115,
+            SLIDES_SPECIMEN = 110,
             SLIDES_LOW_BASKET = 415,
             SLIDES_HIGH_BASKET = 800;
 

@@ -1,9 +1,10 @@
 package robotcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.pathgen.Path;
-import com.pedropathing.pathgen.PathChain;
+
+import robotcode.pedroPathing.follower.Follower;
+import robotcode.pedroPathing.pathGeneration.Path;
+import robotcode.pedroPathing.pathGeneration.PathChain;
 
 public class FollowPathCommand extends CommandBase {
 

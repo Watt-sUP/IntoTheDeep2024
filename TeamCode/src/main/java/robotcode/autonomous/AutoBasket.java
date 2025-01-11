@@ -6,16 +6,18 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
-import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import robotcode.autonomous.assets.AutonomousCommandOpMode;
 import robotcode.autonomous.assets.Submersible;
 import robotcode.commands.FollowPathCommand;
+import robotcode.pedroPathing.follower.Follower;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
 import robotcode.util.FixedSequentialCommandGroup;
 
+@Disabled
 @Autonomous(name = "Basket Autonomous", group = "Autonomous")
 public class AutoBasket extends AutonomousCommandOpMode {
     @Override

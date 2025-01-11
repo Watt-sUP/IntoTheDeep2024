@@ -1,17 +1,17 @@
 package robotcode.autonomous.assets;
 
-import com.pedropathing.localization.Pose;
-import com.pedropathing.pathgen.BezierCurve;
-import com.pedropathing.pathgen.BezierLine;
-import com.pedropathing.pathgen.PathBuilder;
-import com.pedropathing.pathgen.PathChain;
-import com.pedropathing.pathgen.Point;
+import robotcode.pedroPathing.localization.Pose;
+import robotcode.pedroPathing.pathGeneration.BezierCurve;
+import robotcode.pedroPathing.pathGeneration.BezierLine;
+import robotcode.pedroPathing.pathGeneration.PathBuilder;
+import robotcode.pedroPathing.pathGeneration.PathChain;
+import robotcode.pedroPathing.pathGeneration.Point;
 
 public class Observation {
-    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 42;
+    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 43.1;
 
-    public static final Pose prepareCollectPose = new Pose(22, 28.8, Math.toRadians(180));
-    public static final Pose collectPose = new Pose(7.8, 28.8, Math.toRadians(180));
+    public static final Pose prepareCollectPose = new Pose(22, 29.2, Math.toRadians(180));
+    public static final Pose collectPose = new Pose(6.6, 29.2, Math.toRadians(180));
 
     public static final Pose parkPose = new Pose(12.7, 17.6);
 
@@ -23,8 +23,7 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setZeroPowerAccelerationMultiplier(4)
-            .setPathEndTimeoutConstraint(18)
+            .setZeroPowerAccelerationMultiplier(12)
             .build();
 
     public static PathChain toSubmersiblePath(int pos) {
@@ -37,7 +36,6 @@ public class Observation {
                                 new Point(Submersible.depositPose(pos, false))
                         )
                 )
-                .setPathEndTimeoutConstraint(3)
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
     }

@@ -11,10 +11,6 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.pedropathing.localization.PoseUpdater;
-import com.pedropathing.util.Constants;
-import com.pedropathing.util.DashboardPoseTracker;
-import com.pedropathing.util.Drawing;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,8 +19,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import robotcode.autonomous.assets.AutonomousConstants;
-import robotcode.pedroPathing.constants.FConstants;
-import robotcode.pedroPathing.constants.LConstants;
+import robotcode.pedroPathing.localization.PoseUpdater;
+import robotcode.pedroPathing.util.DashboardPoseTracker;
+import robotcode.pedroPathing.util.Drawing;
 import robotcode.subsystems.DriveSubsystem;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
@@ -34,8 +31,6 @@ public class TeleOpLucaMiron extends CommandOpMode {
     @Override
     public void initialize() {
         this.reset();
-
-        Constants.setConstants(FConstants.class, LConstants.class);
 
         PoseUpdater poseUpdater = new PoseUpdater(hardwareMap);
         poseUpdater.setStartingPose(AutonomousConstants.START_POSE_SPECIMEN);
