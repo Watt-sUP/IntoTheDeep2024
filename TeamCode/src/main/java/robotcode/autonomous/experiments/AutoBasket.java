@@ -2,6 +2,7 @@ package robotcode.autonomous.experiments;
 
 import static robotcode.autonomous.assets.AutonomousConstants.START_POSE_BASKET;
 
+import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
@@ -11,7 +12,6 @@ import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-import robotcode.autonomous.assets.AutonomousCommandOpMode;
 import robotcode.autonomous.assets.Submersible;
 import robotcode.commands.FollowPathCommand;
 import robotcode.pedroPathing.constants.FConstants;
@@ -22,11 +22,11 @@ import robotcode.util.FixedSequentialCommandGroup;
 
 @Disabled
 @Autonomous(name = "Basket Autonomous", group = "Auto Experiments")
-public class AutoBasket extends AutonomousCommandOpMode {
+public class AutoBasket extends CommandOpMode {
     @Override
     public void initialize() {
         Constants.setConstants(FConstants.class, LConstants.class);
-        
+
         Follower follower = new Follower(hardwareMap);
         follower.setStartingPose(START_POSE_BASKET);
 
@@ -35,7 +35,7 @@ public class AutoBasket extends AutonomousCommandOpMode {
 
         register(intake, outtake);
 
-        scheduleOnRun(
+        schedule(
                 new RunCommand(follower::update),
                 new RunCommand(() -> follower.telemetryDebug(telemetry)),
                 new FixedSequentialCommandGroup(
