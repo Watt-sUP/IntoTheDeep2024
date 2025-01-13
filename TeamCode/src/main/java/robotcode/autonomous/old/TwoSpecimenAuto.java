@@ -8,6 +8,8 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
@@ -15,7 +17,8 @@ import robotcode.autonomous.assets.Observation;
 import robotcode.autonomous.assets.SpikeSpecificSamples;
 import robotcode.autonomous.assets.Submersible;
 import robotcode.commands.FollowPathCommand;
-import robotcode.pedroPathing.follower.Follower;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
 import robotcode.util.FixedSequentialCommandGroup;
@@ -25,6 +28,8 @@ import robotcode.util.FixedSequentialCommandGroup;
 public class TwoSpecimenAuto extends CommandOpMode {
     @Override
     public void initialize() {
+        Constants.setConstants(FConstants.class, LConstants.class);
+        
         Follower follower = new Follower(hardwareMap);
         follower.setStartingPose(START_POSE_SPECIMEN);
 

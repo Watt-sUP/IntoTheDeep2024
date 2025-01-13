@@ -1,11 +1,11 @@
 package robotcode.autonomous.assets;
 
-import robotcode.pedroPathing.localization.Pose;
-import robotcode.pedroPathing.pathGeneration.BezierCurve;
-import robotcode.pedroPathing.pathGeneration.BezierLine;
-import robotcode.pedroPathing.pathGeneration.PathBuilder;
-import robotcode.pedroPathing.pathGeneration.PathChain;
-import robotcode.pedroPathing.pathGeneration.Point;
+import com.pedropathing.localization.Pose;
+import com.pedropathing.pathgen.BezierCurve;
+import com.pedropathing.pathgen.BezierLine;
+import com.pedropathing.pathgen.PathBuilder;
+import com.pedropathing.pathgen.PathChain;
+import com.pedropathing.pathgen.Point;
 
 public enum SpikeSpecificSamples {
     LEFT(55.6, 26.4),

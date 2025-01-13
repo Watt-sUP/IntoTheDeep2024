@@ -1,6 +1,6 @@
 package robotcode.autonomous.assets;
 
-import robotcode.pedroPathing.localization.Pose;
+import com.pedropathing.localization.Pose;
 
 public class AutonomousConstants {
     public static final double START_X = 8.8;
