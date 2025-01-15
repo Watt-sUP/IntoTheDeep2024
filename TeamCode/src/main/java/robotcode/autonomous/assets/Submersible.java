@@ -19,11 +19,11 @@ public class Submersible {
             .addPath(
                     new BezierCurve(
                             new Point(START_POSE_SPECIMEN),
-                            new Point(20, 70, Point.CARTESIAN),
+                            new Point(19, 69, Point.CARTESIAN),
                             new Point(Submersible.depositPose(0, false))
                     )
             )
-            .setPathEndTValueConstraint(0.885)
+            .setPathEndTValueConstraint(0.8)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .build();
     public static PathChain startPathBasket = new PathBuilder()

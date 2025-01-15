@@ -15,8 +15,8 @@ import robotcode.util.InterpolatedPositionServo;
 @Config
 public class IntakeSubsystem extends SubsystemBase {
     public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
-    public static double PIVOT_DOWN = 80, PIVOT_COLLECT = 130, PIVOT_UP = 265, PIVOT_EXTENDING = 180;
-    public static double CLAW_OPEN = 0, CLAW_CLOSED = 0.52;
+    public static double PIVOT_DOWN = 275, PIVOT_COLLECT = 250, PIVOT_UP = 100, PIVOT_EXTENDING = 180;
+    public static double CLAW_OPEN = 0.14, CLAW_CLOSED = 0.48;
     public static double
             ROT_LEFT = 155,
             ROT_STRAIGHT = 102.5,
@@ -52,26 +52,26 @@ public class IntakeSubsystem extends SubsystemBase {
                 new Pair<>(1.0, 0.82)
         );
 
-        pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 1800));
-        pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 1800));
+        pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 360));
+        pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 360));
 
-        pivLeft.setInverted(false);
-        pivRight.setInverted(true);
+        pivLeft.setInverted(true);
+        pivRight.setInverted(false);
 
         pivLeft.generatePositions(
-                new Pair<>(0.0, 5.0),
-                new Pair<>(90.0, 94.0),
-                new Pair<>(180.0, 190.0),
-                new Pair<>(270.0, 286.0),
-                new Pair<>(360.0, 374.0)
+                new Pair<>(0.0, 7.0),
+                new Pair<>(90.0, 105.0),
+                new Pair<>(180.0, 208.0),
+                new Pair<>(270.0, 308.0),
+                new Pair<>(360.0, 354.0)
         );
 
         pivRight.generatePositions(
-                new Pair<>(0.0, 3.0),
-                new Pair<>(90.0, 90.0),
-                new Pair<>(180.0, 184.0),
-                new Pair<>(270.0, 283.0),
-                new Pair<>(360.0, 380.0)
+                new Pair<>(0.0, 12.0),
+                new Pair<>(90.0, 116.0),
+                new Pair<>(180.0, 212.0),
+                new Pair<>(270.0, 312.0),
+                new Pair<>(360.0, 360.0)
         );
 
         rotateServo = new SimpleServo(hardwareMap, "int_rotate", 0, 220);
@@ -151,10 +151,12 @@ public class IntakeSubsystem extends SubsystemBase {
             case EXTENDING:
                 pivLeft.setToPosition(PIVOT_EXTENDING);
                 pivRight.setToPosition(PIVOT_EXTENDING);
+                setRotation(RotationState.STRAIGHT);
                 break;
             case UP:
                 pivLeft.setToPosition(PIVOT_UP);
                 pivRight.setToPosition(PIVOT_UP);
+                setRotation(RotationState.STRAIGHT);
                 break;
         }
     }
@@ -200,6 +202,9 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setRotation(RotationState state) {
+        if (pivotState == PivotState.EXTENDING || pivotState == PivotState.UP)
+            return;
+
         rotationState = state;
 
         switch (rotationState) {

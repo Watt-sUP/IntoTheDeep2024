@@ -88,6 +88,8 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
         rightTrigger1
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
+                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
+                        new WaitCommand(75),
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
                         new ConditionalCommand(
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
@@ -169,17 +171,18 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
+                new WaitCommand(75),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
-                new WaitCommand(500),
+                new WaitCommand(150),
                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
-                new WaitCommand(650),
+                new WaitCommand(275),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
-                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
-                new WaitCommand(450),
+                new WaitCommand(275),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                new WaitCommand(100),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                new WaitCommand(350),
+                new WaitCommand(225),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
                 new WaitCommand(100),

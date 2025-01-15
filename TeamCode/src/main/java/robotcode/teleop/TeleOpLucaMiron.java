@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.localization.PoseUpdater;
+import com.pedropathing.util.Constants;
 import com.pedropathing.util.DashboardPoseTracker;
 import com.pedropathing.util.Drawing;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import robotcode.autonomous.assets.AutonomousConstants;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 import robotcode.subsystems.DriveSubsystem;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
@@ -31,6 +34,8 @@ public class TeleOpLucaMiron extends CommandOpMode {
     @Override
     public void initialize() {
         this.reset();
+
+        Constants.setConstants(FConstants.class, LConstants.class);
 
         PoseUpdater poseUpdater = new PoseUpdater(hardwareMap);
         poseUpdater.setStartingPose(AutonomousConstants.START_POSE_SPECIMEN);
@@ -186,16 +191,17 @@ public class TeleOpLucaMiron extends CommandOpMode {
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
-                new WaitCommand(500),
+                new WaitCommand(250),
                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
-                new WaitCommand(650),
+                new WaitCommand(300),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
-                new WaitCommand(450),
-                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
-                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
                 new WaitCommand(350),
+                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                new WaitCommand(100),
+                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
+                new WaitCommand(250),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
                 new WaitCommand(100),

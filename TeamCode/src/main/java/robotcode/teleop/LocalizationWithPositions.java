@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.pedropathing.localization.PoseUpdater;
+import com.pedropathing.util.Constants;
 import com.pedropathing.util.DashboardPoseTracker;
 import com.pedropathing.util.Drawing;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -22,6 +23,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.List;
 
 import robotcode.autonomous.assets.AutonomousConstants;
+import robotcode.pedroPathing.constants.FConstants;
+import robotcode.pedroPathing.constants.LConstants;
 import robotcode.subsystems.DriveSubsystem;
 import robotcode.subsystems.IntakeSubsystem;
 import robotcode.subsystems.OuttakeSubsystem;
@@ -37,6 +40,7 @@ public class LocalizationWithPositions extends CommandOpMode {
 
     @Override
     public void initialize() {
+        Constants.setConstants(FConstants.class, LConstants.class);
 
         PoseUpdater poseUpdater = new PoseUpdater(hardwareMap);
         poseUpdater.setStartingPose(SPECIMEN_START ? AutonomousConstants.START_POSE_SPECIMEN : AutonomousConstants.START_POSE_BASKET);
