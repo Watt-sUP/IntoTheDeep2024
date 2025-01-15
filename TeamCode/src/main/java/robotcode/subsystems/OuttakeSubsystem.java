@@ -50,7 +50,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private double maxIntegralSum;
     private double previousFilterEstimate = 0;
     private double currentFilterEstimate;
-    private ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime timer = new ElapsedTime();
 
     @SuppressLint("NewApi")
     public OuttakeSubsystem(HardwareMap hardwareMap) {
@@ -90,8 +90,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         slidesMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slidesMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        slidesMotor1.setCurrentAlert(6.2, CurrentUnit.AMPS);
-        slidesMotor2.setCurrentAlert(6.2, CurrentUnit.AMPS);
+        this.register();
     }
 
     @Override

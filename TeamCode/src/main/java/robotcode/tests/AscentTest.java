@@ -22,12 +22,12 @@ public class AscentTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            ascent.setElevatorAngle(ANGLE);
+            ascent.setAngle(ANGLE);
 
             ascent.periodic();
 
-            telemetry.addData("Angle", ascent.getElevatorAngle());
-            telemetry.addData("State", ascent.getElevatorState());
+            telemetry.addData("Angle", ascent.getAngle());
+            telemetry.addData("State", ascent.getState());
 
             telemetry.update();
         }
