@@ -27,8 +27,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.Arrays;
 import java.util.List;
 
+import robotcode.autonomous.assets.AutonomousConstants;
 import robotcode.pedroPathing.constants.FConstants;
 import robotcode.pedroPathing.constants.LConstants;
+import robotcode.subsystems.IntakeSubsystem;
 
 /**
  * This is the LocalizationTest OpMode. This is basically just a simple mecanum drive attached to a
@@ -57,7 +59,9 @@ public class LocalizationTest extends OpMode {
     @Override
     public void init() {
         Constants.setConstants(FConstants.class, LConstants.class);
+        
         poseUpdater = new PoseUpdater(hardwareMap);
+        poseUpdater.setStartingPose(AutonomousConstants.START_POSE_SPECIMEN);
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);
 
@@ -89,6 +93,10 @@ public class LocalizationTest extends OpMode {
 
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
+
+        IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
+
+        intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
     }
 
     /**

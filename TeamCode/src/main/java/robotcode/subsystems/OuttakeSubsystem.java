@@ -22,11 +22,11 @@ import robotcode.util.InterpolatedAngleServo;
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
     public static double CLAW_CLOSED = 0.1, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 120, ARM_SPECIMEN = 12;
-    public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.84, PIVOT_SPECIMEN_COLLECT = 0.46;
+    public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 80, ARM_SPECIMEN = 12;
+    public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
     public static double SLIDES_kP = 0.01, SLIDES_kI = 0.000049988, SLIDES_kD = 0.000024994, SLIDES_kF = 0, SLIDES_A = 0.8;
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 110,
+            SLIDES_SPECIMEN = 360,
             SLIDES_LOW_BASKET = 415,
             SLIDES_HIGH_BASKET = 800;
 
@@ -37,12 +37,11 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final SimpleServo clawServo;
 
     private final DcMotorEx slidesMotor1, slidesMotor2;
-
+    private final ElapsedTime timer = new ElapsedTime();
     private ClawState clawState = null;
     private ArmState armState = null;
     private PivotState pivotState = null;
     private SlidesState slidesState = null;
-
     private int slidesPosition = 0;
     private int lastPosition = 0;
     private double integralSum = 0;
@@ -50,7 +49,6 @@ public class OuttakeSubsystem extends SubsystemBase {
     private double maxIntegralSum;
     private double previousFilterEstimate = 0;
     private double currentFilterEstimate;
-    private final ElapsedTime timer = new ElapsedTime();
 
     @SuppressLint("NewApi")
     public OuttakeSubsystem(HardwareMap hardwareMap) {

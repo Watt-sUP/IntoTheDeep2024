@@ -31,7 +31,7 @@ import robotcode.pedroPathing.constants.LConstants;
 @Config
 @Autonomous(name = "Turn Localizer Tuner", group = ".Localization")
 public class TurnTuner extends OpMode {
-    public static double ANGLE = 2 * Math.PI;
+    public static double ANGLE = 20 * Math.PI;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
     private Telemetry telemetryA;
@@ -64,7 +64,7 @@ public class TurnTuner extends OpMode {
 
         telemetryA.addData("total angle", poseUpdater.getTotalHeading());
         telemetryA.addLine("The multiplier will display what your turn ticks to inches should be to scale your current angle to " + ANGLE + " radians.");
-        telemetryA.addData("multiplier", ANGLE / (poseUpdater.getTotalHeading() / poseUpdater.getLocalizer().getTurningMultiplier()));
+        telemetryA.addData("multiplier", (ANGLE / poseUpdater.getTotalHeading()) * poseUpdater.getLocalizer().getTurningMultiplier());
 
         Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");

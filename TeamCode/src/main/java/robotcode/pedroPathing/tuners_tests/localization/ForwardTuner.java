@@ -31,7 +31,7 @@ import robotcode.pedroPathing.constants.LConstants;
 @Config
 @Autonomous(name = "Forward Localizer Tuner", group = ".Localization")
 public class ForwardTuner extends OpMode {
-    public static double DISTANCE = 48;
+    public static double DISTANCE = 72;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
     private Telemetry telemetryA;

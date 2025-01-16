@@ -12,11 +12,13 @@ public enum SpikeSpecificSamples {
     MIDDLE(55.6, 15),
     RIGHT(55.6, 8);
 
+    public final Pose POSE;
     private final double x, y;
 
     SpikeSpecificSamples(double x, double y) {
         this.x = x;
         this.y = y;
+        this.POSE = new Pose(x, y, Point.CARTESIAN);
     }
 
     public PathChain getSubmersibleToSamplePath(Pose startPose) {

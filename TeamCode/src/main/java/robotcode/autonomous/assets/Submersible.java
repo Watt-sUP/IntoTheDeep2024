@@ -14,16 +14,16 @@ public class Submersible {
     public static final double SUBMERSIBLE_DEPOSIT_X_OFFSET = 0.65;
     public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 3;
     public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 5.2;
-    public static final Pose POSE = new Pose(36, 68.5);
+    public static final Pose POSE = new Pose(37.2, 62.25);
     public static PathChain startPathSpecimen = new PathBuilder()
             .addPath(
                     new BezierCurve(
                             new Point(START_POSE_SPECIMEN),
-                            new Point(19, 69, Point.CARTESIAN),
-                            new Point(Submersible.depositPose(0, false))
+                            new Point(19, 63.5, Point.CARTESIAN),
+                            new Point(POSE)
                     )
             )
-            .setPathEndTValueConstraint(0.8)
+            .setPathEndTValueConstraint(0.54)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .build();
     public static PathChain startPathBasket = new PathBuilder()
