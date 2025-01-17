@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 public class IntakeSubsystem extends SubsystemBase {
     public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
     public static double PIVOT_DOWN = 275, PIVOT_COLLECT = 250, PIVOT_UP = 100, PIVOT_EXTENDING = 180;
-    public static double CLAW_OPEN = 0.14, CLAW_CLOSED = 0.48;
+    public static double CLAW_OPEN = 0.14, CLAW_CLOSED = 0.54;
     public static double
             ROT_LEFT = 155,
             ROT_STRAIGHT = 102.5,

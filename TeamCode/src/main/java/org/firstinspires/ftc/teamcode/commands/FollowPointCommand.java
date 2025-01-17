@@ -26,6 +26,6 @@ public class FollowPointCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return follower.getTranslationalError().getMagnitude() < 7;
+        return follower.getTranslationalError().getMagnitude() < magnitude && follower.headingError < Math.toRadians(2.5);
     }
 }

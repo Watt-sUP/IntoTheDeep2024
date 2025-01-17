@@ -8,9 +8,9 @@ import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
 public enum SpikeSpecificSamples {
-    LEFT(55.6, 26.4),
-    MIDDLE(55.6, 15),
-    RIGHT(55.6, 8);
+    LEFT(25, 19.2),
+    MIDDLE(25, 8.5),
+    RIGHT(63, 5);
 
     public final Pose POSE;
     private final double x, y;
@@ -18,7 +18,7 @@ public enum SpikeSpecificSamples {
     SpikeSpecificSamples(double x, double y) {
         this.x = x;
         this.y = y;
-        this.POSE = new Pose(x, y, Point.CARTESIAN);
+        this.POSE = new Pose(x, y, Math.toRadians(0));
     }
 
     public PathChain getSubmersibleToSamplePath(Pose startPose) {

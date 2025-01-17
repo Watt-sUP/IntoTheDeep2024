@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
@@ -70,7 +69,7 @@ public class IMUTest extends LinearOpMode {
             chassis.periodic();
 
             telemetry.addData("IMU Angle", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            telemetry.addData("OTOS Pose", otos.getPosition());
+            telemetry.addData("OTOS Pose", otos.getPosition().toString());
             telemetry.addData("OTOS Angular Gain", otos.getAngularScalar());
             telemetry.update();
         }

@@ -23,14 +23,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.firstinspires.ftc.teamcode.autonomous.assets.AutonomousConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This is the LocalizationTest OpMode. This is basically just a simple mecanum drive attached to a
@@ -61,7 +59,6 @@ public class LocalizationTest extends OpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
 
         poseUpdater = new PoseUpdater(hardwareMap);
-        poseUpdater.setStartingPose(AutonomousConstants.START_POSE_SPECIMEN);
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);
 

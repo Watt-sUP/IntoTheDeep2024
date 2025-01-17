@@ -8,12 +8,12 @@ import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
 public class Observation {
-    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 44.5;
+    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 42.5;
 
-    public static final Pose prepareCollectPose = new Pose(22, 29.2, Math.toRadians(180));
-    public static final Pose collectPose = new Pose(6.6, 29.2, Math.toRadians(180));
+    public static final Pose prepareCollectPose = new Pose(25.2, 18.5, Math.toRadians(180));
+    public static final Pose collectPose = new Pose(9, 18.5, Math.toRadians(180));
 
-    public static final Pose parkPose = new Pose(12.7, 17.6);
+    public static final Pose parkPose = new Pose(12.7, 17.6, Math.toRadians(0));
 
     public static PathChain collectPath = new PathBuilder()
             .addPath(
