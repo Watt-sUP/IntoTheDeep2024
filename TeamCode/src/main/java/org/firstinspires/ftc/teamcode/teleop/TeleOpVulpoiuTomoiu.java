@@ -81,7 +81,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                                         new WaitCommand(200),
                                         new InstantCommand(() -> {
                                             intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
-                                            intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING);
+                                            intake.setPivotState(IntakeSubsystem.PivotState.UP);
                                         }),
                                         new WaitCommand(200),
                                         new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN))
@@ -110,7 +110,10 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
                         new ConditionalCommand(
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
+                                new InstantCommand(() -> {
+                                    intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
+                                    intake.setClawState(IntakeSubsystem.ClawState.OPENED);
+                                }),
                                 () -> intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN
                         )
                 ));
@@ -124,7 +127,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN))
                 ));
         driver2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -192,17 +195,15 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                 new WaitCommand(75),
-                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
-                new WaitCommand(150),
-                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
-                new WaitCommand(250),
+                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
+                new WaitCommand(300),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
-                new WaitCommand(250),
+                new WaitCommand(150),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                new WaitCommand(150),
+                new WaitCommand(100),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
                 new WaitCommand(100),
@@ -220,7 +221,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
                                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
                                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                         ),
@@ -244,7 +245,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                     intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
                     intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
 
-                    outtake.setArmState(OuttakeSubsystem.ArmState.IN);
+                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
                     outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
