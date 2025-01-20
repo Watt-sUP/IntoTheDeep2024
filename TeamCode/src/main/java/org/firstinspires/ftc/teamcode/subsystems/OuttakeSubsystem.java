@@ -9,6 +9,7 @@ import androidx.core.math.MathUtils;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.pedropathing.pathgen.MathFunctions;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -45,9 +46,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     private int lastPosition = 0;
     private double integralSum = 0;
     private double lastError = 0;
-    private double maxIntegralSum;
     private double previousFilterEstimate = 0;
-    private double currentFilterEstimate;
 
     @SuppressLint("NewApi")
     public OuttakeSubsystem(HardwareMap hardwareMap) {
@@ -82,37 +81,31 @@ public class OuttakeSubsystem extends SubsystemBase {
         slidesMotor2 = (DcMotorEx) hardwareMap.dcMotor.get("slides2");
         slidesMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        this.register();
+    }
+
+    public void resetSlidesEncoder() {
         slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         slidesMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slidesMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        this.register();
     }
 
     @Override
     public void periodic() {
-        maxIntegralSum = (float) (0.25 / SLIDES_kI);
+        double maxIntegralSum = (float) (0.25 / SLIDES_kI);
 
         int currentPosition = Math.max(-slidesMotor1.getCurrentPosition(), 0) / 100;
 
         double error = slidesPosition - currentPosition;
         double errorChange = error - lastError;
 
-        currentFilterEstimate = (SLIDES_A * previousFilterEstimate) + (1 - SLIDES_A) * errorChange;
+        double currentFilterEstimate = (SLIDES_A * previousFilterEstimate) + (1 - SLIDES_A) * errorChange;
         previousFilterEstimate = currentFilterEstimate;
 
         double derivative = currentFilterEstimate / timer.seconds();
 
-        integralSum = integralSum + (error * timer.seconds());
-
-        if (integralSum > maxIntegralSum) {
-            integralSum = maxIntegralSum;
-        }
-
-        if (integralSum < -maxIntegralSum) {
-            integralSum = -maxIntegralSum;
-        }
+        integralSum = MathFunctions.clamp(integralSum + (error * timer.seconds()), -maxIntegralSum, maxIntegralSum);
 
         if (slidesPosition != lastPosition) {
             integralSum = 0;

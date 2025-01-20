@@ -1,5 +1,6 @@
 repositories {
     mavenCentral()
+    mavenLocal()
     google()
 
     maven { url = 'https://maven.brott.dev/' }
@@ -16,7 +17,7 @@ dependencies {
     implementation 'org.firstinspires.ftc:Hardware:10.1.1'
     implementation 'org.firstinspires.ftc:FtcCommon:10.1.1'
     implementation 'org.firstinspires.ftc:Vision:10.1.1'
-    implementation 'com.pedropathing:pedro:1.0.6'
+    implementation 'com.pedropathing:local:1.0.6-local'
 
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.2.0'

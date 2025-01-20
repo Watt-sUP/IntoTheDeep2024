@@ -15,12 +15,13 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @TeleOp(name = "TeleOp (Vulpoiu + Tomoiu)", group = "TeleOp")
 public class TeleOpVulpoiuTomoiu extends CommandOpMode {
@@ -28,6 +29,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
     public void initialize() {
         this.reset();
 
+        AtomicInteger robotFace = new AtomicInteger(1);
         AtomicBoolean isTransferring = new AtomicBoolean(false);
         Trigger isTransferringTrigger = new Trigger(() -> !isTransferring.get());
 
@@ -49,10 +51,10 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
         Trigger rightTrigger2 = new Trigger(() -> gamepad2.right_trigger >= 0.3);
 
         /* Drive Commands */
-
         DriveSubsystem chassis = new DriveSubsystem(hardwareMap);
-
-        chassis.setAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
+        chassis.setAxes(() -> driver1.getLeftY() * robotFace.get(), () -> driver1.getLeftX() * robotFace.get(), driver1::getRightX);
+        driver1.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(() -> robotFace.set(robotFace.get() * -1));
 
         /* Brakes */
         driver1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
@@ -72,7 +74,22 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                 .whenActive(intake::togglePivot);
         driver2.getGamepadButton(GamepadKeys.Button.A)
                 .and(isTransferringTrigger)
-                .whenActive(intake::toggleClaw);
+                .whenActive(new SequentialCommandGroup(
+                        new InstantCommand(intake::toggleClaw),
+                        new ConditionalCommand(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(200),
+                                        new InstantCommand(() -> {
+                                            intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
+                                            intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING);
+                                        }),
+                                        new WaitCommand(200),
+                                        new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN))
+                                ),
+                                new InstantCommand(),
+                                () -> intake.getPivotState() != IntakeSubsystem.PivotState.EXTENDING && intake.getClawState() == IntakeSubsystem.ClawState.CLOSED
+                        )
+                ));
 
         /* Claw Rotation */
         driver2.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
@@ -117,6 +134,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                         new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT))
                 ));
+
 
         /* Slides Progressive */
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_UP)
@@ -166,6 +184,8 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
 
         SequentialCommandGroup transferCommand = new SequentialCommandGroup(
                 new InstantCommand(() -> isTransferring.set(true)),
+                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
+                new WaitCommand(250),
                 new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
@@ -191,13 +211,11 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
         );
 
         driver2.getGamepadButton(GamepadKeys.Button.X)
-                .and(new Trigger(() -> intake.getClawState() == IntakeSubsystem.ClawState.CLOSED))
+//                .and(new Trigger(() -> intake.getClawState() == IntakeSubsystem.ClawState.CLOSED))
                 .toggleWhenActive(new ConditionalCommand(
                         transferCommand,
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> {
-                                    isTransferring.set(false);
-                                }),
+                                new InstantCommand(() -> isTransferring.set(false)),
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
                                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),

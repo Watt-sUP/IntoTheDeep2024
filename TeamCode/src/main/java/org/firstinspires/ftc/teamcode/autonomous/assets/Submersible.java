@@ -14,7 +14,7 @@ public class Submersible {
     public static final double SUBMERSIBLE_DEPOSIT_X_OFFSET = 0;
     public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 3;
     public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 5.2;
-    public static final Pose POSE = new Pose(40, 64.2, Math.toRadians(180));
+    public static final Pose POSE = new Pose(43, 64.2, Math.toRadians(180));
     public static PathChain startPathSpecimen = new PathBuilder()
             .addPath(
                     new BezierCurve(
