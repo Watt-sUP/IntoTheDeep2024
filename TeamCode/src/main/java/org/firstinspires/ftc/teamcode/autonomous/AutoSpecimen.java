@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.autonomous.assets.Observation;
 import org.firstinspires.ftc.teamcode.autonomous.assets.SpikeSpecificSamples;
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.FixedSequentialCommandGroup;
 
+@Disabled
 @Autonomous(name = "Specimen Autonomous", group = "Autonomous")
 public class AutoSpecimen extends CommandOpMode {
     @Override

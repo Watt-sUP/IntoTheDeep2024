@@ -8,9 +8,9 @@ import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
 public enum SpikeSpecificSamples {
-    LEFT(25, 19.2),
-    MIDDLE(25, 8.5),
-    RIGHT(63, 5);
+    LEFT(24.1, 18.25),
+    MIDDLE(24.1, 9.2),
+    RIGHT(63.5, 2.5);
 
     public final Pose POSE;
     private final double x, y;

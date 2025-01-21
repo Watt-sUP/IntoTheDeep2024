@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autonomous.experiments;
+package org.firstinspires.ftc.teamcode.autonomous.old;
 
 import static org.firstinspires.ftc.teamcode.autonomous.assets.AutonomousConstants.START_POSE_SPECIMEN;
 
@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.WaitUntilCommand;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.autonomous.assets.Observation;
 import org.firstinspires.ftc.teamcode.autonomous.assets.SpikeSpecificSamples;
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.FixedSequentialCommandGroup;
 
+@Disabled
 @Autonomous(name = "4 Specimen Autonomous", group = "Auto Experiments")
 public class FourAutoSpecimen extends CommandOpMode {
     @Override

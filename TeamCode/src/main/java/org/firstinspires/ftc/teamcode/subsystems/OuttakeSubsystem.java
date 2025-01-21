@@ -28,7 +28,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public static int SLIDES_LOWERED = 0,
             SLIDES_SPECIMEN = 355,
             SLIDES_LOW_BASKET = 415,
-            SLIDES_HIGH_BASKET = 800;
+            SLIDES_HIGH_BASKET = 830;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;

@@ -1,21 +1,25 @@
 package org.firstinspires.ftc.teamcode.pedroPathing.constants;
 
-import com.pedropathing.localization.Encoder;
-import com.pedropathing.localization.constants.DriveEncoderConstants;
+import com.pedropathing.localization.constants.OTOSConstants;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class LConstants {
 
     static {
-        DriveEncoderConstants.forwardTicksToInches = 0.0082434;
-        DriveEncoderConstants.strafeTicksToInches = 0.0089245471118;
-        DriveEncoderConstants.turnTicksToInches = 0.0198359617;
+        OTOSConstants.useCorrectedOTOSClass = false;
+        OTOSConstants.hardwareMapName = "sensor_otos";
 
-        DriveEncoderConstants.robot_Width = 11.25;
-        DriveEncoderConstants.robot_Length = 14.50;
+        OTOSConstants.linearUnit = DistanceUnit.INCH;
+        OTOSConstants.angleUnit = AngleUnit.RADIANS;
 
-        DriveEncoderConstants.leftFrontEncoderDirection = Encoder.REVERSE;
-        DriveEncoderConstants.leftRearEncoderDirection = Encoder.REVERSE;
-        DriveEncoderConstants.rightFrontEncoderDirection = Encoder.FORWARD;
-        DriveEncoderConstants.rightRearEncoderDirection = Encoder.FORWARD;
+        OTOSConstants.offset = new SparkFunOTOS.Pose2D(-6.8897637795275, 0, 0);
+
+        OTOSConstants.useAccelerometer = false;
+
+        OTOSConstants.linearScalar = .95331699;
+        OTOSConstants.angularScalar = .992;
     }
 }

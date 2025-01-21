@@ -69,7 +69,6 @@ public class NewSpecimenAuto extends CommandOpMode {
                         new FollowPointCommand(follower, new Pose(25.900, 62.250, Math.toRadians(180)))
                                 .withTimeout(5000),
                         new FollowPointCommand(follower, Submersible.POSE, 1)
-                                .withTimeout(5000)
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(150),

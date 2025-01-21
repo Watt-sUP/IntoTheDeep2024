@@ -15,12 +15,12 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @TeleOp(name = "TeleOp (Luca + Miron)", group = "TeleOp")
 public class TeleOpLucaMiron extends CommandOpMode {
@@ -92,7 +92,10 @@ public class TeleOpLucaMiron extends CommandOpMode {
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
                         new ConditionalCommand(
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
+                                new InstantCommand(() -> {
+                                    intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
+                                    intake.setClawState(IntakeSubsystem.ClawState.OPENED);
+                                }),
                                 () -> intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN
                         )
                 ));
@@ -106,7 +109,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN))
                 ));
         driver2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -173,23 +176,23 @@ public class TeleOpLucaMiron extends CommandOpMode {
 
         SequentialCommandGroup transferCommand = new SequentialCommandGroup(
                 new InstantCommand(() -> isTransferring.set(true)),
+                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
+                new WaitCommand(250),
                 new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                 new WaitCommand(75),
-                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
-                new WaitCommand(150),
-                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
-                new WaitCommand(250),
+                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
+                new WaitCommand(300),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
-                new WaitCommand(250),
+                new WaitCommand(150),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                new WaitCommand(150),
+                new WaitCommand(100),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
                 new WaitCommand(100),
@@ -198,7 +201,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
         );
 
         driver2.getGamepadButton(GamepadKeys.Button.X)
-                .and(new Trigger(() -> intake.getClawState() == IntakeSubsystem.ClawState.CLOSED))
+//                .and(new Trigger(() -> intake.getClawState() == IntakeSubsystem.ClawState.CLOSED))
                 .toggleWhenActive(new ConditionalCommand(
                         transferCommand,
                         new SequentialCommandGroup(
@@ -207,7 +210,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
                                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                                 new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
                                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                         ),
@@ -231,7 +234,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
                     intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
                     intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
 
-                    outtake.setArmState(OuttakeSubsystem.ArmState.IN);
+                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
                     outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);

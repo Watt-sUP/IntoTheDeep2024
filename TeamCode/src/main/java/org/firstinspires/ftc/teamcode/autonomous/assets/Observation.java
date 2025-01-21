@@ -11,7 +11,7 @@ public class Observation {
     public static final double SAMPLE_TO_OBSERVATION_OFFSET = 42.5;
 
     public static final Pose prepareCollectPose = new Pose(25.2, 18.5, Math.toRadians(180));
-    public static final Pose collectPose = new Pose(9, 18.5, Math.toRadians(180));
+    public static final Pose collectPose = new Pose(7.5, 18.5, Math.toRadians(180));
 
     public static final Pose parkPose = new Pose(12.7, 17.6, Math.toRadians(0));
 
