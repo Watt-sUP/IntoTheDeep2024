@@ -20,14 +20,14 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.List;
-
-import org.firstinspires.ftc.teamcode.autonomous.assets.AutonomousConstants;
+import org.firstinspires.ftc.teamcode.autonomous.assets.AutonomousOpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+
+import java.util.List;
 
 @Config
 @TeleOp(name = "Localization With Positions", group = "Utility")
@@ -43,7 +43,7 @@ public class LocalizationWithPositions extends CommandOpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
 
         PoseUpdater poseUpdater = new PoseUpdater(hardwareMap);
-        poseUpdater.setStartingPose(SPECIMEN_START ? AutonomousConstants.START_POSE_SPECIMEN : AutonomousConstants.START_POSE_BASKET);
+        poseUpdater.setStartingPose(SPECIMEN_START ? AutonomousOpMode.START_POSE_SPECIMEN : AutonomousOpMode.START_POSE_BASKET);
 
         DashboardPoseTracker dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);
 

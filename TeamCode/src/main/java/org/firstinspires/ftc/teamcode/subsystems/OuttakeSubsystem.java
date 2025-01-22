@@ -22,11 +22,11 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
     public static double CLAW_CLOSED = 0.1, CLAW_OPEN = 0.55;
-    public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 47, ARM_SPECIMEN = 12;
+    public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 55, ARM_SPECIMEN = 12;
     public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
     public static double SLIDES_kP = 0.01, SLIDES_kI = 0.000049988, SLIDES_kD = 0.000024994, SLIDES_kF = 0, SLIDES_A = 0.8;
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 355,
+            SLIDES_SPECIMEN = 370,
             SLIDES_LOW_BASKET = 415,
             SLIDES_HIGH_BASKET = 830;
 

@@ -23,6 +23,7 @@
 package org.firstinspires.ftc.teamcode.pedroPathing.tuners_tests.localization;
 
 import com.pedropathing.localization.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -59,8 +60,8 @@ For support, contact tech@gobilda.com
  */
 
 
+@Disabled
 @TeleOp(name = "goBILDA® PinPoint Odometry Example", group = "Teleop Test")
-
 public class SensorGoBildaPinpointExample extends LinearOpMode {
 
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer

@@ -92,10 +92,7 @@ public class TeleOpLucaMiron extends CommandOpMode {
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
                         new ConditionalCommand(
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                                new InstantCommand(() -> {
-                                    intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
-                                    intake.setClawState(IntakeSubsystem.ClawState.OPENED);
-                                }),
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
                                 () -> intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN
                         )
                 ));

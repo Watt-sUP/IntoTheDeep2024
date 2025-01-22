@@ -74,22 +74,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                 .whenActive(intake::togglePivot);
         driver2.getGamepadButton(GamepadKeys.Button.A)
                 .and(isTransferringTrigger)
-                .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(intake::toggleClaw),
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new WaitCommand(200),
-                                        new InstantCommand(() -> {
-                                            intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
-                                            intake.setPivotState(IntakeSubsystem.PivotState.UP);
-                                        }),
-                                        new WaitCommand(200),
-                                        new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN))
-                                ),
-                                new InstantCommand(),
-                                () -> intake.getPivotState() != IntakeSubsystem.PivotState.EXTENDING && intake.getClawState() == IntakeSubsystem.ClawState.CLOSED
-                        )
-                ));
+                .whenActive(intake::toggleClaw);
 
         /* Claw Rotation */
         driver2.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
@@ -110,10 +95,7 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
                         new ConditionalCommand(
                                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                                new InstantCommand(() -> {
-                                    intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
-                                    intake.setClawState(IntakeSubsystem.ClawState.OPENED);
-                                }),
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
                                 () -> intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN
                         )
                 ));
