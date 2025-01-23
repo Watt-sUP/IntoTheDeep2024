@@ -24,13 +24,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
+import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
-import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 
 /**
  * This is the ForwardZeroPowerAccelerationTuner autonomous follower OpMode. This runs the robot
@@ -48,7 +47,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous(name = "Forward Zero Power Acceleration Tuner", group = "Automatic Tuners")
+@Autonomous(name = "Forward Zero Power Acceleration Tuner", group = "Tuners")
 public class ForwardZeroPowerAccelerationTuner extends OpMode {
     public static double VELOCITY = 30;
     private ArrayList<Double> accelerations = new ArrayList<>();

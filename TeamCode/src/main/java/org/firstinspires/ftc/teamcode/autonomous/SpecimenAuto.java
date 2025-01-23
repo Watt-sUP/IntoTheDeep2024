@@ -4,7 +4,6 @@ import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
-import com.pedropathing.localization.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.autonomous.assets.AutonomousOpMode;
@@ -38,7 +37,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                         new WaitCommand(250),
 
                         new FollowPointCommand(follower, Submersible.depositPose(0, false), 1)
-                                .andThen(new WaitCommand(100)),
+                                .andThen(new WaitCommand(75)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                                 .andThen(new WaitCommand(100)),
 
@@ -54,11 +53,11 @@ public class SpecimenAuto extends AutonomousOpMode {
                         ),
 
                         new FollowPointCommand(follower, Observation.prepareCollectPose(0), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.62)),
+                        new InstantCommand(() -> follower.setMaxPower(0.55)),
                         new FollowPointCommand(follower, Observation.collectPose(0), 0.1)
-                                .withTimeout(750),
+                                .withTimeout(650),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(250)),
+                                .andThen(new WaitCommand(200)),
 
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                                 .andThen(new WaitCommand(100)),
@@ -73,7 +72,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         })
                                 ),
                         new FollowPointCommand(follower, Submersible.depositPose(1, false), 1)
-                                .andThen(new WaitCommand(100)),
+                                .andThen(new WaitCommand(75)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                                 .andThen(new WaitCommand(100)),
 
@@ -89,11 +88,11 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         )
                                 ),
                         new FollowPointCommand(follower, Observation.prepareCollectPose(1), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.62)),
+                        new InstantCommand(() -> follower.setMaxPower(0.565)),
                         new FollowPointCommand(follower, Observation.collectPose(1), 0.1)
-                                .withTimeout(750),
+                                .withTimeout(650),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(250)),
+                                .andThen(new WaitCommand(200)),
 
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                                 .andThen(new WaitCommand(100)),
@@ -108,7 +107,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         })
                                 ),
                         new FollowPointCommand(follower, Submersible.depositPose(2, false), 1)
-                                .andThen(new WaitCommand(100)),
+                                .andThen(new WaitCommand(75)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                                 .andThen(new WaitCommand(100)),
 
@@ -124,11 +123,11 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         )
                                 ),
                         new FollowPointCommand(follower, Observation.prepareCollectPose(2), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.62)),
+                        new InstantCommand(() -> follower.setMaxPower(0.565)),
                         new FollowPointCommand(follower, Observation.collectPose(2), 0.1)
-                                .withTimeout(750),
+                                .withTimeout(650),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(250)),
+                                .andThen(new WaitCommand(200)),
 
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                                 .andThen(new WaitCommand(100)),
@@ -143,7 +142,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         })
                                 ),
                         new FollowPointCommand(follower, Submersible.depositPose(3, false), 1)
-                                .andThen(new WaitCommand(100)),
+                                .andThen(new WaitCommand(75)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                                 .andThen(new WaitCommand(100)),
 
@@ -159,11 +158,11 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         )
                                 ),
                         new FollowPointCommand(follower, Observation.prepareCollectPose(3), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.62)),
+                        new InstantCommand(() -> follower.setMaxPower(0.565)),
                         new FollowPointCommand(follower, Observation.collectPose(3), 0.1)
-                                .withTimeout(750),
+                                .withTimeout(650),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(250)),
+                                .andThen(new WaitCommand(200)),
 
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                                 .andThen(new WaitCommand(100)),
@@ -178,11 +177,11 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         })
                                 ),
                         new FollowPointCommand(follower, Submersible.depositPose(4, false), 1)
-                                .andThen(new WaitCommand(100)),
+                                .andThen(new WaitCommand(75)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                                 .andThen(new WaitCommand(100)),
 
-                        new FollowPointCommand(follower, new Pose(20, 34, Math.toRadians(220)))
+                        new FollowPointCommand(follower, Observation.parkPose)
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(250),
@@ -192,6 +191,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                                 })
                                         )
                                 )
+                                .andThen(new InstantCommand(() -> follower.breakFollowing()))
                 )
         );
     }

@@ -15,9 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 public class AutonomousOpMode extends CommandOpMode {
-    public static final double START_X = 7.95;
-    public static final Pose START_POSE_SPECIMEN = new Pose(START_X, 66, Math.toRadians(180));
-    public static final Pose START_POSE_BASKET = new Pose(START_X, 80, Math.toRadians(180));
+    public static final Pose START_POSE_SPECIMEN = new Pose(7.95, 66, Math.toRadians(180));
+    public static final Pose START_POSE_BASKET = new Pose(6.5, 104, Math.toRadians(270));
 
     public static Follower follower;
 

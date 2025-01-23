@@ -17,6 +17,7 @@ import com.pedropathing.util.Constants;
 import com.pedropathing.util.DashboardPoseTracker;
 import com.pedropathing.util.Drawing;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -29,6 +30,7 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.List;
 
+@Disabled
 @Config
 @TeleOp(name = "Localization With Positions", group = "Utility")
 public class LocalizationWithPositions extends CommandOpMode {

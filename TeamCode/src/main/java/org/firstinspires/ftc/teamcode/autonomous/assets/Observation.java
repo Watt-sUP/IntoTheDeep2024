@@ -8,18 +8,17 @@ import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
 public class Observation {
-    public static final double SAMPLE_TO_OBSERVATION_OFFSET = 43;
-    public static final double COLLECT_OFFSET = 0.2;
-    public static final Pose parkPose = new Pose(16, 32, Math.toRadians(210));
+    public static final double OBSERVATION_X = 18;
+    public static final double COLLECT_OFFSET = 0.25;
+    public static final Pose parkPose = new Pose(24, 38, Math.toRadians(240));
 
-    ;
     public static PathChain samplesToObservationPath = new PathBuilder()
             .addPath(
                     // Submersible to Left
                     new BezierCurve(
                             new Point(Submersible.depositPose(0, false)),
-                            new Point(22.316, 26.689, Point.CARTESIAN),
-                            new Point(48.704, 48.251, Point.CARTESIAN),
+                            new Point(16, 26, Point.CARTESIAN),
+                            new Point(49, 49, Point.CARTESIAN),
                             new Point(SpikeSpecificSamples.LEFT.POSE)
                     )
             )
@@ -29,7 +28,7 @@ public class Observation {
                     // Left to Observation
                     new BezierLine(
                             new Point(SpikeSpecificSamples.LEFT.POSE),
-                            new Point(18.000, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN)
+                            new Point(OBSERVATION_X, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN)
                     )
             )
             .setPathEndTValueConstraint(0.8)
@@ -37,7 +36,7 @@ public class Observation {
             .addPath(
                     // Left to Middle
                     new BezierCurve(
-                            new Point(18.000, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN),
+                            new Point(OBSERVATION_X, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN),
                             new Point(49.000, 32.500, Point.CARTESIAN),
                             new Point(SpikeSpecificSamples.MIDDLE.POSE)
                     )
@@ -48,7 +47,7 @@ public class Observation {
                     // Middle to Observation
                     new BezierLine(
                             new Point(SpikeSpecificSamples.MIDDLE.POSE),
-                            new Point(18.000, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN)
+                            new Point(OBSERVATION_X, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN)
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
@@ -56,7 +55,7 @@ public class Observation {
             .addPath(
                     // Middle to Right
                     new BezierCurve(
-                            new Point(18.000, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN),
+                            new Point(OBSERVATION_X, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN),
                             new Point(49.000, 21.800, Point.CARTESIAN),
                             new Point(SpikeSpecificSamples.RIGHT.POSE)
                     )
@@ -67,7 +66,7 @@ public class Observation {
                     // Right to Observation
                     new BezierLine(
                             new Point(SpikeSpecificSamples.RIGHT.POSE),
-                            new Point(18.000, SpikeSpecificSamples.RIGHT.POSE.getY(), Point.CARTESIAN)
+                            new Point(OBSERVATION_X, SpikeSpecificSamples.RIGHT.POSE.getY(), Point.CARTESIAN)
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
@@ -79,6 +78,6 @@ public class Observation {
     }
 
     public static Pose collectPose(int pos) {
-        return new Pose(3.2, 27 + pos * COLLECT_OFFSET, Math.toRadians(180));
+        return new Pose(3.8, 27 + pos * COLLECT_OFFSET, Math.toRadians(180));
     }
 }

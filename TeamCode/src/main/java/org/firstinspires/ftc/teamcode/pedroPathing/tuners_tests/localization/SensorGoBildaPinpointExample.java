@@ -61,7 +61,7 @@ For support, contact tech@gobilda.com
 
 
 @Disabled
-@TeleOp(name = "goBILDA® PinPoint Odometry Example", group = "Teleop Test")
+@TeleOp(name = "goBILDA® PinPoint Odometry Example", group = "Tests")
 public class SensorGoBildaPinpointExample extends LinearOpMode {
 
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer

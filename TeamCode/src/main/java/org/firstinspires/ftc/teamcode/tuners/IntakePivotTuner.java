@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.tuners;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+@Disabled
 @Config
 @TeleOp(name = "Intake Pivot Tuner", group = "Tuners")
 public class IntakePivotTuner extends LinearOpMode {
