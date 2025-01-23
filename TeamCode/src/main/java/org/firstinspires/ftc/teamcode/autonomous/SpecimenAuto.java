@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -15,8 +17,56 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.FixedSequentialCommandGroup;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Autonomous(name = "Specimen Autonomous", group = "Autonomous")
 public class SpecimenAuto extends AutonomousOpMode {
+    private AtomicInteger currentSpecimen = new AtomicInteger(0);
+
+    public Command collectAndDeposit() {
+        int pos = currentSpecimen.incrementAndGet();
+
+        return new FixedSequentialCommandGroup(
+                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 10)
+                        .alongWith(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(100),
+                                        new InstantCommand(() -> {
+                                            outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
+                                            outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN);
+                                            outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT);
+                                        })
+                                )
+                        ),
+
+                new InstantCommand(() -> follower.setMaxPower(0.55)),
+                new FollowPointCommand(follower, Observation.collectPose(pos - 1), 0.1)
+                        .withTimeout(650),
+                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
+                        .andThen(new WaitCommand(175)),
+
+                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
+                        .andThen(new WaitCommand(100)),
+
+                new InstantCommand(() -> follower.setMaxPower(1)),
+
+                new FollowPointCommand(follower, Submersible.depositPose(pos, true), 8)
+                        .alongWith(
+                                new InstantCommand(() -> {
+                                    outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
+                                    outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
+                                })
+                        ),
+
+                new FollowPointCommand(follower, Submersible.depositPose(pos, false), 1)
+                        .andThen(new WaitCommand(25)),
+                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
+                        .andThen(new WaitCommand(100)),
+
+                new FollowPointCommand(follower, Submersible.depositPose(pos, true), 12)
+        );
+    }
+
     @Override
     public void initialize() {
         super.initialize();
@@ -36,10 +86,14 @@ public class SpecimenAuto extends AutonomousOpMode {
 
                         new WaitCommand(250),
 
+                        // Preload Deposit
+
                         new FollowPointCommand(follower, Submersible.depositPose(0, false), 1)
-                                .andThen(new WaitCommand(75)),
+                                .andThen(new WaitCommand(25)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                                 .andThen(new WaitCommand(100)),
+
+                        // Spike mark samples to Observation
 
                         new FollowPathCommand(follower, Observation.samplesToObservationPath).alongWith(
                                 new SequentialCommandGroup(
@@ -52,134 +106,9 @@ public class SpecimenAuto extends AutonomousOpMode {
                                 )
                         ),
 
-                        new FollowPointCommand(follower, Observation.prepareCollectPose(0), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.55)),
-                        new FollowPointCommand(follower, Observation.collectPose(0), 0.1)
-                                .withTimeout(650),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(200)),
+                        new RepeatCommand(collectAndDeposit()).interruptOn(() -> currentSpecimen.get() > 4),
 
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
-                                .andThen(new WaitCommand(100)),
-
-                        new InstantCommand(() -> follower.setMaxPower(1)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(1, true), 8)
-                                .alongWith(
-                                        new InstantCommand(() -> {
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
-                                            outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
-                                        })
-                                ),
-                        new FollowPointCommand(follower, Submersible.depositPose(1, false), 1)
-                                .andThen(new WaitCommand(75)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
-                                .andThen(new WaitCommand(100)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(1, true), 10)
-                                .alongWith(
-                                        new SequentialCommandGroup(
-                                                new WaitCommand(250),
-                                                new InstantCommand(() -> {
-                                                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                                                    outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN);
-                                                    outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT);
-                                                })
-                                        )
-                                ),
-                        new FollowPointCommand(follower, Observation.prepareCollectPose(1), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.565)),
-                        new FollowPointCommand(follower, Observation.collectPose(1), 0.1)
-                                .withTimeout(650),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(200)),
-
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
-                                .andThen(new WaitCommand(100)),
-
-                        new InstantCommand(() -> follower.setMaxPower(1)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(2, true), 8)
-                                .alongWith(
-                                        new InstantCommand(() -> {
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
-                                            outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
-                                        })
-                                ),
-                        new FollowPointCommand(follower, Submersible.depositPose(2, false), 1)
-                                .andThen(new WaitCommand(75)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
-                                .andThen(new WaitCommand(100)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(2, true), 10)
-                                .alongWith(
-                                        new SequentialCommandGroup(
-                                                new WaitCommand(250),
-                                                new InstantCommand(() -> {
-                                                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                                                    outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN);
-                                                    outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT);
-                                                })
-                                        )
-                                ),
-                        new FollowPointCommand(follower, Observation.prepareCollectPose(2), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.565)),
-                        new FollowPointCommand(follower, Observation.collectPose(2), 0.1)
-                                .withTimeout(650),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(200)),
-
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
-                                .andThen(new WaitCommand(100)),
-
-                        new InstantCommand(() -> follower.setMaxPower(1)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(3, true), 8)
-                                .alongWith(
-                                        new InstantCommand(() -> {
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
-                                            outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
-                                        })
-                                ),
-                        new FollowPointCommand(follower, Submersible.depositPose(3, false), 1)
-                                .andThen(new WaitCommand(75)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
-                                .andThen(new WaitCommand(100)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(3, true), 10)
-                                .alongWith(
-                                        new SequentialCommandGroup(
-                                                new WaitCommand(250),
-                                                new InstantCommand(() -> {
-                                                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                                                    outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN);
-                                                    outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT);
-                                                })
-                                        )
-                                ),
-                        new FollowPointCommand(follower, Observation.prepareCollectPose(3), 7),
-                        new InstantCommand(() -> follower.setMaxPower(0.565)),
-                        new FollowPointCommand(follower, Observation.collectPose(3), 0.1)
-                                .withTimeout(650),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                                .andThen(new WaitCommand(200)),
-
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
-                                .andThen(new WaitCommand(100)),
-
-                        new InstantCommand(() -> follower.setMaxPower(1)),
-
-                        new FollowPointCommand(follower, Submersible.depositPose(4, true), 8)
-                                .alongWith(
-                                        new InstantCommand(() -> {
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
-                                            outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
-                                        })
-                                ),
-                        new FollowPointCommand(follower, Submersible.depositPose(4, false), 1)
-                                .andThen(new WaitCommand(75)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
-                                .andThen(new WaitCommand(100)),
+                        // Park
 
                         new FollowPointCommand(follower, Observation.parkPose)
                                 .alongWith(
