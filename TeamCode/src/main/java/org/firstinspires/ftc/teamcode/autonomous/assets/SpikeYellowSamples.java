@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.autonomous.assets;
 import com.pedropathing.localization.Pose;
 
 public enum SpikeYellowSamples {
-    LEFT(22.55, 118.5, 0),
-    MIDDLE(22.55, 128, 0),
-    RIGHT(28.5, 125, 45);
+    LEFT(23, 119.2, 0),
+    MIDDLE(23, 128.4, 0),
+    RIGHT(29, 125, 45);
 
     public final double x, y, heading;
 
