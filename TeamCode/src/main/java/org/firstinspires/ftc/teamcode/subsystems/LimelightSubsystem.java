@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -10,6 +12,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
 import javax.annotation.Nullable;
 
+/**
+ * <p>This class handles Limelight detections.
+ * All detections are made in the <a href="https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html">global coordinate system</a>.</p>
+ * Use {@link #toPedroPose(Pose)} or {@link #toPedroPoseNeutral(Pose)} for conversions to the Pedro system.
+ */
 public class LimelightSubsystem extends SubsystemBase {
 
     private final Limelight3A limelight;
@@ -18,12 +25,39 @@ public class LimelightSubsystem extends SubsystemBase {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
     }
 
+    /**
+     * Converts a pose from the <a href="https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html">global coordinate system</a> to the Pedro one.
+     * @param pose A pose/detection in the FTC coordinate system
+     * @return A pose in the Pedro Pathing coordinate system
+     */
+    @NonNull
     public static Pose toPedroPose(Pose pose) {
-        return new Pose(Math.abs(-pose.getY() - 72), pose.getX() + 72, pose.getHeading() - Math.PI / 2);
+        return new Pose(Math.abs(pose.getY() - 72), pose.getX() + 72, pose.getHeading() + Math.PI / 2);
     }
 
+    /**
+     * Converts a Pedro Pathing pose to the global coordinate system.
+     * @param pose A pose in the Pedro Pathing coordinate system
+     * @return A pose in the FTC coordinate system
+     */
+    @NonNull
     public static Pose fromPedroPose(Pose pose) {
-        return pose;
+        return new Pose(pose.getY() - 72, pose.getX() - 72, pose.getHeading() - Math.PI / 2);
+    }
+
+    /**
+     * Converts a pose from the <a href="https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html">global coordinate system</a> to an alliance neutral version of the Pedro Pathing one.
+     * @param pose A pose/detection in the FTC coordinate system
+     * @return A normalized pose in the Pedro Pathing coordinate system (alliance-specific)
+     */
+    @NonNull
+    public static Pose toPedroPoseNeutral(Pose pose) {
+        Pose rawPedro = toPedroPose(pose);
+
+        if (rawPedro.getX() <= 72)
+            return rawPedro;
+        else return new Pose(144 - rawPedro.getX(),
+                144 - rawPedro.getY(), rawPedro.getHeading() + Math.PI);
     }
 
     public void setPipeline(int id) {
@@ -33,6 +67,10 @@ public class LimelightSubsystem extends SubsystemBase {
         limelight.pipelineSwitch(id);
     }
 
+    /**
+     * Gets the robot's pose using AprilTags exclusively
+     * @return Limelight MegaTag1 pose
+     */
     @Nullable
     public Pose getBotPose() {
         LLResult result = limelight.getLatestResult();
@@ -43,6 +81,13 @@ public class LimelightSubsystem extends SubsystemBase {
         return new Pose(robotPose.x * 100 / 2.54, robotPose.y * 100 / 2.54, Math.toRadians(0));
     }
 
+    /**
+     * Fuses the AprilTag detections with the robot's IMU angle for more accurate readings.
+     * This also avoids the problem of tag-flipping.
+     *
+     * @param imuAngle The robot's current angle in the global field system (in degrees)
+     * @return Limelight MegaTag2 pose
+     */
     @Nullable
     public Pose getBotPose(double imuAngle) {
         limelight.updateRobotOrientation(imuAngle);
