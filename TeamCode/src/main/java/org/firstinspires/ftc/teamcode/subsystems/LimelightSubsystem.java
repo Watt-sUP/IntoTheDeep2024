@@ -7,6 +7,7 @@ import com.pedropathing.localization.Pose;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 
@@ -20,6 +21,7 @@ import javax.annotation.Nullable;
 public class LimelightSubsystem extends SubsystemBase {
 
     private final Limelight3A limelight;
+    private boolean revertHeading = false;
 
     public LimelightSubsystem(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -27,6 +29,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     /**
      * Converts a pose from the <a href="https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html">global coordinate system</a> to the Pedro one.
+     *
      * @param pose A pose/detection in the FTC coordinate system
      * @return A pose in the Pedro Pathing coordinate system
      */
@@ -37,6 +40,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     /**
      * Converts a Pedro Pathing pose to the global coordinate system.
+     *
      * @param pose A pose in the Pedro Pathing coordinate system
      * @return A pose in the FTC coordinate system
      */
@@ -47,6 +51,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     /**
      * Converts a pose from the <a href="https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html">global coordinate system</a> to an alliance neutral version of the Pedro Pathing one.
+     *
      * @param pose A pose/detection in the FTC coordinate system
      * @return A normalized pose in the Pedro Pathing coordinate system (alliance-specific)
      */
@@ -69,6 +74,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
     /**
      * Gets the robot's pose using AprilTags exclusively
+     *
      * @return Limelight MegaTag1 pose
      */
     @Nullable
@@ -90,12 +96,20 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     @Nullable
     public Pose getBotPose(double imuAngle) {
-        limelight.updateRobotOrientation(imuAngle);
+        limelight.updateRobotOrientation(imuAngle + (revertHeading ? 180 : 0));
         LLResult result = limelight.getLatestResult();
         if (result == null || !result.isValid())
             return null;
 
         Position robotPose = result.getBotpose_MT2().getPosition();
-        return new Pose(robotPose.x * 100 / 2.54, robotPose.y * 100 / 2.54, Math.toRadians(imuAngle));
+        Pose output = new Pose(robotPose.x * 100 / 2.54, robotPose.y * 100 / 2.54, Math.toRadians(imuAngle));
+
+        // TODO: Check if this approach works. If it fails when very close to edges, add a buffer/threshold
+        if (Range.clip(output.getX(), -72, 72) != output.getX() || Range.clip(output.getY(), -72, 72) != output.getY()) {
+            revertHeading = true;
+            return getBotPose(imuAngle);
+        }
+
+        return output;
     }
 }

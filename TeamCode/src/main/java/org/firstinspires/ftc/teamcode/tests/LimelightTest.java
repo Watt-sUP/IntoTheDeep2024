@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 @Config
 @TeleOp
 public class LimelightTest extends CommandOpMode {
-    public static AngleUnit angleUnit = AngleUnit.DEGREES;
+    public static double startingAngle = 0;
 
     @Override
     public void initialize() {
@@ -31,6 +31,8 @@ public class LimelightTest extends CommandOpMode {
         SparkFunOTOS otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
         otos.setAngularUnit(AngleUnit.DEGREES);
         otos.setAngularScalar(.994);
+
+        otos.setPosition(new SparkFunOTOS.Pose2D(0, 0, startingAngle));
         otos.calibrateImu();
         otos.resetTracking();
 
@@ -44,7 +46,7 @@ public class LimelightTest extends CommandOpMode {
 
         register(chassis, intake);
         schedule(new RunCommand(() -> {
-            Pose botPose = LLsystem.getBotPose(angleUnit.fromDegrees(otos.getPosition().h));
+            Pose botPose = LLsystem.getBotPose(otos.getPosition().h);
             if (botPose != null) {
                 telemetry.addData("Bot Pose", botPose);
                 telemetry.addData("Bot Pose (Pedro)", LimelightSubsystem.toPedroPose(botPose));

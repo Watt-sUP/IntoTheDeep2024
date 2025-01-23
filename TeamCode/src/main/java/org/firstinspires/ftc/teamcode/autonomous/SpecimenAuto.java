@@ -13,7 +13,9 @@ import org.firstinspires.ftc.teamcode.autonomous.assets.Observation;
 import org.firstinspires.ftc.teamcode.autonomous.assets.Submersible;
 import org.firstinspires.ftc.teamcode.commands.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.commands.FollowPointCommand;
+import org.firstinspires.ftc.teamcode.commands.LimelightRelocalization;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.util.FixedSequentialCommandGroup;
 
@@ -21,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Autonomous(name = "Specimen Autonomous", group = "Autonomous")
 public class SpecimenAuto extends AutonomousOpMode {
-    private AtomicInteger currentSpecimen = new AtomicInteger(0);
+    private final AtomicInteger currentSpecimen = new AtomicInteger(0);
 
     public Command collectAndDeposit() {
         int pos = currentSpecimen.incrementAndGet();
@@ -73,7 +75,11 @@ public class SpecimenAuto extends AutonomousOpMode {
         startSpecimen();
         enableInit();
 
+        LimelightSubsystem limelight = new LimelightSubsystem(hardwareMap);
+
         schedule(
+                // TODO: Check if this works (use dashboard telemetry)
+                new LimelightRelocalization(limelight, follower),
                 new FixedSequentialCommandGroup(
                         new WaitUntilCommand(this::opModeIsActive),
                         new InstantCommand(() -> {
