@@ -22,6 +22,7 @@ public class BasketAutoBing extends AutonomousOpMode {
         startBasket();
         enableInit();
 
+        /*
         SequentialCommandGroup transferCommand = new SequentialCommandGroup(
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(250),
@@ -48,7 +49,8 @@ public class BasketAutoBing extends AutonomousOpMode {
 
         SequentialCommandGroup depositBasketCommand = new SequentialCommandGroup(
                 new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
-                new WaitCommand(1000),
+                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
+                new WaitCommand(800),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
                 new WaitCommand(500),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
@@ -58,23 +60,36 @@ public class BasketAutoBing extends AutonomousOpMode {
                 new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
                 new WaitCommand(300)
         );
+        */
 
         schedule(
                 new FixedSequentialCommandGroup(
                         new WaitUntilCommand(this::opModeIsActive),
 
-                        new FollowPointCommand(follower, Basket.getPreloadBasketPose(), 1)
-                                .andThen(new WaitCommand(1000)),
-                        depositBasketCommand/*,
+                        new FollowPointCommand(follower, Basket.getBasketPose(0), 1)
+                                .andThen(new WaitCommand(100)),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
+                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
+                                new WaitCommand(700),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                new WaitCommand(700),
+                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                new WaitCommand(300),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                new WaitCommand(300)
+                        ),
 
                         new FollowPointCommand(follower, SpikeYellowSamples.LEFT.getPose(), 1)
                                 .alongWith(
-                                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.HORIZONTAL))
+                                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT))
                                 ),
 
                         new SequentialCommandGroup(
                                 new WaitCommand(300),
-                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.HALF)),
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
                                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
                                 new WaitCommand(300),
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
@@ -84,20 +99,55 @@ public class BasketAutoBing extends AutonomousOpMode {
                         new WaitCommand(500),
 
                         // Go to basket
-                        new FollowPointCommand(follower, Basket.getBasketPose(), 1)
-                                .alongWith(transferCommand),
-                        depositBasketCommand,
+                        new FollowPointCommand(follower, Basket.getBasketPose(1), 1)
+                                .alongWith(
+                                        new SequentialCommandGroup(
+                                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
+                                                new WaitCommand(250),
+                                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
+                                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
+                                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                                new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
+                                                new WaitCommand(75),
+                                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
+                                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
+                                                new WaitCommand(300),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                                new WaitCommand(150),
+                                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT))
+                                        )
+                                ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
+                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
+                                new WaitCommand(1000),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                new WaitCommand(700),
+                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                new WaitCommand(300),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                new WaitCommand(300)
+                        ),
 
                         // Go to the middle sample
                         new FollowPointCommand(follower, SpikeYellowSamples.MIDDLE.getPose())
                                 .alongWith(
-                                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.HORIZONTAL))
+                                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT))
                                 ),
 
                         // Pick up sample #2
                         new SequentialCommandGroup(
                                 new WaitCommand(300),
-                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.HALF)),
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
                                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
                                 new WaitCommand(300),
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
@@ -107,20 +157,55 @@ public class BasketAutoBing extends AutonomousOpMode {
                         new WaitCommand(500),
 
                         // Go to basket
-                        new FollowPointCommand(follower, Basket.getBasketPose(), 1)
-                                .alongWith(transferCommand),
-                       depositBasketCommand,
+                        new FollowPointCommand(follower, Basket.getBasketPose(2), 1)
+                                .alongWith(
+                                        new SequentialCommandGroup(
+                                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
+                                                new WaitCommand(250),
+                                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
+                                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
+                                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                                new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
+                                                new WaitCommand(75),
+                                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
+                                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
+                                                new WaitCommand(300),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                                new WaitCommand(150),
+                                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT))
+                                        )
+                                ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
+                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
+                                new WaitCommand(1000),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                new WaitCommand(700),
+                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                new WaitCommand(300),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                new WaitCommand(300)
+                        ),
 
                         // Go to the right sample
                         new FollowPointCommand(follower, SpikeYellowSamples.RIGHT.getPose())
                                 .alongWith(
-                                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT))
+                                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.LEFT))
                                 ),
 
                         // Pick up sample #3
                         new SequentialCommandGroup(
                                 new WaitCommand(300),
-                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.HALF)),
+                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT)),
                                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
                                 new WaitCommand(300),
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
@@ -130,9 +215,44 @@ public class BasketAutoBing extends AutonomousOpMode {
                         new WaitCommand(500),
 
                         // Go to basket
-                        new FollowPointCommand(follower, SpikeYellowSamples.RIGHT.getPose())
-                                .alongWith(transferCommand),
-                        depositBasketCommand*/
+                        new FollowPointCommand(follower, Basket.getBasketPose(3))
+                                .alongWith(
+                                        new SequentialCommandGroup(
+                                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
+                                                new WaitCommand(250),
+                                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
+                                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
+                                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                                new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
+                                                new WaitCommand(75),
+                                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
+                                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
+                                                new WaitCommand(300),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                                new WaitCommand(150),
+                                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                                new WaitCommand(100),
+                                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT))
+                                        )
+                                ),
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
+                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
+                                new WaitCommand(1200),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                                new WaitCommand(700),
+                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                                new WaitCommand(300),
+                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                                new WaitCommand(500),
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                                new WaitCommand(300)
+                        )
                 )
         );
     }

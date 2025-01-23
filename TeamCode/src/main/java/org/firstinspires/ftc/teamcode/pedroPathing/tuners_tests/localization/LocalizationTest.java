@@ -12,6 +12,7 @@ import static com.pedropathing.follower.FollowerConstants.rightRearMotorName;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.pedropathing.localization.Pose;
 import com.pedropathing.localization.PoseUpdater;
 import com.pedropathing.util.Constants;
 import com.pedropathing.util.DashboardPoseTracker;
@@ -59,6 +60,7 @@ public class LocalizationTest extends OpMode {
         Constants.setConstants(FConstants.class, LConstants.class);
 
         poseUpdater = new PoseUpdater(hardwareMap);
+        poseUpdater.setStartingPose(new Pose(6.5, 104, Math.toRadians(270)));
 
         dashboardPoseTracker = new DashboardPoseTracker(poseUpdater);
 
@@ -93,7 +95,9 @@ public class LocalizationTest extends OpMode {
 
         IntakeSubsystem intake = new IntakeSubsystem(hardwareMap);
 
-        intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
+        intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
+        intake.setClawState(IntakeSubsystem.ClawState.OPENED);
+        intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
     }
 
     /**
