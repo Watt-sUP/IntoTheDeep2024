@@ -29,6 +29,10 @@ public class LimelightTest extends CommandOpMode {
         LLsystem.setPipeline(0);
 
         SparkFunOTOS otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
+
+        otos.setOffset(new SparkFunOTOS.Pose2D(-6.8897637795275, 0, 0));
+
+        otos.setLinearScalar(.9665);
         otos.setAngularUnit(AngleUnit.DEGREES);
         otos.setAngularScalar(.994);
 
@@ -54,8 +58,7 @@ public class LimelightTest extends CommandOpMode {
 
                 Drawing.drawRobot(botPose, "#4CAF50");
                 Drawing.sendPacket();
-            }
-            else telemetry.addLine("No AprilTag in sight!");
+            } else telemetry.addLine("No AprilTag in sight!");
             telemetry.update();
         }));
     }

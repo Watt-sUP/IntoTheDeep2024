@@ -8,6 +8,8 @@ public class Submersible {
     public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 10;
     public static final Pose POSE = new Pose(37.2, 66.2, Math.toRadians(180));
 
+    public static final Pose ascentParkPose = new Pose(66, 92.2, Math.toRadians(90));
+
     public static Pose depositPose(int pos, boolean backward) {
         return new Pose(
                 POSE.getX() - (backward ? SUBMERSIBLE_DEPOSIT_BACKWARD : 0) - pos * SUBMERSIBLE_DEPOSIT_X_OFFSET,

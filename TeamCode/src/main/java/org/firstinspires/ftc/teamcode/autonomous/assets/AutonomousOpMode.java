@@ -9,9 +9,11 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
 
+import org.firstinspires.ftc.teamcode.commands.LimelightRelocalization;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 public class AutonomousOpMode extends CommandOpMode {
@@ -22,6 +24,7 @@ public class AutonomousOpMode extends CommandOpMode {
 
     public static IntakeSubsystem intake;
     public static OuttakeSubsystem outtake;
+    public static LimelightSubsystem limelight;
 
     @Override
     public void initialize() {
@@ -33,6 +36,7 @@ public class AutonomousOpMode extends CommandOpMode {
 
         intake = new IntakeSubsystem(hardwareMap);
         outtake = new OuttakeSubsystem(hardwareMap);
+        limelight = new LimelightSubsystem(hardwareMap);
 
         register(intake, outtake);
 
@@ -62,6 +66,13 @@ public class AutonomousOpMode extends CommandOpMode {
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
                     outtake._setPivotPosition(0.92);
                 })
+        );
+    }
+
+    public void enableLimelight() {
+        schedule(
+                // TODO: Check if this works (use dashboard telemetry)
+                new LimelightRelocalization(limelight, follower)
         );
     }
 
