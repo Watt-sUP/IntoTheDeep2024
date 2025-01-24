@@ -73,6 +73,7 @@ public class AutonomousOpMode extends CommandOpMode {
         schedule(
                 // TODO: Check if this works (use dashboard telemetry)
                 new LimelightRelocalization(limelight, follower)
+                        .enableUpdates(false)
         );
     }
 

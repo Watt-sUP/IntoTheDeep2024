@@ -39,7 +39,7 @@ public class LimelightRelocalization extends CommandBase {
     }
 
     public void execute() {
-        // Subtract 90 degrees due to pedro conversion
+        // Subtract 90 degrees due to Pedro conversion
         double botHeading = Math.toDegrees(follower.getPose().getHeading() - Math.PI / 2);
         Pose botPose = limelight.getBotPose(botHeading);
 
@@ -48,16 +48,13 @@ public class LimelightRelocalization extends CommandBase {
                 follower.setCurrentPoseWithOffset(LimelightSubsystem.toPedroPoseNeutral(botPose));
             else {
                 Drawing.drawRobot(botPose, "#7a120b");
-                Drawing.drawRobot(LimelightSubsystem.fromPedroPose(follower.getPose()), "#4CAF50");
                 Drawing.sendPacket();
             }
 
             dashboardTelemetry.addData("Limelight Position",
                     String.format(Locale.ROOT, "(X=%.3f, Y=%.3f)", botPose.getX(), botPose.getY()));
-            dashboardTelemetry.update();
-        } else {
-            dashboardTelemetry.addLine("No AprilTag in sight!");
-            dashboardTelemetry.update();
-        }
+        } else dashboardTelemetry.addLine("No AprilTag in sight!");
+
+        dashboardTelemetry.update();
     }
 }

@@ -71,6 +71,7 @@ public class SpecimenAuto extends AutonomousOpMode {
         super.initialize();
         startSpecimen();
         enableInit();
+        enableLimelight();
 
         schedule(
                 new FixedSequentialCommandGroup(

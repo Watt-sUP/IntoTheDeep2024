@@ -35,7 +35,7 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     @NonNull
     public static Pose toPedroPose(Pose pose) {
-        return new Pose(Math.abs(pose.getY() - 72), pose.getX() + 72, pose.getHeading() + Math.PI / 2);
+        return new Pose(72 - pose.getY(), pose.getX() + 72, pose.getHeading() + Math.PI / 2);
     }
 
     /**
@@ -46,7 +46,7 @@ public class LimelightSubsystem extends SubsystemBase {
      */
     @NonNull
     public static Pose fromPedroPose(Pose pose) {
-        return new Pose(pose.getY() - 72, pose.getX() - 72, pose.getHeading() - Math.PI / 2);
+        return new Pose(pose.getY() - 72, 72 - pose.getX(), pose.getHeading() - Math.PI / 2);
     }
 
     /**
@@ -98,6 +98,7 @@ public class LimelightSubsystem extends SubsystemBase {
     public Pose getBotPose(double imuAngle) {
         limelight.updateRobotOrientation(imuAngle + (revertHeading ? 180 : 0));
         LLResult result = limelight.getLatestResult();
+
         if (result == null || !result.isValid())
             return null;
 
