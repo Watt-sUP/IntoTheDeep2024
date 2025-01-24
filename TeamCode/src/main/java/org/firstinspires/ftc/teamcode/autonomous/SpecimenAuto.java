@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.RepeatCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.WaitUntilCommand;
@@ -105,8 +104,11 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         })
                                 )
                         ),
-
-                        new RepeatCommand(collectAndDeposit()).interruptOn(() -> currentSpecimen.get() > 4),
+                        
+                        collectAndDeposit(),
+                        collectAndDeposit(),
+                        collectAndDeposit(),
+                        collectAndDeposit(),
 
                         // Park
 
