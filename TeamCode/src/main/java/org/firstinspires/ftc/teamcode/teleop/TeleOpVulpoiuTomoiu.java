@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.OuttakeNewPID;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -102,22 +102,22 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
 
         /* Outtake Commands */
 
-        OuttakeSubsystem outtake = new OuttakeSubsystem(hardwareMap);
+        OuttakeNewPID outtake = new OuttakeNewPID(hardwareMap);
 
         /* Slides Direct */
         driver2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN))
+                        new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.LOWERED)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.IN))
                 ));
         driver2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT))
+                        new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.HIGH_BASKET)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.OUT)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.OUT))
                 ));
 
 
@@ -133,18 +133,18 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
+                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.OUT)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_DEPOSIT)),
+                        new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.SPECIMEN))
                 ));
         rightTrigger2
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
+                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.SPECIMEN)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_COLLECT)),
+                        new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.OPENED))
                 ));
 
         /* Arm */
@@ -154,8 +154,8 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                         new SequentialCommandGroup(
                                 new ConditionalCommand(
                                         new InstantCommand(outtake::togglePivot),
-                                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
-                                        () -> outtake.getArmState() != OuttakeSubsystem.ArmState.SPECIMEN
+                                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_DEPOSIT)),
+                                        () -> outtake.getArmState() != OuttakeNewPID.ArmState.SPECIMEN
                                 ),
                                 new InstantCommand(outtake::toggleArm)
                         )
@@ -171,23 +171,23 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                 new InstantCommand(() -> isTransferring.set(true)),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(250),
-                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
-                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
-                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
-                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.LOWERED)),
+                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER)),
+                new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.IN)),
+                new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.OPENED)),
                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                 new WaitCommand(75),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                 new WaitCommand(300),
-                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.IN)),
                 new WaitCommand(150),
-                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
+                new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.CLOSED)),
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
                 new WaitCommand(100),
-                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
-                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT)),
+                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.OUT)),
+                new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.OUT)),
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
                 new InstantCommand(() -> isTransferring.set(false))
@@ -203,9 +203,9 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
                                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
-                                new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN)),
-                                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
+                                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER)),
+                                new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.IN)),
+                                new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.OPENED))
                         ),
                         () -> !isTransferring.get()
                 ));
@@ -227,10 +227,10 @@ public class TeleOpVulpoiuTomoiu extends CommandOpMode {
                     intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
                     intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
 
-                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
-                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                    outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
-                    outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
+                    outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER);
+                    outtake.setSlidesState(OuttakeNewPID.SlidesState.LOWERED);
+                    outtake.setPivotState(OuttakeNewPID.PivotState.IN);
+                    outtake.setClawState(OuttakeNewPID.ClawState.CLOSED);
                 }),
                 new RunCommand(() -> hubs.forEach(LynxModule::clearBulkCache)),
                 new RunCommand(() -> {

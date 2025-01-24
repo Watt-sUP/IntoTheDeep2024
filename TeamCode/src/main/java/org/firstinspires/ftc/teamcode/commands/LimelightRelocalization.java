@@ -19,12 +19,18 @@ public class LimelightRelocalization extends CommandBase {
     private final LimelightSubsystem limelight;
     private final Telemetry dashboardTelemetry;
     private final Follower follower;
+    private boolean disableUpdates = false;
 
     public LimelightRelocalization(LimelightSubsystem limelight, Follower follower) {
         dashboardTelemetry = FtcDashboard.getInstance().getTelemetry();
         this.limelight = limelight;
         this.follower = follower;
         addRequirements(limelight);
+    }
+
+    public LimelightRelocalization enableUpdates(boolean set) {
+        disableUpdates = !set;
+        return this;
     }
 
     public void initialize() {
@@ -38,14 +44,17 @@ public class LimelightRelocalization extends CommandBase {
         Pose botPose = limelight.getBotPose(botHeading);
 
         if (botPose != null) {
-            follower.setCurrentPoseWithOffset(LimelightSubsystem.toPedroPoseNeutral(botPose));
+            if (!disableUpdates)
+                follower.setCurrentPoseWithOffset(LimelightSubsystem.toPedroPoseNeutral(botPose));
+            else {
+                Drawing.drawRobot(botPose, "#7a120b");
+                Drawing.drawRobot(LimelightSubsystem.fromPedroPose(follower.getPose()), "#4CAF50");
+                Drawing.sendPacket();
+            }
 
             dashboardTelemetry.addData("Limelight Position",
                     String.format(Locale.ROOT, "(X=%.3f, Y=%.3f)", botPose.getX(), botPose.getY()));
             dashboardTelemetry.update();
-
-            Drawing.drawRobot(botPose, "#7a120b");
-            Drawing.sendPacket();
         } else {
             dashboardTelemetry.addLine("No AprilTag in sight!");
             dashboardTelemetry.update();

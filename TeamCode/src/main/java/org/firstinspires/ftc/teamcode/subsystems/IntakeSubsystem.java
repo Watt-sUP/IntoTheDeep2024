@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 public class IntakeSubsystem extends SubsystemBase {
     public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
     public static double PIVOT_DOWN = 275, PIVOT_COLLECT = 250, PIVOT_UP = 100, PIVOT_EXTENDING = 180;
-    public static double CLAW_OPEN = 0.14, CLAW_CLOSED = 0.54;
+    public static double CLAW_OPEN = 0.35, CLAW_CLOSED = 0.13;
     public static double
             ROT_LEFT = 155,
             ROT_STRAIGHT = 102.5,
@@ -41,15 +41,15 @@ public class IntakeSubsystem extends SubsystemBase {
         extRight.setInverted(true);
 
         extLeft.generatePositions(
-                new Pair<>(0.0, 0.5),
-                new Pair<>(0.5, 0.67),
-                new Pair<>(1.0, 0.85)
+                new Pair<>(0.0, 0.55),
+                new Pair<>(0.5, 0.685),
+                new Pair<>(1.0, 0.9)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.43),
-                new Pair<>(0.5, 0.625),
-                new Pair<>(1.0, 0.82)
+                new Pair<>(0.0, 0.5),
+                new Pair<>(0.5, 0.67),
+                new Pair<>(1.0, 0.89)
         );
 
         pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 360));
