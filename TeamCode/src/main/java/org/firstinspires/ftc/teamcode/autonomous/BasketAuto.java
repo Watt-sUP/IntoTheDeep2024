@@ -92,6 +92,7 @@ public class BasketAuto extends AutonomousOpMode {
         super.initialize();
         startBasket();
         enableInit();
+        enableLimelight();
 
         schedule(
                 new FixedSequentialCommandGroup(
@@ -122,7 +123,7 @@ public class BasketAuto extends AutonomousOpMode {
 
                         new InstantCommand(() -> follower.setMaxPower(0.8)),
 
-                        new FollowPointCommand(follower, Submersible.ascentParkPose, 1.2)
+                        new FollowPointCommand(follower, Submersible.ascentParkPose, 12)
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(350),

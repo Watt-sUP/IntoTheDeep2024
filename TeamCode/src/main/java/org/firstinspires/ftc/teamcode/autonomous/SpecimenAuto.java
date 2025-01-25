@@ -105,7 +105,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         })
                                 )
                         ),
-                        
+
                         collectAndDeposit(),
                         collectAndDeposit(),
                         collectAndDeposit(),
@@ -116,14 +116,16 @@ public class SpecimenAuto extends AutonomousOpMode {
                         new FollowPointCommand(follower, Observation.parkPose)
                                 .alongWith(
                                         new SequentialCommandGroup(
-                                                new WaitCommand(250),
+                                                new WaitCommand(500),
                                                 new InstantCommand(() -> {
                                                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                                                     intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
                                                 })
                                         )
                                 )
-                                .andThen(new InstantCommand(() -> follower.breakFollowing()))
+                                .andThen(new InstantCommand(() -> follower.breakFollowing())),
+
+                        new InstantCommand(this::requestOpModeStop)
                 )
         );
     }
