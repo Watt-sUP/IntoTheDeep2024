@@ -8,14 +8,12 @@ public enum SpikeYellowSamples {
     RIGHT(44.2, 117.8, 90);
 
     public final double x, y, heading;
+    public final Pose POSE;
 
     SpikeYellowSamples(double x, double y, double heading) {
         this.x = x;
         this.y = y;
         this.heading = heading;
-    }
-
-    public Pose getPose() {
-        return new Pose(this.x, this.y, Math.toRadians(this.heading));
+        this.POSE = new Pose(x, y, Math.toRadians(heading));
     }
 }

@@ -27,7 +27,7 @@ public class BasketAuto extends AutonomousOpMode {
         int pos = currentSample.incrementAndGet();
 
         return new FixedSequentialCommandGroup(
-                new FollowPointCommand(follower, sample.getPose(), 0.6)
+                new FollowPointCommand(follower, sample.POSE, 0.6)
                         .alongWith(
                                 new SequentialCommandGroup(
                                         new WaitCommand(250),
@@ -68,7 +68,7 @@ public class BasketAuto extends AutonomousOpMode {
                 new WaitCommand(100),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
 
-                new FollowPointCommand(follower, Basket.getBasketPose(pos), 1)
+                new FollowPointCommand(follower, Basket.getPose(pos), 1)
                         .alongWith(
                                 new SequentialCommandGroup(
                                         new WaitCommand(250),
@@ -100,7 +100,7 @@ public class BasketAuto extends AutonomousOpMode {
 
                         // Preload
 
-                        new FollowPointCommand(follower, Basket.getBasketPose(0), 1)
+                        new FollowPointCommand(follower, Basket.getPose(0), 1)
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(250),

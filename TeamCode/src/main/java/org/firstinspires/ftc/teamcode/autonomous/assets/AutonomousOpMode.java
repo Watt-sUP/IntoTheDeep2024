@@ -45,6 +45,7 @@ public class AutonomousOpMode extends CommandOpMode {
                     follower.update();
                     try {
                         follower.telemetryDebug(telemetry);
+                        telemetry.update();
                     } catch (RuntimeException ignored) {
                     }
                 })
