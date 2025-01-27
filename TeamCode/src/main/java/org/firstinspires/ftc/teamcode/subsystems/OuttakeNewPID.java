@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -13,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 public class OuttakeNewPID extends SubsystemBase {
     public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 55, ARM_SPECIMEN = 12;
     public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
-    public static double SLIDES_kP = 0.01, SLIDES_kD = 0.0001, SLIDES_kF = 0.1;
+    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.01, 0, 0.0001, 0.1);
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -43,7 +43,6 @@ public class OuttakeNewPID extends SubsystemBase {
     private double slidesPosition = 0;
     private double lastError = 0;
 
-    @SuppressLint("NewApi")
     public OuttakeNewPID(HardwareMap hardwareMap) {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
@@ -89,14 +88,15 @@ public class OuttakeNewPID extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // TODO: Tune values, patch slow voltage reads, implement stall protection
         double currentPosition = Math.max(-slidesMotor1.getCurrentPosition(), 0) / 8192.0 * 360;
         double error = slidesPosition - currentPosition;
 
         double derivative = (error - lastError) / timer.seconds();
 
         // Account for asymmetric response
-        double PID_output = Range.clip(SLIDES_kP * error + SLIDES_kD * derivative, SLIDES_kF - 1, 1 - SLIDES_kF);
-        double power = (PID_output + SLIDES_kF) * Math.min(12.0 / voltageSensor.getVoltage(), 1); // Account for voltage
+        double PID_output = Range.clip(SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative, SLIDES_PIDF.f - 1, 1 - SLIDES_PIDF.f);
+        double power = (PID_output + SLIDES_PIDF.f) * Math.min(12.0 / voltageSensor.getVoltage(), 1); // Account for voltage
 
         slidesMotor1.setPower(power);
         slidesMotor2.setPower(power);
@@ -105,7 +105,7 @@ public class OuttakeNewPID extends SubsystemBase {
         timer.reset();
     }
 
-    public void setClawState(ClawState state) {
+    public void setClawState(@NonNull ClawState state) {
         clawState = state;
         clawServo.setPosition(state.position);
     }
@@ -216,7 +216,7 @@ public class OuttakeNewPID extends SubsystemBase {
         return armPivot.getPosition();
     }
 
-    public void setSlidesState(SlidesState state) {
+    public void setSlidesState(@NonNull SlidesState state) {
         slidesState = state;
         _setSlidesPosition(state.position);
     }
