@@ -20,14 +20,9 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 
 @Config
 public class OuttakeNewPID extends SubsystemBase {
-    public static double CLAW_CLOSED = 0.1, CLAW_OPEN = 0.55;
     public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 55, ARM_SPECIMEN = 12;
     public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
     public static double SLIDES_kP = 0.01, SLIDES_kD = 0.0001, SLIDES_kF = 0.1;
-    public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 1625,
-            SLIDES_LOW_BASKET = 1825,
-            SLIDES_HIGH_BASKET = 3650;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -104,14 +99,7 @@ public class OuttakeNewPID extends SubsystemBase {
 
     public void setClawState(ClawState state) {
         clawState = state;
-        switch (clawState) {
-            case OPENED:
-                clawServo.setPosition(CLAW_OPEN);
-                break;
-            case CLOSED:
-                clawServo.setPosition(CLAW_CLOSED);
-                break;
-        }
+        clawServo.setPosition(state.position);
     }
 
     public void toggleClaw() {
@@ -222,20 +210,7 @@ public class OuttakeNewPID extends SubsystemBase {
 
     public void setSlidesState(SlidesState state) {
         slidesState = state;
-        switch (slidesState) {
-            case LOWERED:
-                _setSlidesPosition(SLIDES_LOWERED);
-                break;
-            case LOW_BASKET:
-                _setSlidesPosition(SLIDES_LOW_BASKET);
-                break;
-            case HIGH_BASKET:
-                _setSlidesPosition(SLIDES_HIGH_BASKET);
-                break;
-            case SPECIMEN:
-                _setSlidesPosition(SLIDES_SPECIMEN);
-                break;
-        }
+        _setSlidesPosition(state.position);
     }
 
     public void _setSlidesPosition(double position) {
@@ -282,8 +257,12 @@ public class OuttakeNewPID extends SubsystemBase {
     }
 
     public enum ClawState {
-        OPENED,
-        CLOSED;
+        OPENED(0.55), CLOSED(0.1);
+
+        public final double position;
+        ClawState(double position) {
+            this.position = position;
+        }
 
         @NonNull
         public String toString() {
@@ -342,10 +321,15 @@ public class OuttakeNewPID extends SubsystemBase {
     }
 
     public enum SlidesState {
-        LOWERED,
-        LOW_BASKET,
-        SPECIMEN,
-        HIGH_BASKET;
+        LOWERED(0),
+        SPECIMEN(1625),
+        LOW_BASKET(1825),
+        HIGH_BASKET(3650);
+
+        public final double position;
+        SlidesState(double position) {
+            this.position = position;
+        }
 
         @NonNull
         public String toString() {
