@@ -44,14 +44,18 @@ public class LimelightRelocalization extends CommandBase {
         Pose botPose = limelight.getBotPose(botHeading);
 
         if (botPose != null) {
+            Pose localPose = LimelightSubsystem.toPedroPoseNeutral(botPose);
             if (!disableUpdates)
                 follower.setCurrentPoseWithOffset(LimelightSubsystem.toPedroPoseNeutral(botPose));
 
-            Drawing.drawRobot(botPose, "#7a120b");
+            Drawing.drawRobot(LimelightSubsystem.toPedroPose(botPose), "#7a120b");
+            Drawing.drawRobot(follower.getPose(), "#4CAF50");
             Drawing.sendPacket();
-            
+
             dashboardTelemetry.addData("Limelight Position",
-                    String.format(Locale.ROOT, "(X=%.3f, Y=%.3f)", botPose.getX(), botPose.getY()));
+                    String.format(Locale.ROOT, "(X=%.3f, Y=%.3f)", localPose.getX(), localPose.getY()));
+            dashboardTelemetry.addData("Pedro Position",
+                    String.format(Locale.ROOT, "(X=%.3f, Y=%.3f)", follower.getPose().getX(), follower.getPose().getY()));
         } else dashboardTelemetry.addLine("No AprilTag in sight!");
 
         dashboardTelemetry.update();

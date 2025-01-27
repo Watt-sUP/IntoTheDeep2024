@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.tuners;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Disabled
 @TeleOp(name = "Motor Tuner", group = "Tuners")
 public class MotorTuner extends LinearOpMode {
     public static String name = "test";

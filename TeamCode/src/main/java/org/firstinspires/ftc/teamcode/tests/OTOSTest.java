@@ -15,9 +15,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
-@TeleOp
+@TeleOp(name = "OTOS Test", group = "Tests")
 @Config
-public class IMUTest extends LinearOpMode {
+public class OTOSTest extends LinearOpMode {
     public static String IMU_NAME = "imu_stable";
     public static double ANGULAR_GAIN = 0.992, LINEAR_GAIN = 1;
 

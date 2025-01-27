@@ -7,7 +7,7 @@ import com.pedropathing.localization.Pose;
 public class FollowPointCommand extends CommandBase {
     private final Follower follower;
     private final Pose target;
-    private double magnitude = 7;
+    private double magnitude;
 
     public FollowPointCommand(Follower follower, Pose target, double magnitude) {
         this.follower = follower;

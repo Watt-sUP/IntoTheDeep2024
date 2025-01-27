@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.RunCommand;
@@ -9,7 +8,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
-import com.pedropathing.util.Drawing;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commands.LimelightRelocalization;
@@ -43,12 +41,7 @@ public class LimelightTest extends CommandOpMode {
         schedule(
                 new LimelightRelocalization(LLsystem, follower)
                         .enableUpdates(false),
-                new RunCommand(() -> {
-                    follower.update();
-
-                    Drawing.drawRobot(LimelightSubsystem.fromPedroPose(follower.getPose()), "#4CAF50");
-                    Drawing.sendPacket();
-                })
+                new RunCommand(follower::update)
         );
     }
 }

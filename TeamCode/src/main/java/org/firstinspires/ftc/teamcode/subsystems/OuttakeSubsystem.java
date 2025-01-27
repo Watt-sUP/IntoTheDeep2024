@@ -26,9 +26,9 @@ public class OuttakeSubsystem extends SubsystemBase {
     public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
     public static double SLIDES_kP = 0.01, SLIDES_kI = 0.000049988, SLIDES_kD = 0.000024994, SLIDES_kF = 0, SLIDES_A = 0.8;
     public static int SLIDES_LOWERED = 0,
-            SLIDES_SPECIMEN = 370,
-            SLIDES_LOW_BASKET = 415,
-            SLIDES_HIGH_BASKET = 830;
+            SLIDES_SPECIMEN = 1625,
+            SLIDES_LOW_BASKET = 1825,
+            SLIDES_HIGH_BASKET = 3650;
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -42,8 +42,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     private ArmState armState = null;
     private PivotState pivotState = null;
     private SlidesState slidesState = null;
-    private int slidesPosition = 0;
-    private int lastPosition = 0;
+    private double slidesPosition = 0;
+    private double lastPosition = 0;
     private double integralSum = 0;
     private double lastError = 0;
     private double previousFilterEstimate = 0;
@@ -53,24 +53,26 @@ public class OuttakeSubsystem extends SubsystemBase {
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
         clawServo.setInverted(false);
 
-        armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 220));
-        armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 220));
+        armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 360));
+        armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 360));
 
         armLeft.setInverted(true);
         armRight.setInverted(false);
 
         armLeft.generatePositions(
-                new Pair<>(0.0, 5.0),
-                new Pair<>(90.0, 100.0),
-                new Pair<>(180.0, 200.0),
-                new Pair<>(220.0, 220.0)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 95.0),
+                new Pair<>(180.0, 190.0),
+                new Pair<>(270.0, 295.0),
+                new Pair<>(315.0, 348.0)
         );
 
         armRight.generatePositions(
                 new Pair<>(0.0, 0.0),
                 new Pair<>(90.0, 100.0),
-                new Pair<>(180.0, 190.0),
-                new Pair<>(220.0, 210.0)
+                new Pair<>(180.0, 195.0),
+                new Pair<>(270.0, 295.0),
+                new Pair<>(315.0, 350.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
@@ -80,8 +82,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
         slidesMotor2 = (DcMotorEx) hardwareMap.dcMotor.get("slides2");
         slidesMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        this.register();
     }
 
     public void resetSlidesEncoder() {
@@ -95,7 +95,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void periodic() {
         double maxIntegralSum = (float) (0.25 / SLIDES_kI);
 
-        int currentPosition = Math.max(-slidesMotor1.getCurrentPosition(), 0) / 100;
+        double currentPosition = Math.max(-slidesMotor1.getCurrentPosition(), 0) / 8192.0 * 360;
 
         double error = slidesPosition - currentPosition;
         double errorChange = error - lastError;
@@ -293,11 +293,11 @@ public class OuttakeSubsystem extends SubsystemBase {
         };
     }
 
-    public int getSlidesPosition() {
-        return Math.max(-slidesMotor1.getCurrentPosition(), 0) / 100;
+    public double getSlidesPosition() {
+        return Math.max(-slidesMotor1.getCurrentPosition(), 0) / 8192.0 * 360;
     }
 
-    public int getSlidesTarget() {
+    public double getSlidesTarget() {
         return slidesPosition;
     }
 

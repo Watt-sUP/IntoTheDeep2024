@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous.assets;
 import com.pedropathing.localization.Pose;
 
 public class Basket {
-    public static final double DEPOSIT_OFFSET = 0.175;
+    public static final double DEPOSIT_OFFSET = 0.215;
     public static double HEADING = 313;
 
     public static Pose getBasketPose(int pos) {

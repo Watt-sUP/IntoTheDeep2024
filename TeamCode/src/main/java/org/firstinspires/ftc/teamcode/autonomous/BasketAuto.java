@@ -123,7 +123,7 @@ public class BasketAuto extends AutonomousOpMode {
 
                         new InstantCommand(() -> follower.setMaxPower(0.8)),
 
-                        new FollowPointCommand(follower, Submersible.ascentParkPose, 12)
+                        new FollowPointCommand(follower, Submersible.ascentParkPose, 8)
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(350),

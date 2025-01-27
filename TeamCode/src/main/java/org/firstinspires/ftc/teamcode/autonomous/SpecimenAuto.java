@@ -40,7 +40,7 @@ public class SpecimenAuto extends AutonomousOpMode {
 
                 new InstantCommand(() -> follower.setMaxPower(0.55)),
                 new FollowPointCommand(follower, Observation.collectPose(pos - 1), 0.1)
-                        .withTimeout(650),
+                        .withTimeout(700),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
                         .andThen(new WaitCommand(175)),
 
@@ -58,9 +58,9 @@ public class SpecimenAuto extends AutonomousOpMode {
                         ),
 
                 new FollowPointCommand(follower, Submersible.depositPose(pos, false), 1)
-                        .andThen(new WaitCommand(25)),
+                        .andThen(new WaitCommand(75)),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
-                        .andThen(new WaitCommand(100)),
+                        .andThen(new WaitCommand(125)),
 
                 new FollowPointCommand(follower, Submersible.depositPose(pos, true), 12)
         );
@@ -116,16 +116,13 @@ public class SpecimenAuto extends AutonomousOpMode {
                         new FollowPointCommand(follower, Observation.parkPose)
                                 .alongWith(
                                         new SequentialCommandGroup(
-                                                new WaitCommand(500),
+                                                new WaitCommand(700),
                                                 new InstantCommand(() -> {
                                                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                                                     intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
                                                 })
                                         )
                                 )
-                                .andThen(new InstantCommand(() -> follower.breakFollowing())),
-
-                        new InstantCommand(this::requestOpModeStop)
                 )
         );
     }

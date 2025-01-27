@@ -10,7 +10,7 @@ import com.pedropathing.pathgen.Point;
 public class Observation {
     public static final double OBSERVATION_X = 18;
     public static final double COLLECT_OFFSET = 0.25;
-    public static final Pose parkPose = new Pose(24, 34, Math.toRadians(240));
+    public static final Pose parkPose = new Pose(26, 38, Math.toRadians(240));
 
     public static PathChain samplesToObservationPath = new PathBuilder()
             .addPath(

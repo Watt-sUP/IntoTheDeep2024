@@ -54,6 +54,7 @@ public class AutonomousOpMode extends CommandOpMode {
     public void enableInit() {
         schedule(
                 new InstantCommand(() -> {
+                    intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
                     intake.setPivotState(IntakeSubsystem.PivotState.UP);
                     intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
                     intake.setClawState(IntakeSubsystem.ClawState.OPENED);
@@ -65,6 +66,9 @@ public class AutonomousOpMode extends CommandOpMode {
 
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
                     outtake._setPivotPosition(0.92);
+
+                    outtake.resetSlidesEncoder();
+                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                 })
         );
     }

@@ -4,13 +4,12 @@ import android.util.Pair;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 
-@Disabled
+//@Disabled
 @Config
 @TeleOp(name = "Intake Pivot Test", group = "Tests")
 public class IntakePivotTest extends LinearOpMode {
@@ -25,19 +24,19 @@ public class IntakePivotTest extends LinearOpMode {
         pivRight.setInverted(true);
 
         pivLeft.generatePositions(
-                new Pair<>(0.0, 7.0),
-                new Pair<>(90.0, 105.0),
+                new Pair<>(0.0, 8.0),
+                new Pair<>(90.0, 112.0),
                 new Pair<>(180.0, 208.0),
-                new Pair<>(270.0, 308.0),
-                new Pair<>(360.0, 354.0)
+                new Pair<>(270.0, 310.0),
+                new Pair<>(315.0, 360.0)
         );
 
         pivRight.generatePositions(
-                new Pair<>(0.0, 12.0),
-                new Pair<>(90.0, 116.0),
-                new Pair<>(180.0, 212.0),
-                new Pair<>(270.0, 312.0),
-                new Pair<>(360.0, 360.0)
+                new Pair<>(0.0, 8.0),
+                new Pair<>(90.0, 107.0),
+                new Pair<>(180.0, 208.0),
+                new Pair<>(270.0, 305.0),
+                new Pair<>(319.0, 360.0)
         );
 
         waitForStart();

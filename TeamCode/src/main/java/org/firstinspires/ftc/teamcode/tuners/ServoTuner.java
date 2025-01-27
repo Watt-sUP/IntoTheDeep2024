@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 @Config
 @TeleOp(name = "Servo Tuner", group = "Tuners")
 public class ServoTuner extends LinearOpMode {
-
     public static String SERVO_NAME = "test";
     public static boolean INVERT = false, USE_ANGLE = false;
     public static Double POSITION = 0.0;
