@@ -13,7 +13,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
@@ -31,6 +33,8 @@ public class OuttakeNewPID extends SubsystemBase {
     private final SimpleServo clawServo;
 
     private final DcMotorEx slidesMotor1, slidesMotor2;
+    private final VoltageSensor voltageSensor;
+
     private final ElapsedTime timer = new ElapsedTime();
     private ClawState clawState = null;
     private ArmState armState = null;
@@ -41,6 +45,7 @@ public class OuttakeNewPID extends SubsystemBase {
 
     @SuppressLint("NewApi")
     public OuttakeNewPID(HardwareMap hardwareMap) {
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
         clawServo.setInverted(false);
 
@@ -88,7 +93,10 @@ public class OuttakeNewPID extends SubsystemBase {
         double error = slidesPosition - currentPosition;
 
         double derivative = (error - lastError) / timer.seconds();
-        double power = (SLIDES_kP * error) + (SLIDES_kD * derivative) + SLIDES_kF;
+
+        // Account for asymmetric response
+        double PID_output = Range.clip(SLIDES_kP * error + SLIDES_kD * derivative, SLIDES_kF - 1, 1 - SLIDES_kF);
+        double power = (PID_output + SLIDES_kF) * Math.min(12.0 / voltageSensor.getVoltage(), 1); // Account for voltage
 
         slidesMotor1.setPower(power);
         slidesMotor2.setPower(power);
