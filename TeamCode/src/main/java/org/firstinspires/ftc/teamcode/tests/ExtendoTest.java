@@ -23,19 +23,17 @@ public class ExtendoTest extends LinearOpMode {
         InterpolatedPositionServo extLeft = new InterpolatedPositionServo(new SimpleServo(hardwareMap, "ext_left", 0, 220));
         InterpolatedPositionServo extRight = new InterpolatedPositionServo(new SimpleServo(hardwareMap, "ext_right", 0, 220));
 
-        extLeft.setInverted(false);
-        extRight.setInverted(true);
+        extLeft.setInverted(true);
+        extRight.setInverted(false);
 
         extLeft.generatePositions(
-                new Pair<>(0.0, 0.55),
-                new Pair<>(0.5, 0.685),
-                new Pair<>(1.0, 0.9)
+                new Pair<>(0.0, 0.06),
+                new Pair<>(1.0, 0.4)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.5),
-                new Pair<>(0.5, 0.67),
-                new Pair<>(1.0, 0.89)
+                new Pair<>(0.0, 0.04),
+                new Pair<>(1.0, 0.38)
         );
 
         waitForStart();

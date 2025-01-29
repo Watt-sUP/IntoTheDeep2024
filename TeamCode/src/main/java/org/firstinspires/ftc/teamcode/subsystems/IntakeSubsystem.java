@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
+    public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 0.65;
     public static double PIVOT_DOWN = 290, PIVOT_COLLECT = 265, PIVOT_UP = 110, PIVOT_EXTENDING = 190;
     public static double CLAW_OPEN = 0.5, CLAW_CLOSED = 0.04;
     public static double
@@ -37,19 +37,17 @@ public class IntakeSubsystem extends SubsystemBase {
         extLeft = new InterpolatedPositionServo(new SimpleServo(hardwareMap, "ext_left", 0, 220));
         extRight = new InterpolatedPositionServo(new SimpleServo(hardwareMap, "ext_right", 0, 220));
 
-        extLeft.setInverted(false);
-        extRight.setInverted(true);
+        extLeft.setInverted(true);
+        extRight.setInverted(false);
 
         extLeft.generatePositions(
-                new Pair<>(0.0, 0.55),
-                new Pair<>(0.5, 0.685),
-                new Pair<>(1.0, 0.9)
+                new Pair<>(0.0, 0.06),
+                new Pair<>(1.0, 0.4)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.5),
-                new Pair<>(0.5, 0.67),
-                new Pair<>(1.0, 0.89)
+                new Pair<>(0.0, 0.04),
+                new Pair<>(1.0, 0.38)
         );
 
         pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 360));
