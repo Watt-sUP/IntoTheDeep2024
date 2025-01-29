@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.OuttakeNewPID;
 
 @TeleOp(name = "TeleOp (Luca + Miron)", group = "TeleOp")
 public class TeleOpLucaMiron extends TeleOpBase {
@@ -29,8 +29,8 @@ public class TeleOpLucaMiron extends TeleOpBase {
                         new SequentialCommandGroup(
                                 new ConditionalCommand(
                                         new InstantCommand(outtake::togglePivot),
-                                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
-                                        () -> outtake.getArmState() != OuttakeSubsystem.ArmState.SPECIMEN
+                                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_DEPOSIT)),
+                                        () -> outtake.getArmState() != OuttakeNewPID.ArmState.SPECIMEN
                                 ),
                                 new InstantCommand(outtake::toggleArm)
                         )

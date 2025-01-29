@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
 @TeleOp(name = "Slides Tuner", group = "Tuners")
 public class SlidesTuner extends LinearOpMode {
     public static int POSITION = 0;
-    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.01, 0, 0.0001, 0.1);
+    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00001, 0.05);
     public static double CURRENT_THRESHOLD = 6;
-    public static boolean ENABLE_STALL_PAUSE = false;
+    public static boolean ENABLE_STALL_PAUSE = false, NORMALIZE_RESPONSE = true;
 
     @Override
     public void runOpMode() {
@@ -35,20 +35,22 @@ public class SlidesTuner extends LinearOpMode {
         VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
         Timing.Timer voltageCooldown = new Timing.Timer(500, TimeUnit.MILLISECONDS);
 
-        DcMotorEx slidesMotor1 = hardwareMap.get(DcMotorEx.class, "slides");
-        slidesMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        DcMotorEx slidesMotor1 = hardwareMap.get(DcMotorEx.class, "slidesUp");
+        DcMotorEx slidesMotor2 = hardwareMap.get(DcMotorEx.class, "slidesDown");
+        DcMotorEx slidesMotor3 = hardwareMap.get(DcMotorEx.class, "slidesLeft");
+        DcMotorEx slidesMotor4 = hardwareMap.get(DcMotorEx.class, "slidesRight");
 
-        DcMotorEx slidesMotor2 = hardwareMap.get(DcMotorEx.class, "slides2");
         slidesMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        slidesMotor4.setDirection(DcMotorSimple.Direction.REVERSE);
 
         slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         slidesMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slidesMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         if (ENABLE_STALL_PAUSE) {
             slidesMotor1.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
             slidesMotor2.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
+            slidesMotor3.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
+            slidesMotor4.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
         }
 
         waitForStart();
@@ -69,28 +71,35 @@ public class SlidesTuner extends LinearOpMode {
             }
 
             // Account for asymmetric response
-            double PID_output = Range.clip(SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative, SLIDES_PIDF.f - 1, 1 - SLIDES_PIDF.f);
+            double PID_output;
+            if (NORMALIZE_RESPONSE)
+                PID_output = Range.clip(SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative, SLIDES_PIDF.f - 1, 1 - SLIDES_PIDF.f);
+            else PID_output = SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative;
             double power = (PID_output + SLIDES_PIDF.f) * Math.min(12.0 / voltage, 1); // Account for voltage
 
             if (ENABLE_STALL_PAUSE && slidesMotor1.isOverCurrent()) {
                 slidesMotor1.setPower(SLIDES_PIDF.f);
                 slidesMotor2.setPower(SLIDES_PIDF.f);
+                slidesMotor3.setPower(SLIDES_PIDF.f);
+                slidesMotor4.setPower(SLIDES_PIDF.f);
             } else {
                 slidesMotor1.setPower(power);
                 slidesMotor2.setPower(power);
+                slidesMotor3.setPower(power);
+                slidesMotor4.setPower(power);
             }
-
-            lastError = error;
-            timer.reset();
 
             telemetry.addData("Encoder Position", currentPosition);
             telemetry.addData("Target Position", POSITION);
             telemetry.addLine();
+
             telemetry.addData("Motor Current", slidesMotor1.getCurrent(CurrentUnit.AMPS));
             telemetry.addData("Motor Stalled", slidesMotor1.isOverCurrent() ? "Yes" : "No");
             telemetry.addData("Robot Voltage", voltage);
 
             telemetry.update();
+            lastError = error;
+            timer.reset();
         }
     }
 }

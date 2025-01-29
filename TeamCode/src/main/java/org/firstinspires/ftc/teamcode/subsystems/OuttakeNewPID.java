@@ -8,6 +8,7 @@ import androidx.core.math.MathUtils;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.util.Timing;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,14 +18,18 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Config
 public class OuttakeNewPID extends SubsystemBase {
     public static double ARM_IN = 25, ARM_OUT = 220, ARM_TRANSFER = 55, ARM_SPECIMEN = 12;
     public static double PIVOT_IN = 0.88, PIVOT_OUT = 0.4, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
-    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.01, 0, 0.0001, 0.1);
+    public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00001, 0.05);
 
     private final InterpolatedAngleServo armLeft;
     private final InterpolatedAngleServo armRight;
@@ -32,16 +37,17 @@ public class OuttakeNewPID extends SubsystemBase {
     private final SimpleServo armPivot;
     private final SimpleServo clawServo;
 
-    private final DcMotorEx slidesMotor1, slidesMotor2;
+    private final List<DcMotorEx> motors;
     private final VoltageSensor voltageSensor;
 
+    private ClawState clawState;
+    private ArmState armState;
+    private PivotState pivotState;
+    private SlidesState slidesState;
+
+    private double slidesPosition = 0, lastError = 0, voltage;
     private final ElapsedTime timer = new ElapsedTime();
-    private ClawState clawState = null;
-    private ArmState armState = null;
-    private PivotState pivotState = null;
-    private SlidesState slidesState = null;
-    private double slidesPosition = 0;
-    private double lastError = 0;
+    private final Timing.Timer voltageCooldown = new Timing.Timer(500, TimeUnit.MILLISECONDS);
 
     public OuttakeNewPID(HardwareMap hardwareMap) {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -70,36 +76,37 @@ public class OuttakeNewPID extends SubsystemBase {
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
 
-        slidesMotor1 = (DcMotorEx) hardwareMap.dcMotor.get("slides");
-        slidesMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        motors = Stream.of("Up", "Down", "Left", "Right")
+                .map(id -> hardwareMap.get(DcMotorEx.class, "slides" + id))
+                .collect(Collectors.toList());
 
-        slidesMotor2 = (DcMotorEx) hardwareMap.dcMotor.get("slides2");
-        slidesMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        motors.get(1).setDirection(DcMotorSimple.Direction.REVERSE);
+        motors.get(3).setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.register();
     }
 
     public void resetSlidesEncoder() {
-        slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        slidesMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slidesMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motors.get(0).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors.get(0).setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
     public void periodic() {
-        // TODO: Tune values, patch slow voltage reads, implement stall protection
-        double currentPosition = Math.max(-slidesMotor1.getCurrentPosition(), 0) / 8192.0 * 360;
-        double error = slidesPosition - currentPosition;
-
+        // TODO: implement stall protection (optional)
+        double error = slidesPosition - this.getSlidesPosition();
         double derivative = (error - lastError) / timer.seconds();
+
+        if (voltageCooldown.done() || !voltageCooldown.isTimerOn()) {
+            voltage = voltageSensor.getVoltage();
+            voltageCooldown.start();
+        }
 
         // Account for asymmetric response
         double PID_output = Range.clip(SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative, SLIDES_PIDF.f - 1, 1 - SLIDES_PIDF.f);
-        double power = (PID_output + SLIDES_PIDF.f) * Math.min(12.0 / voltageSensor.getVoltage(), 1); // Account for voltage
+        double power = (PID_output + SLIDES_PIDF.f) * Math.min(12.0 / voltage, 1); // Account for voltage
 
-        slidesMotor1.setPower(power);
-        slidesMotor2.setPower(power);
+        motors.forEach(motor -> motor.setPower(power));
 
         lastError = error;
         timer.reset();
@@ -226,19 +233,20 @@ public class OuttakeNewPID extends SubsystemBase {
     }
 
     public void nextSlidesState() {
-        if (slidesState == SlidesState.SPECIMEN) {
-            setSlidesState(SlidesState.LOW_BASKET);
-            return;
+        switch (slidesState) {
+            case LOWERED:
+            case SPECIMEN:
+                setSlidesState(SlidesState.LOW_BASKET);
+                break;
+            default:
+                setSlidesState(SlidesState.HIGH_BASKET);
         }
-        setSlidesState(slidesState.next());
     }
 
     public void previousSlidesState() {
-        if (slidesState == SlidesState.SPECIMEN) {
-            setSlidesState(SlidesState.LOWERED);
-            return;
-        }
-        setSlidesState(slidesState.previous());
+        if (slidesState == SlidesState.HIGH_BASKET)
+            setSlidesState(SlidesState.LOW_BASKET);
+        else setSlidesState(SlidesState.LOWERED);
     }
 
     public void adjustSlides(double val) {
@@ -249,15 +257,8 @@ public class OuttakeNewPID extends SubsystemBase {
         return slidesState;
     }
 
-    public Number[] getSlidesCurrent() {
-        return new Number[]{
-                slidesMotor1.getCurrent(CurrentUnit.AMPS),
-                slidesMotor2.getCurrent(CurrentUnit.AMPS)
-        };
-    }
-
     public double getSlidesPosition() {
-        return Math.max(-slidesMotor1.getCurrentPosition(), 0) / 8192.0 * 360;
+        return Math.max(-motors.get(0).getCurrentPosition(), 0) / 8192.0 * 360;
     }
 
     public double getSlidesTarget() {
@@ -268,6 +269,7 @@ public class OuttakeNewPID extends SubsystemBase {
         OPENED(0.55), CLOSED(0.1);
 
         public final double position;
+
         ClawState(double position) {
             this.position = position;
         }
@@ -279,8 +281,9 @@ public class OuttakeNewPID extends SubsystemBase {
                     return "Opened";
                 case CLOSED:
                     return "Closed";
+                default:
+                    return "Unknown";
             }
-            return "";
         }
     }
 
@@ -301,8 +304,9 @@ public class OuttakeNewPID extends SubsystemBase {
                     return "Transfer";
                 case OUT:
                     return "Out";
+                default:
+                    return "Unknown";
             }
-            return "";
         }
     }
 
@@ -323,8 +327,9 @@ public class OuttakeNewPID extends SubsystemBase {
                     return "Specimen Collect";
                 case OUT:
                     return "Out";
+                default:
+                    return "Unknown";
             }
-            return "";
         }
     }
 
@@ -335,6 +340,7 @@ public class OuttakeNewPID extends SubsystemBase {
         HIGH_BASKET(3650);
 
         public final double position;
+
         SlidesState(double position) {
             this.position = position;
         }
@@ -350,30 +356,9 @@ public class OuttakeNewPID extends SubsystemBase {
                     return "Specimen";
                 case HIGH_BASKET:
                     return "High Basket";
+                default:
+                    return "Unknown";
             }
-            return "";
-        }
-
-        public SlidesState next() {
-            switch (this) {
-                case LOWERED:
-                    return LOW_BASKET;
-                case LOW_BASKET:
-                case HIGH_BASKET:
-                    return HIGH_BASKET;
-            }
-            return LOWERED;
-        }
-
-        public SlidesState previous() {
-            switch (this) {
-                case HIGH_BASKET:
-                    return LOW_BASKET;
-                case LOW_BASKET:
-                case LOWERED:
-                    return LOWERED;
-            }
-            return LOWERED;
         }
     }
 }
