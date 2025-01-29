@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 
 public class FixedSequentialCommandGroup extends SequentialCommandGroup {
-    private boolean finished;
+    protected boolean finished;
 
     public FixedSequentialCommandGroup(Command... commands) {
         super(commands);

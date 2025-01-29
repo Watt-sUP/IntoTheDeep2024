@@ -14,12 +14,12 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.commands.TransferCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeNewPID;
+import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TeleOpBase extends CommandOpMode {
     public ElapsedTime runtime, loopTime;
@@ -27,20 +27,24 @@ public class TeleOpBase extends CommandOpMode {
     public GamepadEx driver1, driver2;
     public Trigger leftTrigger1, rightTrigger1, leftTrigger2, rightTrigger2;
 
-    public AtomicBoolean isTransferring;
     public Trigger isTransferringTrigger;
 
     public DriveSubsystem chassis;
     public IntakeSubsystem intake;
-    public OuttakeNewPID outtake;
+    public OuttakeSubsystem outtake;
+
+    public void setBrakes(double leftBrake, double rightBrake) {
+        driver1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(() -> chassis.setMaxSpeed(leftBrake))
+                .whenReleased(() -> chassis.setMaxSpeed(1));
+        driver1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(() -> chassis.setMaxSpeed(rightBrake))
+                .whenReleased(() -> chassis.setMaxSpeed(1));
+    }
 
     @Override
     public void initialize() {
         this.reset();
-
-        isTransferring = new AtomicBoolean(false);
-        isTransferringTrigger = new Trigger(() -> !isTransferring.get());
-
         this.telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         List<LynxModule> hubs = hardwareMap.getAll(LynxModule.class);
@@ -59,12 +63,15 @@ public class TeleOpBase extends CommandOpMode {
         rightTrigger2 = new Trigger(() -> gamepad2.right_trigger >= 0.3);
 
         chassis = new DriveSubsystem(hardwareMap);
+        outtake = new OuttakeSubsystem(hardwareMap);
+        intake = new IntakeSubsystem(hardwareMap);
+
+        TransferCommand transferCommand = new TransferCommand(intake, outtake);
+        isTransferringTrigger = new Trigger(() -> !transferCommand.isScheduled());
 
         chassis.setAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
         /* Intake Commands */
-
-        intake = new IntakeSubsystem(hardwareMap);
 
         /* Claw */
         leftTrigger2
@@ -100,22 +107,20 @@ public class TeleOpBase extends CommandOpMode {
 
         /* Outtake Commands */
 
-        outtake = new OuttakeNewPID(hardwareMap);
-
         /* Slides Direct */
         driver2.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.LOWERED)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.IN))
+                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN))
                 ));
         driver2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.HIGH_BASKET)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.OUT)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.OUT))
+                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.OUT))
                 ));
 
         /* Slides Progressive */
@@ -130,18 +135,18 @@ public class TeleOpBase extends CommandOpMode {
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.OUT)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_DEPOSIT)),
-                        new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.SPECIMEN))
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
+                        new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                 ));
         rightTrigger2
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.SPECIMEN)),
-                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_COLLECT)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.OPENED))
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN)),
+                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT)),
+                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                 ));
 
         /* Arm */
@@ -150,48 +155,8 @@ public class TeleOpBase extends CommandOpMode {
                 .whenActive(outtake::togglePivot);
 
         /* Transfer Command */
-        
-        SequentialCommandGroup transferCommand = new SequentialCommandGroup(
-                new InstantCommand(() -> isTransferring.set(true)),
-                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
-                new WaitCommand(250),
-                new InstantCommand(() -> outtake.setSlidesState(OuttakeNewPID.SlidesState.LOWERED)),
-                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER)),
-                new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.IN)),
-                new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.OPENED)),
-                new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
-                new WaitCommand(75),
-                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
-                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                new WaitCommand(300),
-                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.IN)),
-                new WaitCommand(150),
-                new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.CLOSED)),
-                new WaitCommand(100),
-                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                new WaitCommand(100),
-                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.OUT)),
-                new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.OUT)),
-                new WaitCommand(100),
-                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
-                new InstantCommand(() -> isTransferring.set(false))
-        );
-
         driver2.getGamepadButton(GamepadKeys.Button.X)
-                .toggleWhenActive(new ConditionalCommand(
-                        transferCommand,
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> isTransferring.set(false)),
-                                new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                                new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT)),
-                                new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
-                                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                                new InstantCommand(() -> outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER)),
-                                new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.IN)),
-                                new InstantCommand(() -> outtake.setClawState(OuttakeNewPID.ClawState.OPENED))
-                        ),
-                        () -> !isTransferring.get()
-                ));
+                .toggleWhenPressed(transferCommand, true);
 
         register(chassis, intake, outtake);
 
@@ -210,19 +175,19 @@ public class TeleOpBase extends CommandOpMode {
                     intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
                     intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
 
-                    outtake.setArmState(OuttakeNewPID.ArmState.TRANSFER);
-                    outtake.setSlidesState(OuttakeNewPID.SlidesState.LOWERED);
-                    outtake.setPivotState(OuttakeNewPID.PivotState.IN);
-                    outtake.setClawState(OuttakeNewPID.ClawState.CLOSED);
+                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
+                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
+                    outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
+                    outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
                 }),
                 new RunCommand(() -> hubs.forEach(LynxModule::clearBulkCache)),
                 new RunCommand(() -> {
                     telemetry.addData("Status", "Running");
-                    telemetry.addData("Runtime", "%.0f seconds", runtime.seconds());
+                    telemetry.addData("Runtime", "%d seconds", (int) runtime.seconds());
                     telemetry.addData("Loop Time", loopTime.milliseconds());
                     telemetry.addLine();
 
-                    telemetry.addData("Is Transferring", isTransferring.get());
+                    telemetry.addData("Is Transferring", transferCommand.isScheduled());
                     telemetry.addLine();
 
                     telemetry.addData("Intake Extendo State", intake.getExtendoState().toString());
@@ -242,7 +207,6 @@ public class TeleOpBase extends CommandOpMode {
                     telemetry.addLine();
 
                     loopTime.reset();
-
                     telemetry.update();
                 })
         );

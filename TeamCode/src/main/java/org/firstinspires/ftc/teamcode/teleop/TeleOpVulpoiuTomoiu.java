@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.OuttakeNewPID;
+import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,6 +15,7 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
     @Override
     public void initialize() {
         super.initialize();
+        setBrakes(0.5, 0.3);
 
         /* Robot Face Integration */
         AtomicInteger robotFace = new AtomicInteger(1);
@@ -23,14 +24,6 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
         driver1.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(() -> robotFace.set(robotFace.get() * -1));
 
-        /* Brakes */
-        driver1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(() -> chassis.setMaxSpeed(0.5))
-                .whenReleased(() -> chassis.setMaxSpeed(1));
-        driver1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(() -> chassis.setMaxSpeed(0.3))
-                .whenReleased(() -> chassis.setMaxSpeed(1));
-
         /* Arm */
         driver2.getGamepadButton(GamepadKeys.Button.Y)
                 .and(isTransferringTrigger)
@@ -38,8 +31,8 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
                         new SequentialCommandGroup(
                                 new ConditionalCommand(
                                         new InstantCommand(outtake::togglePivot),
-                                        new InstantCommand(() -> outtake.setPivotState(OuttakeNewPID.PivotState.SPECIMEN_DEPOSIT)),
-                                        () -> outtake.getArmState() != OuttakeNewPID.ArmState.SPECIMEN
+                                        new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
+                                        () -> outtake.getArmState() != OuttakeSubsystem.ArmState.SPECIMEN
                                 ),
                                 new InstantCommand(outtake::toggleArm)
                         )

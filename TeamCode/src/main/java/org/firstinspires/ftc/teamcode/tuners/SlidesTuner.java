@@ -93,7 +93,12 @@ public class SlidesTuner extends LinearOpMode {
             telemetry.addData("Target Position", POSITION);
             telemetry.addLine();
 
-            telemetry.addData("Motor Current", slidesMotor1.getCurrent(CurrentUnit.AMPS));
+            telemetry.addData("Motor Current", "%.2f, %.2f, %.2f, %.2f",
+                    slidesMotor1.getCurrent(CurrentUnit.AMPS),
+                    slidesMotor2.getCurrent(CurrentUnit.AMPS),
+                    slidesMotor3.getCurrent(CurrentUnit.AMPS),
+                    slidesMotor4.getCurrent(CurrentUnit.AMPS)
+            );
             telemetry.addData("Motor Stalled", slidesMotor1.isOverCurrent() ? "Yes" : "No");
             telemetry.addData("Robot Voltage", voltage);
 
