@@ -27,13 +27,13 @@ public class ExtendoTest extends LinearOpMode {
         extRight.setInverted(false);
 
         extLeft.generatePositions(
-                new Pair<>(0.0, 0.06),
-                new Pair<>(1.0, 0.4)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(1.0, 0.225)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.04),
-                new Pair<>(1.0, 0.37)
+                new Pair<>(0.0, 0.05),
+                new Pair<>(1.0, 0.31)
         );
 
         waitForStart();

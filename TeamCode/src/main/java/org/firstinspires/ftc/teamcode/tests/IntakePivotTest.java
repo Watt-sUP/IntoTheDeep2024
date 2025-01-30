@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.InterpolatedAngleServo;
 
-//@Disabled
 @Config
 @TeleOp(name = "Intake Pivot Test", group = "Tests")
 public class IntakePivotTest extends LinearOpMode {
