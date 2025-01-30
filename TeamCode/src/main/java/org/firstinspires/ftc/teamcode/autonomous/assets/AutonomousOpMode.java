@@ -62,7 +62,7 @@ public class AutonomousOpMode extends CommandOpMode {
 
                     outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
 
-                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
+                    outtake.setArmState(OuttakeSubsystem.ArmState.IN);
                     outtake._setArmPosition(45);
 
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
