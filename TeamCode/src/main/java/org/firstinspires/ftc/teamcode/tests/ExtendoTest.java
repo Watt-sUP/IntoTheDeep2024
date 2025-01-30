@@ -32,7 +32,7 @@ public class ExtendoTest extends LinearOpMode {
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.05),
+                new Pair<>(0.0, 0.09),
                 new Pair<>(1.0, 0.31)
         );
 
