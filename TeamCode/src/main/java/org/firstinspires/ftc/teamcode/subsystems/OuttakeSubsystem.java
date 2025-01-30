@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
-    public static double ARM_IN = 43, ARM_OUT = 160, ARM_TRANSFER = 60, ARM_SPECIMEN = 90;
-    public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.28, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
+    public static double ARM_TRANSFER = 43, ARM_OUT = 165, ARM_IN = 60, ARM_SPECIMEN_COLLECT = 24, ARM_SPECIMEN_DEPOSIT = 198;
+    public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.28, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.44;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00001, 0.05);
 
     private final InterpolatedAngleServo armLeft, armRight;
@@ -132,17 +132,20 @@ public class OuttakeSubsystem extends SubsystemBase {
     public void setArmState(ArmState state) {
         armState = state;
         switch (armState) {
-            case IN:
-                _setArmPosition(ARM_IN);
+            case TRANSFER:
+                _setArmPosition(ARM_TRANSFER);
                 break;
             case OUT:
                 _setArmPosition(ARM_OUT);
                 break;
-            case TRANSFER:
-                _setArmPosition(ARM_TRANSFER);
+            case IN:
+                _setArmPosition(ARM_IN);
                 break;
-            case SPECIMEN:
-                _setArmPosition(ARM_SPECIMEN);
+            case SPECIMEN_COLLECT:
+                _setArmPosition(ARM_SPECIMEN_COLLECT);
+                break;
+            case SPECIMEN_DEPOSIT:
+                _setArmPosition(ARM_SPECIMEN_DEPOSIT);
                 break;
         }
     }
@@ -154,13 +157,16 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void toggleArm() {
         switch (armState) {
-            case IN:
             case TRANSFER:
-            case SPECIMEN:
+            case IN:
                 setArmState(ArmState.OUT);
                 break;
+            case SPECIMEN_COLLECT:
+                setArmState(ArmState.SPECIMEN_DEPOSIT);
+                break;
             case OUT:
-                setArmState(ArmState.TRANSFER);
+            case SPECIMEN_DEPOSIT:
+                setArmState(ArmState.IN);
                 break;
         }
     }
@@ -266,41 +272,14 @@ public class OuttakeSubsystem extends SubsystemBase {
         ClawState(double position) {
             this.position = position;
         }
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case OPENED:
-                    return "Opened";
-                case CLOSED:
-                    return "Closed";
-                default:
-                    return "Unknown";
-            }
-        }
     }
 
     public enum ArmState {
-        IN,
-        SPECIMEN,
         TRANSFER,
+        SPECIMEN_COLLECT,
+        SPECIMEN_DEPOSIT,
+        IN,
         OUT;
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case IN:
-                    return "In";
-                case SPECIMEN:
-                    return "Specimen";
-                case TRANSFER:
-                    return "Transfer";
-                case OUT:
-                    return "Out";
-                default:
-                    return "Unknown";
-            }
-        }
     }
 
     public enum PivotState {
@@ -308,50 +287,18 @@ public class OuttakeSubsystem extends SubsystemBase {
         SPECIMEN_DEPOSIT,
         SPECIMEN_COLLECT,
         OUT;
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case IN:
-                    return "In";
-                case SPECIMEN_DEPOSIT:
-                    return "Specimen Deposit";
-                case SPECIMEN_COLLECT:
-                    return "Specimen Collect";
-                case OUT:
-                    return "Out";
-                default:
-                    return "Unknown";
-            }
-        }
     }
 
     public enum SlidesState {
         LOWERED(0),
         SPECIMEN(1625),
         LOW_BASKET(1400),
-        HIGH_BASKET(2900);
+        HIGH_BASKET(3150);
 
         public final double position;
 
         SlidesState(double position) {
             this.position = position;
-        }
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case LOWERED:
-                    return "Lowered";
-                case LOW_BASKET:
-                    return "Low Basket";
-                case SPECIMEN:
-                    return "Specimen";
-                case HIGH_BASKET:
-                    return "High Basket";
-                default:
-                    return "Unknown";
-            }
         }
     }
 }

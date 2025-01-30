@@ -23,7 +23,7 @@ public class TeleOpLucaMiron extends TeleOpBase {
                                 new ConditionalCommand(
                                         new InstantCommand(outtake::togglePivot),
                                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
-                                        () -> outtake.getArmState() != OuttakeSubsystem.ArmState.SPECIMEN
+                                        () -> outtake.getArmState() != OuttakeSubsystem.ArmState.SPECIMEN_COLLECT
                                 ),
                                 new InstantCommand(outtake::toggleArm)
                         )

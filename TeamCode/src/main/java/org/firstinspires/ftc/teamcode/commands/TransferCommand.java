@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -16,23 +17,59 @@ public class TransferCommand extends FixedSequentialCommandGroup {
         outtake = outtakeSubsystem;
 
         addRequirements(intake, outtake);
+
+        if (intake.getClawState() != IntakeSubsystem.ClawState.CLOSED) {
+            addCommands(
+                    new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED))
+                            .andThen(new WaitCommand(250))
+            );
+        }
+
+        ParallelCommandGroup initCommand = new ParallelCommandGroup();
+
+        if (outtake.getSlidesState() != OuttakeSubsystem.SlidesState.LOWERED) {
+            initCommand.addCommands(
+                    new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED))
+                            .andThen(new WaitCommand(150))
+            );
+        }
+
+        if (outtake.getArmState() != OuttakeSubsystem.ArmState.IN || outtakeSubsystem.getPivotState() != OuttakeSubsystem.PivotState.IN) {
+            initCommand.addCommands(
+                    new InstantCommand(() -> {
+                        outtake.setArmState(OuttakeSubsystem.ArmState.IN);
+                        outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
+                    }).andThen(new WaitCommand(250))
+            );
+        }
+
+        if (outtake.getClawState() != OuttakeSubsystem.ClawState.OPENED) {
+            initCommand.addCommands(
+                    new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
+                            .andThen(new WaitCommand(150))
+            );
+        }
+
+        if (intake.getRotation() != IntakeSubsystem.RotationState.STRAIGHT) {
+            initCommand.addCommands(
+                    new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT))
+                            .andThen(new WaitCommand(75))
+            );
+        }
+
+        addCommands(initCommand);
+
+        if (intake.getPivotState() != IntakeSubsystem.PivotState.UP || intake.getExtendoState() != IntakeSubsystem.ExtendoState.IN) {
+            addCommands(
+                    new InstantCommand(() -> {
+                        intake.setPivotState(IntakeSubsystem.PivotState.UP);
+                        intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
+                    }).andThen(new WaitCommand(425))
+            );
+        }
+
         addCommands(
-                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
-                new WaitCommand(250),
-                new InstantCommand(() -> {
-                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
-                    outtake.setClawState(OuttakeSubsystem.ClawState.OPENED);
-                    outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
-                    intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
-                }),
-                new WaitCommand(75),
-                new InstantCommand(() -> {
-                    intake.setPivotState(IntakeSubsystem.PivotState.UP);
-                    intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
-                }),
-                new WaitCommand(375),
-                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                 new WaitCommand(150),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(100),
@@ -58,7 +95,7 @@ public class TransferCommand extends FixedSequentialCommandGroup {
             intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
             intake.setClawState(IntakeSubsystem.ClawState.OPENED);
 
-            outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
+            outtake.setArmState(OuttakeSubsystem.ArmState.IN);
             outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
             outtake.setClawState(OuttakeSubsystem.ClawState.OPENED);
         }

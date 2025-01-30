@@ -32,7 +32,7 @@ public class BasketAuto extends AutonomousOpMode {
                                 new SequentialCommandGroup(
                                         new WaitCommand(250),
                                         new InstantCommand(() -> {
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
+                                            outtake.setArmState(OuttakeSubsystem.ArmState.IN);
                                             outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
                                             outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                                         })
@@ -62,7 +62,7 @@ public class BasketAuto extends AutonomousOpMode {
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                 new WaitCommand(650),
-                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
+                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                 new WaitCommand(150),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
                 new WaitCommand(100),

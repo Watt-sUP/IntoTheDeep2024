@@ -116,7 +116,7 @@ public class TeleOpBase extends CommandOpMode {
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.IN)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.IN))
                 ));
         driver2.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
@@ -139,7 +139,7 @@ public class TeleOpBase extends CommandOpMode {
         driver2.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.OUT)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_DEPOSIT)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT)),
                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                 ));
@@ -148,7 +148,7 @@ public class TeleOpBase extends CommandOpMode {
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN)),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_COLLECT)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT)),
                         new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                 ));
@@ -179,7 +179,7 @@ public class TeleOpBase extends CommandOpMode {
                     intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
                     intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
 
-                    outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER);
+                    outtake.setArmState(OuttakeSubsystem.ArmState.IN);
                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
                     outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
                     outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);

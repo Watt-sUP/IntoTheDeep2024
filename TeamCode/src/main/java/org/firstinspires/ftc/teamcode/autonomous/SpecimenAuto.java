@@ -32,7 +32,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         new WaitCommand(100),
                                         new InstantCommand(() -> {
                                             outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN);
+                                            outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_COLLECT);
                                             outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT);
                                         })
                                 )
@@ -52,7 +52,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                 new FollowPointCommand(follower, Submersible.depositPose(pos, true), 8)
                         .alongWith(
                                 new InstantCommand(() -> {
-                                    outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
+                                    outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_DEPOSIT);
                                     outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
                                 })
                         ),
@@ -79,7 +79,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                         new InstantCommand(() -> {
                             intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
 
-                            outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
+                            outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_DEPOSIT);
                             outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_DEPOSIT);
                             outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN);
                         }),
@@ -100,7 +100,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                         new WaitCommand(250),
                                         new InstantCommand(() -> {
                                             outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
-                                            outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN);
+                                            outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_COLLECT);
                                             outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT);
                                         })
                                 )
