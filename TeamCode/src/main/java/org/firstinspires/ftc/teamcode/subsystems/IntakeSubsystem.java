@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 
 @Config
 public class IntakeSubsystem extends SubsystemBase {
-    public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 0.65;
+    public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
     public static double PIVOT_DOWN = 252, PIVOT_COLLECT = 235, PIVOT_UP = 100, PIVOT_EXTENDING = 180;
     public static double CLAW_OPEN = 0.425, CLAW_CLOSED = 0;
     public static double
@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.05),
+                new Pair<>(0.0, 0.09),
                 new Pair<>(1.0, 0.31)
         );
 
