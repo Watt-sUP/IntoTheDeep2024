@@ -93,9 +93,13 @@ public class TeleOpBase extends CommandOpMode {
 
         /* Extendo */
         rightTrigger1
-                .and(isTransferringTrigger)
                 .whenActive(new SequentialCommandGroup(
-                        new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
+                        new InstantCommand(() -> {
+                            if (transferCommand.isScheduled())
+                                transferCommand.cancel();
+
+                            intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT);
+                        }),
                         new WaitCommand(75),
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.EXTENDING)),
                         new ConditionalCommand(

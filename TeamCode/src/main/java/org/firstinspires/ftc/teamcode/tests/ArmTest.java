@@ -20,26 +20,22 @@ public class ArmTest extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        InterpolatedAngleServo armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 360));
-        InterpolatedAngleServo armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 360));
+        InterpolatedAngleServo armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 220));
+        InterpolatedAngleServo armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 220));
 
-        armLeft.setInverted(true);
-        armRight.setInverted(false);
+        armLeft.setInverted(false);
+        armRight.setInverted(true);
 
         armLeft.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 95.0),
-                new Pair<>(180.0, 190.0),
-                new Pair<>(270.0, 295.0),
-                new Pair<>(315.0, 348.0)
+                new Pair<>(90.0, 100.0),
+                new Pair<>(175.0, 177.0)
         );
 
         armRight.generatePositions(
-                new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 100.0),
-                new Pair<>(180.0, 195.0),
-                new Pair<>(270.0, 295.0),
-                new Pair<>(315.0, 350.0)
+                new Pair<>(0.0, 10.0),
+                new Pair<>(90.0, 125.0),
+                new Pair<>(175.0, 220.0)
         );
 
         waitForStart();

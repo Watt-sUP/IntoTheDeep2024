@@ -27,51 +27,45 @@ import java.util.stream.Stream;
 
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
-    public static double ARM_IN = 82, ARM_OUT = 220, ARM_TRANSFER = 100, ARM_SPECIMEN = 100;
+    public static double ARM_IN = 5, ARM_OUT = 175, ARM_TRANSFER = 15, ARM_SPECIMEN = 20;
     public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.45, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00001, 0.05);
 
-    private final InterpolatedAngleServo armLeft;
-    private final InterpolatedAngleServo armRight;
-
-    private final SimpleServo armPivot;
-    private final SimpleServo clawServo;
+    private final InterpolatedAngleServo armLeft, armRight;
+    private final SimpleServo armPivot, clawServo;
 
     private final List<DcMotorEx> motors;
     private final VoltageSensor voltageSensor;
     private final ElapsedTime timer = new ElapsedTime();
     private final Timing.Timer voltageCooldown = new Timing.Timer(500, TimeUnit.MILLISECONDS);
+
     private ClawState clawState;
     private ArmState armState;
     private PivotState pivotState;
     private SlidesState slidesState;
-    private double slidesPosition = 0, lastError = 0, voltage;
+    private double slidesPosition, lastError, voltage;
 
     public OuttakeSubsystem(HardwareMap hardwareMap) {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
         clawServo.setInverted(false);
 
-        armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 360));
-        armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 360));
+        armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 220));
+        armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 220));
 
-        armLeft.setInverted(true);
-        armRight.setInverted(false);
+        armLeft.setInverted(false);
+        armRight.setInverted(true);
 
         armLeft.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 95.0),
-                new Pair<>(180.0, 190.0),
-                new Pair<>(270.0, 295.0),
-                new Pair<>(315.0, 348.0)
+                new Pair<>(90.0, 100.0),
+                new Pair<>(175.0, 177.0)
         );
 
         armRight.generatePositions(
-                new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 100.0),
-                new Pair<>(180.0, 195.0),
-                new Pair<>(270.0, 295.0),
-                new Pair<>(315.0, 350.0)
+                new Pair<>(0.0, 10.0),
+                new Pair<>(90.0, 125.0),
+                new Pair<>(175.0, 220.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);
@@ -91,7 +85,6 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: implement stall protection (optional)
         double error = slidesPosition - this.getSlidesPosition();
         double derivative = (error - lastError) / timer.seconds();
 
@@ -264,7 +257,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public enum ClawState {
-        OPENED(0.4), CLOSED(0);
+        OPENED(0.2), CLOSED(0);
 
         public final double position;
 
@@ -335,7 +328,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         LOWERED(0),
         SPECIMEN(1625),
         LOW_BASKET(1825),
-        HIGH_BASKET(3650);
+        HIGH_BASKET(3600);
 
         public final double position;
 
