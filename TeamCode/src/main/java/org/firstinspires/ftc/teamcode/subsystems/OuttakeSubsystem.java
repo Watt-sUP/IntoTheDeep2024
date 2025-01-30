@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
-    public static double ARM_IN = 5, ARM_OUT = 175, ARM_TRANSFER = 15, ARM_SPECIMEN = 20;
-    public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.45, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
+    public static double ARM_IN = 5, ARM_OUT = 125, ARM_TRANSFER = 15, ARM_SPECIMEN = 20;
+    public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.28, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.46;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00001, 0.05);
 
     private final InterpolatedAngleServo armLeft, armRight;
@@ -329,8 +329,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     public enum SlidesState {
         LOWERED(0),
         SPECIMEN(1625),
-        LOW_BASKET(1825),
-        HIGH_BASKET(3600);
+        LOW_BASKET(1400),
+        HIGH_BASKET(2900);
 
         public final double position;
 
