@@ -45,7 +45,7 @@ public class TransferCommand extends FixedSequentialCommandGroup {
 
         if (outtake.getClawState() != OuttakeSubsystem.ClawState.OPENED) {
             initCommand.addCommands(
-                    new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
+                    new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                             .andThen(new WaitCommand(150))
             );
         }
@@ -69,17 +69,16 @@ public class TransferCommand extends FixedSequentialCommandGroup {
         }
 
         addCommands(
-                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
-                new WaitCommand(150),
-                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
-                new WaitCommand(100),
-                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED)),
-                new WaitCommand(100),
+                new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER))
+                        .andThen(new WaitCommand(150)),
+                new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
+                        .andThen(new WaitCommand(100)),
+                new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.OPENED))
+                        .andThen(new WaitCommand(100)),
                 new InstantCommand(() -> {
                     outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
                     outtake.setPivotState(OuttakeSubsystem.PivotState.OUT);
-                }),
-                new WaitCommand(100),
+                }).andThen(new WaitCommand(100)),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.COLLECT))
         );
     }
