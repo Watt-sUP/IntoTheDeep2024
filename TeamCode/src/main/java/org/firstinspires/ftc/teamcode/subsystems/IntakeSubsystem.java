@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.util.Pair;
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
@@ -42,12 +40,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
         extLeft.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(1.0, 0.225)
+                new Pair<>(0.25, 0.08),
+                new Pair<>(0.5, 0.16),
+                new Pair<>(0.75, 0.24),
+                new Pair<>(1.0, 0.32)
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.09),
-                new Pair<>(1.0, 0.31)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(0.25, 0.17),
+                new Pair<>(0.5, 0.245),
+                new Pair<>(0.75, 0.3275),
+                new Pair<>(1.0, 0.41)
         );
 
         pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 360));
@@ -223,17 +227,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public enum ClawState {
         OPENED,
         CLOSED;
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case OPENED:
-                    return "Opened";
-                case CLOSED:
-                    return "Closed";
-            }
-            return "";
-        }
     }
 
     public enum ExtendoState {
@@ -242,23 +235,6 @@ public class IntakeSubsystem extends SubsystemBase {
         HALF,
         THREE_QUARTERS,
         OUT;
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case IN:
-                    return "In";
-                case QUARTER:
-                    return "Quarter";
-                case HALF:
-                    return "Half";
-                case THREE_QUARTERS:
-                    return "Three Quarters";
-                case OUT:
-                    return "Out";
-            }
-            return "";
-        }
 
         public ExtendoState next() {
             switch (this) {
@@ -296,21 +272,6 @@ public class IntakeSubsystem extends SubsystemBase {
         COLLECT,
         EXTENDING,
         UP;
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case DOWN:
-                    return "Down";
-                case UP:
-                    return "Up";
-                case COLLECT:
-                    return "Collect";
-                case EXTENDING:
-                    return "Extending";
-            }
-            return "";
-        }
     }
 
     public enum RotationState {
@@ -318,21 +279,6 @@ public class IntakeSubsystem extends SubsystemBase {
         HORIZONTAL,
         LEFT,
         RIGHT;
-
-        @NonNull
-        public String toString() {
-            switch (this) {
-                case STRAIGHT:
-                    return "Straight";
-                case HORIZONTAL:
-                    return "Horizontal";
-                case LEFT:
-                    return "Left";
-                case RIGHT:
-                    return "Right";
-            }
-            return "";
-        }
 
         public RotationState next() {
             switch (this) {
