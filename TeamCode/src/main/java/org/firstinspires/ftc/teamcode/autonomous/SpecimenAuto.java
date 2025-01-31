@@ -49,6 +49,8 @@ public class SpecimenAuto extends AutonomousOpMode {
 
                 new InstantCommand(() -> follower.setMaxPower(1)),
 
+                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 16),
+
                 new FollowPointCommand(follower, Submersible.depositPose(pos, true), 8)
                         .alongWith(
                                 new InstantCommand(() -> {
@@ -71,7 +73,7 @@ public class SpecimenAuto extends AutonomousOpMode {
         super.initialize();
         startSpecimen();
         enableInit();
-        enableLimelight();
+//        enableLimelight();
 
         schedule(
                 new FixedSequentialCommandGroup(
@@ -84,7 +86,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                             outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN);
                         }),
 
-                        new WaitCommand(250),
+                        new WaitCommand(400),
 
                         // Preload Deposit
 

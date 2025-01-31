@@ -10,7 +10,7 @@ import com.pedropathing.pathgen.Point;
 public class Observation {
     public static final double OBSERVATION_X = 18;
     public static final double COLLECT_OFFSET = 0.25;
-    public static final Pose parkPose = new Pose(26, 38, Math.toRadians(240));
+    public static final Pose parkPose = new Pose(20, 38, Math.toRadians(240));
 
     public static PathChain samplesToObservationPath = new PathBuilder()
             .addPath(
@@ -22,7 +22,7 @@ public class Observation {
                             new Point(SpikeSpecificSamples.LEFT.POSE)
                     )
             )
-            .setPathEndTValueConstraint(2.15 / 3.0)
+            .setPathEndTValueConstraint(2.0 / 3.0)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Left to Observation
@@ -31,7 +31,7 @@ public class Observation {
                             new Point(OBSERVATION_X, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN)
                     )
             )
-            .setPathEndTValueConstraint(0.8)
+            .setPathEndTValueConstraint(0.86)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Left to Middle
@@ -50,8 +50,8 @@ public class Observation {
                             new Point(OBSERVATION_X, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN)
                     )
             )
+            .setPathEndTValueConstraint(0.86)
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(0.8)
             .addPath(
                     // Middle to Right
                     new BezierCurve(
@@ -61,7 +61,7 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(2.0 / 3.0)
+            .setPathEndTValueConstraint(2.02 / 3.0)
             .addPath(
                     // Right to Observation
                     new BezierLine(
@@ -70,7 +70,7 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(0.5)
+            .setPathEndTValueConstraint(0.92)
             .build();
 
     public static Pose prepareCollectPose(int pos) {
@@ -78,6 +78,6 @@ public class Observation {
     }
 
     public static Pose collectPose(int pos) {
-        return new Pose(3.8, 27 + pos * COLLECT_OFFSET, Math.toRadians(180));
+        return new Pose(8.1, 27 + pos * COLLECT_OFFSET, Math.toRadians(180));
     }
 }

@@ -47,7 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
         );
 
         extRight.generatePositions(
-                new Pair<>(0.0, 0.0),
+                new Pair<>(0.0, 0.08),
                 new Pair<>(0.25, 0.17),
                 new Pair<>(0.5, 0.245),
                 new Pair<>(0.75, 0.3275),
@@ -203,9 +203,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void setRotation(RotationState state) {
-        if (pivotState == PivotState.EXTENDING || pivotState == PivotState.UP)
-            return;
-
         rotationState = state;
 
         switch (rotationState) {

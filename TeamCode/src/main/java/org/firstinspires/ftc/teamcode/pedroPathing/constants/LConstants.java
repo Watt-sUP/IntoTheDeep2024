@@ -20,19 +20,21 @@ public class LConstants {
 
     static {
         TwoWheelOTOSConstants.OTOS_HardwareMapName = "sensor_otos";
-        TwoWheelOTOSConstants.offset = new SparkFunOTOS.Pose2D(-6.8897637795275, 0, 0);
+        TwoWheelOTOSConstants.offset = new SparkFunOTOS.Pose2D(0, 0, 0);
         TwoWheelOTOSConstants.angularScalar = .994;
 
-        TwoWheelOTOSConstants.forwardEncoder_HardwareMapName = "leftFront";
-        TwoWheelOTOSConstants.strafeEncoder_HardwareMapName = "leftBack";
+        TwoWheelOTOSConstants.forwardEncoder_HardwareMapName = "leftBack";
+        TwoWheelOTOSConstants.strafeEncoder_HardwareMapName = "leftFront";
 
         TwoWheelOTOSConstants.forwardEncoderDirection = Encoder.FORWARD;
         TwoWheelOTOSConstants.strafeEncoderDirection = Encoder.FORWARD;
 
-        TwoWheelOTOSConstants.forwardTicksToInches = .001989436789;
-        TwoWheelOTOSConstants.strafeTicksToInches = .001989436789;
+        TwoWheelOTOSConstants.forwardTicksToInches = 0.0019877459810144797;
+        TwoWheelOTOSConstants.strafeTicksToInches = 0.0019944979727697216;
 
-        TwoWheelOTOSConstants.forwardY = 1;
-        TwoWheelOTOSConstants.strafeX = -2.5;
+        // 4.8622047244
+        TwoWheelOTOSConstants.forwardY = 2637.7;
+        // 2.6377952756
+        TwoWheelOTOSConstants.strafeX = 2637.7;
     }
 }

@@ -191,7 +191,7 @@ public class TeleOpBase extends CommandOpMode {
                     telemetry.addData("Loop Time", loopTime.milliseconds());
                     telemetry.addLine();
 
-                    telemetry.addData("Is Transferring", transferCommand.isScheduled());
+                    telemetry.addData("Is Transferring", transferCommand.isScheduled() ? "Yes" : "No");
                     telemetry.addLine();
 
                     telemetry.addData("Intake Extendo State", intake.getExtendoState().toString());
