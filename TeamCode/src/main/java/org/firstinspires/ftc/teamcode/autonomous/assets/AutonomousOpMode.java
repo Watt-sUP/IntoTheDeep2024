@@ -9,11 +9,9 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.util.Constants;
 
-import org.firstinspires.ftc.teamcode.commands.LimelightRelocalization;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.LimelightSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 public class AutonomousOpMode extends CommandOpMode {
@@ -24,7 +22,7 @@ public class AutonomousOpMode extends CommandOpMode {
 
     public static IntakeSubsystem intake;
     public static OuttakeSubsystem outtake;
-    public static LimelightSubsystem limelight;
+//    public static LimelightSubsystem limelight;
 
     @Override
     public void initialize() {
@@ -36,7 +34,7 @@ public class AutonomousOpMode extends CommandOpMode {
 
         intake = new IntakeSubsystem(hardwareMap);
         outtake = new OuttakeSubsystem(hardwareMap);
-        limelight = new LimelightSubsystem(hardwareMap);
+//        limelight = new LimelightSubsystem(hardwareMap);
 
         register(intake, outtake);
 
@@ -63,10 +61,10 @@ public class AutonomousOpMode extends CommandOpMode {
                     outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED);
 
                     outtake.setArmState(OuttakeSubsystem.ArmState.IN);
-                    outtake._setArmPosition(45);
+                    outtake._setArmPosition(25);
 
-                    outtake.setPivotState(OuttakeSubsystem.PivotState.IN);
-                    outtake._setPivotPosition(0.92);
+                    outtake.setPivotState(OuttakeSubsystem.PivotState.OUT);
+                    outtake._setPivotPosition(0);
 
                     outtake.resetSlidesEncoder();
                     outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED);
@@ -74,13 +72,13 @@ public class AutonomousOpMode extends CommandOpMode {
         );
     }
 
-    public void enableLimelight() {
-        schedule(
-                // TODO: Check if this works (use dashboard telemetry)
-                new LimelightRelocalization(limelight, follower)
-                        .enableUpdates(false)
-        );
-    }
+//    public void enableLimelight() {
+//        schedule(
+//                // TODO: Check if this works (use dashboard telemetry)
+//                new LimelightRelocalization(limelight, follower)
+//                        .enableUpdates(false)
+//        );
+//    }
 
     public void startSpecimen() {
         follower.setStartingPose(START_POSE_SPECIMEN);
