@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.ConditionalCommand;
@@ -21,7 +22,10 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.List;
 
+@Config
 public class TeleOpBase extends CommandOpMode {
+    public static int SLIDES_ADJUST = 125;
+
     public ElapsedTime runtime, loopTime;
 
     public GamepadEx driver1, driver2;

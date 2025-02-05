@@ -31,5 +31,13 @@ public class TeleOpLucaMiron extends TeleOpBase {
         driver2.getGamepadButton(GamepadKeys.Button.Y)
                 .and(isTransferringTrigger)
                 .whenActive(outtake::toggleClaw);
+
+        /* Slides Adjust */
+        driver1.getGamepadButton(GamepadKeys.Button.Y)
+                .and(isTransferringTrigger)
+                .whenActive(() -> outtake.adjustSlides(SLIDES_ADJUST));
+        driver1.getGamepadButton(GamepadKeys.Button.A)
+                .and(isTransferringTrigger)
+                .whenActive(() -> outtake.adjustSlides(-SLIDES_ADJUST));
     }
 }
