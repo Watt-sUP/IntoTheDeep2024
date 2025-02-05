@@ -64,7 +64,7 @@ public class TransferCommand extends FixedSequentialCommandGroup {
                     new InstantCommand(() -> {
                         intake.setPivotState(IntakeSubsystem.PivotState.UP);
                         intake.setExtendoState(IntakeSubsystem.ExtendoState.IN);
-                    }).andThen(new WaitCommand(475))
+                    }).andThen(new WaitCommand(450))
             );
         }
 
