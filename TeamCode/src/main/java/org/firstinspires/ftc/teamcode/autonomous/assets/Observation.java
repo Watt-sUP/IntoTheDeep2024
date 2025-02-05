@@ -8,8 +8,8 @@ import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 
 public class Observation {
-    public static final double OBSERVATION_X = 18;
-    public static final double COLLECT_OFFSET = 0.25;
+    public static final double OBSERVATION_X = 19;
+    public static final double COLLECT_OFFSET = 0;
     public static final Pose parkPose = new Pose(20, 38, Math.toRadians(240));
 
     public static PathChain samplesToObservationPath = new PathBuilder()
@@ -31,7 +31,7 @@ public class Observation {
                             new Point(OBSERVATION_X, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN)
                     )
             )
-            .setPathEndTValueConstraint(0.86)
+            .setPathEndTValueConstraint(0.8)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Left to Middle
@@ -50,7 +50,7 @@ public class Observation {
                             new Point(OBSERVATION_X, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN)
                     )
             )
-            .setPathEndTValueConstraint(0.86)
+            .setPathEndTValueConstraint(0.8)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Middle to Right
@@ -70,14 +70,14 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(0.92)
+            .setPathEndTValueConstraint(0.82)
             .build();
 
     public static Pose prepareCollectPose(int pos) {
-        return new Pose(22.5, 27 + pos * COLLECT_OFFSET, Math.toRadians(180));
+        return new Pose(22.5, 28 + pos * COLLECT_OFFSET, Math.toRadians(180));
     }
 
     public static Pose collectPose(int pos) {
-        return new Pose(8.1, 27 + pos * COLLECT_OFFSET, Math.toRadians(180));
+        return new Pose(9.4, 28 + pos * COLLECT_OFFSET, Math.toRadians(180));
     }
 }

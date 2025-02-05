@@ -104,7 +104,7 @@ public class BasketAuto extends AutonomousOpMode {
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(250),
-                                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN)),
+                                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
                                                 new WaitCommand(1000),
                                                 new InstantCommand(() -> {
                                                     outtake.setArmState(OuttakeSubsystem.ArmState.OUT);

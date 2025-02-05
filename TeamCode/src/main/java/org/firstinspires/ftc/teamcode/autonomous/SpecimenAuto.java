@@ -26,7 +26,7 @@ public class SpecimenAuto extends AutonomousOpMode {
         int pos = currentSpecimen.incrementAndGet();
 
         return new FixedSequentialCommandGroup(
-                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 10)
+                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 7)
                         .alongWith(
                                 new SequentialCommandGroup(
                                         new WaitCommand(100),
@@ -38,18 +38,16 @@ public class SpecimenAuto extends AutonomousOpMode {
                                 )
                         ),
 
-                new InstantCommand(() -> follower.setMaxPower(0.55)),
+                new InstantCommand(() -> follower.setMaxPower(0.5)),
                 new FollowPointCommand(follower, Observation.collectPose(pos - 1), 0.1)
                         .withTimeout(700),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
-                        .andThen(new WaitCommand(175)),
+                        .andThen(new WaitCommand(225)),
 
                 new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.SPECIMEN))
                         .andThen(new WaitCommand(100)),
 
                 new InstantCommand(() -> follower.setMaxPower(1)),
-
-                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 16),
 
                 new FollowPointCommand(follower, Submersible.depositPose(pos, true), 8)
                         .alongWith(
