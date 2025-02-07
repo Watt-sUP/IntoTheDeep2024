@@ -4,11 +4,11 @@ import com.pedropathing.localization.Pose;
 
 public class Submersible {
     public static final double SUBMERSIBLE_DEPOSIT_X_OFFSET = 0;
-    public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 1.8;
+    public static final double SUBMERSIBLE_DEPOSIT_Y_OFFSET = 1.6;
     public static final double SUBMERSIBLE_DEPOSIT_BACKWARD = 10;
     public static final Pose POSE = new Pose(37.5, 66.5, Math.toRadians(180));
 
-    public static final Pose ascentParkPose = new Pose(66, 93.2, Math.toRadians(90));
+    public static final Pose ascentParkPose = new Pose(66, 92, Math.toRadians(90));
 
     public static Pose depositPose(int pos, boolean backward) {
         return new Pose(

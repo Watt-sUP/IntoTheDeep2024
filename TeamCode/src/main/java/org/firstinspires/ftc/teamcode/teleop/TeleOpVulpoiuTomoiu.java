@@ -48,5 +48,13 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
         driver1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .and(isTransferringTrigger)
                 .whenActive(() -> outtake.adjustSlides(-SLIDES_ADJUST));
+
+        /* Hang */
+        driver1.getGamepadButton(GamepadKeys.Button.Y)
+                .and(isTransferringTrigger)
+                .whenActive(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG_PREPARE));
+        driver1.getGamepadButton(GamepadKeys.Button.B)
+                .and(isTransferringTrigger)
+                .whenActive(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG));
     }
 }

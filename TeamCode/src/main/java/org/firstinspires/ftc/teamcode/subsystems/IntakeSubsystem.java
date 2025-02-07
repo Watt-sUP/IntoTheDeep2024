@@ -13,13 +13,13 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 @Config
 public class IntakeSubsystem extends SubsystemBase {
     public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
-    public static double PIVOT_DOWN = 170, PIVOT_COLLECT = 130, PIVOT_UP = 10, PIVOT_EXTENDING = 90;
-    public static double CLAW_OPEN = 0.29, CLAW_CLOSED = 0.02;
+    public static double PIVOT_DOWN = 175, PIVOT_COLLECT = 135, PIVOT_UP = 10, PIVOT_EXTENDING = 90;
+    public static double CLAW_OPEN = 0.5, CLAW_CLOSED = 0.05;
     public static double
             ROT_LEFT = 0.71,
-            ROT_STRAIGHT = 0.52,
-            ROT_RIGHT = 0.35,
-            ROT_HORIZONTAL = 0.18;
+            ROT_STRAIGHT = 0.5,
+            ROT_RIGHT = 0.3,
+            ROT_HORIZONTAL = 0.12;
 
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
@@ -54,30 +54,30 @@ public class IntakeSubsystem extends SubsystemBase {
                 new Pair<>(1.0, 0.41)
         );
 
-        pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 300));
-        pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 300));
+        pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 270));
+        pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 270));
 
-        pivLeft.setInverted(false);
-        pivRight.setInverted(true);
+        pivLeft.setInverted(true);
+        pivRight.setInverted(false);
 
         pivLeft.generatePositions(
-                new Pair<>(0.0, 15.0),
-                new Pair<>(90.0, 115.0),
+                new Pair<>(0.0, 7.0),
+                new Pair<>(90.0, 109.0),
                 new Pair<>(180.0, 214.0),
-                new Pair<>(255.0, 300.0)
+                new Pair<>(215.0, 270.0)
         );
 
         pivRight.generatePositions(
-                new Pair<>(0.0, 15.0),
-                new Pair<>(90.0, 102.0),
-                new Pair<>(180.0, 212.0),
-                new Pair<>(260.0, 300.0)
+                new Pair<>(0.0, 24.0),
+                new Pair<>(90.0, 123.0),
+                new Pair<>(180.0, 222.0),
+                new Pair<>(210.0, 270.0)
         );
 
         rotateServo = new SimpleServo(hardwareMap, "int_rotate", 0, 220);
 
         clawServo = new SimpleServo(hardwareMap, "int_claw", 0, 220);
-        clawServo.setInverted(true);
+
     }
 
     public void nextExtendoState() {
@@ -97,26 +97,26 @@ public class IntakeSubsystem extends SubsystemBase {
 
         switch (extendoState) {
             case IN:
-                extLeft.setToPosition(EXTENDO_IN);
-                extRight.setToPosition(EXTENDO_IN);
+                _setExtendoPosition(EXTENDO_IN);
                 break;
             case QUARTER:
-                extLeft.setToPosition(EXTENDO_QUARTER);
-                extRight.setToPosition(EXTENDO_QUARTER);
+                _setExtendoPosition(EXTENDO_QUARTER);
                 break;
             case HALF:
-                extLeft.setToPosition(EXTENDO_HALF);
-                extRight.setToPosition(EXTENDO_HALF);
+                _setExtendoPosition(EXTENDO_HALF);
                 break;
             case THREE_QUARTERS:
-                extLeft.setToPosition(EXTENDO_THREE_QUARTERS);
-                extRight.setToPosition(EXTENDO_THREE_QUARTERS);
+                _setExtendoPosition(EXTENDO_THREE_QUARTERS);
                 break;
             case OUT:
-                extLeft.setToPosition(EXTENDO_OUT);
-                extRight.setToPosition(EXTENDO_OUT);
+                _setExtendoPosition(EXTENDO_OUT);
                 break;
         }
+    }
+
+    public void _setExtendoPosition(double pos) {
+        extLeft.setToPosition(pos);
+        extRight.setToPosition(pos);
     }
 
     public void togglePivot() {

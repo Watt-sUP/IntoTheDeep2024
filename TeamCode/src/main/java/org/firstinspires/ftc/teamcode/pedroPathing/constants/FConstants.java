@@ -8,6 +8,9 @@ public class FConstants {
     static {
         FollowerConstants.localizers = Localizers.TWO_WHEEL_OTOS;
 
+        FollowerConstants.useVoltageCompensationInAuto = true;
+        FollowerConstants.nominalVoltage = 12.4;
+
         FollowerConstants.leftFrontMotorName = "leftFront";
         FollowerConstants.leftRearMotorName = "leftBack";
         FollowerConstants.rightFrontMotorName = "rightFront";
@@ -18,7 +21,7 @@ public class FConstants {
         FollowerConstants.rightFrontMotorDirection = DcMotorSimple.Direction.FORWARD;
         FollowerConstants.rightRearMotorDirection = DcMotorSimple.Direction.FORWARD;
 
-        FollowerConstants.mass = 14.3;
+        FollowerConstants.mass = 15.8;
 
         FollowerConstants.xMovement = 72.8964549032224;
         FollowerConstants.yMovement = 54.48852708791427;

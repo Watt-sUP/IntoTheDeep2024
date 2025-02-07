@@ -22,7 +22,7 @@ public class Observation {
                             new Point(SpikeSpecificSamples.LEFT.POSE)
                     )
             )
-            .setPathEndTValueConstraint(2.0 / 3.0)
+            .setPathEndTValueConstraint(2.5 / 3.0)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Left to Observation
@@ -31,7 +31,7 @@ public class Observation {
                             new Point(OBSERVATION_X, SpikeSpecificSamples.LEFT.POSE.getY(), Point.CARTESIAN)
                     )
             )
-            .setPathEndTValueConstraint(0.8)
+            .setPathEndTValueConstraint(0.82)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Left to Middle
@@ -42,7 +42,7 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(2.0 / 3.0)
+            .setPathEndTValueConstraint(2.5 / 3.0)
             .addPath(
                     // Middle to Observation
                     new BezierLine(
@@ -50,7 +50,7 @@ public class Observation {
                             new Point(OBSERVATION_X, SpikeSpecificSamples.MIDDLE.POSE.getY(), Point.CARTESIAN)
                     )
             )
-            .setPathEndTValueConstraint(0.8)
+            .setPathEndTValueConstraint(0.82)
             .setConstantHeadingInterpolation(Math.toRadians(180))
             .addPath(
                     // Middle to Right
@@ -61,7 +61,7 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(2.02 / 3.0)
+            .setPathEndTValueConstraint(2.5 / 3.0)
             .addPath(
                     // Right to Observation
                     new BezierLine(
@@ -70,14 +70,14 @@ public class Observation {
                     )
             )
             .setConstantHeadingInterpolation(Math.toRadians(180))
-            .setPathEndTValueConstraint(0.82)
+            .setPathEndTValueConstraint(0.9)
             .build();
 
     public static Pose prepareCollectPose(int pos) {
-        return new Pose(22.5, 28 + pos * COLLECT_OFFSET, Math.toRadians(180));
+        return new Pose(22.5, 26.5 + pos * COLLECT_OFFSET, Math.toRadians(180));
     }
 
     public static Pose collectPose(int pos) {
-        return new Pose(9.4, 28 + pos * COLLECT_OFFSET, Math.toRadians(180));
+        return new Pose(9.55, 26.5 + pos * COLLECT_OFFSET, Math.toRadians(180));
     }
 }

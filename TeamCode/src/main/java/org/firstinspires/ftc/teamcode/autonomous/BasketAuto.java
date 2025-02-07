@@ -39,29 +39,29 @@ public class BasketAuto extends AutonomousOpMode {
                                 )
                         ),
 
-                new WaitCommand(500),
+                new WaitCommand(350),
 
                 new InstantCommand(() -> {
                     intake.setExtendoState(IntakeSubsystem.ExtendoState.OUT);
                     intake.setPivotState(IntakeSubsystem.PivotState.COLLECT);
-                }).andThen(new WaitCommand(750)),
+                }).andThen(new WaitCommand(450)),
 
                 new ConditionalCommand(
                         new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.HORIZONTAL))
-                                .andThen(new WaitCommand(350)),
+                                .andThen(new WaitCommand(100)),
                         new WaitCommand(0),
                         () -> sample == SpikeYellowSamples.RIGHT
                 ),
 
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
-                new WaitCommand(250),
+                new WaitCommand(175),
                 new InstantCommand(() -> intake.setClawState(IntakeSubsystem.ClawState.CLOSED)),
-                new WaitCommand(350),
+                new WaitCommand(225),
                 new InstantCommand(() -> intake.setRotation(IntakeSubsystem.RotationState.STRAIGHT)),
                 new WaitCommand(250),
                 new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.UP)),
                 new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
-                new WaitCommand(650),
+                new WaitCommand(450),
                 new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.TRANSFER)),
                 new WaitCommand(150),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED)),
@@ -73,7 +73,7 @@ public class BasketAuto extends AutonomousOpMode {
                                 new SequentialCommandGroup(
                                         new WaitCommand(250),
                                         new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HIGH_BASKET)),
-                                        new WaitCommand(1100),
+                                        new WaitCommand(1000),
                                         new InstantCommand(() -> {
                                             outtake.setArmState(OuttakeSubsystem.ArmState.OUT);
                                             outtake.setPivotState(OuttakeSubsystem.PivotState.OUT);
@@ -123,11 +123,11 @@ public class BasketAuto extends AutonomousOpMode {
 
                         new InstantCommand(() -> follower.setMaxPower(0.8)),
 
-                        new FollowPointCommand(follower, Submersible.ascentParkPose, 8)
+                        new FollowPointCommand(follower, Submersible.ascentParkPose, 5)
                                 .alongWith(
                                         new SequentialCommandGroup(
                                                 new WaitCommand(350),
-                                                new InstantCommand(() -> outtake._setArmPosition(160)),
+                                                new InstantCommand(() -> outtake._setArmPosition(175)),
                                                 new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED))
                                         )
                                 ),

@@ -26,7 +26,7 @@ public class SpecimenAuto extends AutonomousOpMode {
         int pos = currentSpecimen.incrementAndGet();
 
         return new FixedSequentialCommandGroup(
-                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 7)
+                new FollowPointCommand(follower, Observation.prepareCollectPose(pos - 1), 14)
                         .alongWith(
                                 new SequentialCommandGroup(
                                         new WaitCommand(100),
@@ -38,7 +38,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                                 )
                         ),
 
-                new InstantCommand(() -> follower.setMaxPower(0.5)),
+                new InstantCommand(() -> follower.setMaxPower(0.6)),
                 new FollowPointCommand(follower, Observation.collectPose(pos - 1), 0.1)
                         .withTimeout(700),
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.CLOSED))
@@ -62,7 +62,7 @@ public class SpecimenAuto extends AutonomousOpMode {
                 new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
                         .andThen(new WaitCommand(125)),
 
-                new FollowPointCommand(follower, Submersible.depositPose(pos, true), 12)
+                new FollowPointCommand(follower, Submersible.depositPose(pos, true), 14)
         );
     }
 
@@ -95,7 +95,7 @@ public class SpecimenAuto extends AutonomousOpMode {
 
                         // Spike mark samples to Observation
 
-                        new FollowPathCommand(follower, Observation.samplesToObservationPath).alongWith(
+                        new FollowPathCommand(follower, Observation.samplesToObservationPath).setHoldEnd(false).alongWith(
                                 new SequentialCommandGroup(
                                         new WaitCommand(250),
                                         new InstantCommand(() -> {

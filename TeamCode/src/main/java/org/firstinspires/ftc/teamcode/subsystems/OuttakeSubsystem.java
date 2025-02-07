@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
-    public static double ARM_TRANSFER = 55, ARM_OUT = 180, ARM_IN = 75, ARM_SPECIMEN_COLLECT = 40, ARM_SPECIMEN_DEPOSIT = 198;
+    public static double ARM_TRANSFER = 55, ARM_OUT = 180, ARM_IN = 80, ARM_SPECIMEN_COLLECT = 40, ARM_SPECIMEN_DEPOSIT = 198;
     public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.28, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.45;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00003, 0.05);
 
@@ -265,7 +265,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public enum ClawState {
-        OPENED(0.45), CLOSED(0.01);
+        OPENED(0.67), CLOSED(0.38);
 
         public final double position;
 
@@ -291,9 +291,11 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public enum SlidesState {
         LOWERED(0),
-        SPECIMEN(1550),
+        SPECIMEN(1300),
         LOW_BASKET(1100),
-        HIGH_BASKET(2900);
+        HIGH_BASKET(2900),
+        HANG_PREPARE(3300),
+        HANG(2000);
 
         public final double position;
 

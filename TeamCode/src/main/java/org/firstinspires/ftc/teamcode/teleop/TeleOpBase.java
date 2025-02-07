@@ -152,9 +152,10 @@ public class TeleOpBase extends CommandOpMode {
                 .whenActive(new SequentialCommandGroup(
                         new InstantCommand(() -> intake.setExtendoState(IntakeSubsystem.ExtendoState.IN)),
                         new InstantCommand(() -> intake.setPivotState(IntakeSubsystem.PivotState.DOWN)),
-                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_COLLECT)),
                         new InstantCommand(() -> outtake.setPivotState(OuttakeSubsystem.PivotState.SPECIMEN_COLLECT)),
-                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED))
+                        new InstantCommand(() -> outtake.setClawState(OuttakeSubsystem.ClawState.OPENED)),
+                        new WaitCommand(425),
+                        new InstantCommand(() -> outtake.setArmState(OuttakeSubsystem.ArmState.SPECIMEN_COLLECT))
                 ));
 
         /* Arm */
