@@ -27,8 +27,8 @@ import java.util.stream.Stream;
 
 @Config
 public class OuttakeSubsystem extends SubsystemBase {
-    public static double ARM_TRANSFER = 55, ARM_OUT = 180, ARM_IN = 80, ARM_SPECIMEN_COLLECT = 40, ARM_SPECIMEN_DEPOSIT = 198;
-    public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.28, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.45;
+    public static double ARM_TRANSFER = 55, ARM_OUT = 180, ARM_IN = 80, ARM_SPECIMEN_COLLECT = 44, ARM_SPECIMEN_DEPOSIT = 198;
+    public static double PIVOT_IN = 0.99, PIVOT_OUT = 0.28, PIVOT_SPECIMEN_DEPOSIT = 0.19, PIVOT_SPECIMEN_COLLECT = 0.47;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00003, 0.05);
 
     private final InterpolatedAngleServo armLeft, armRight;
@@ -44,6 +44,8 @@ public class OuttakeSubsystem extends SubsystemBase {
     private PivotState pivotState;
     private SlidesState slidesState;
     private double slidesPosition, lastError, voltage;
+
+    private boolean hanging = false;
 
     public OuttakeSubsystem(HardwareMap hardwareMap) {
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -100,7 +102,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         double power = (PID_output + SLIDES_PIDF.f) * Math.min(12.0 / voltage, 1); // Account for voltage
 
         motors.forEach(motor -> motor.setPower(power));
-
+        
         lastError = error;
         timer.reset();
     }
@@ -262,6 +264,14 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public double getSlidesTarget() {
         return slidesPosition;
+    }
+
+    public void setHanging(boolean val) {
+        hanging = val;
+    }
+
+    public boolean isHanging() {
+        return hanging;
     }
 
     public enum ClawState {

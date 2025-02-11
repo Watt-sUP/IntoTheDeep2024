@@ -20,7 +20,7 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
         /* Robot Face Integration */
         AtomicInteger robotFace = new AtomicInteger(1);
 
-        chassis.setAxes(() -> driver1.getLeftY() * robotFace.get(), () -> driver1.getLeftX() * robotFace.get(), driver1::getRightX);
+        chassis.setTeleOpAxes(() -> driver1.getLeftY() * robotFace.get(), () -> driver1.getLeftX() * robotFace.get(), driver1::getRightX);
         driver1.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(() -> robotFace.set(robotFace.get() * -1));
 
@@ -52,9 +52,15 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
         /* Hang */
         driver1.getGamepadButton(GamepadKeys.Button.Y)
                 .and(isTransferringTrigger)
-                .whenActive(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG_PREPARE));
+                .whenActive(() -> {
+                    outtake.setHanging(false);
+                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG_PREPARE);
+                });
         driver1.getGamepadButton(GamepadKeys.Button.B)
                 .and(isTransferringTrigger)
-                .whenActive(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG));
+                .whenActive(() -> {
+                    outtake.setHanging(true);
+                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG);
+                });
     }
 }

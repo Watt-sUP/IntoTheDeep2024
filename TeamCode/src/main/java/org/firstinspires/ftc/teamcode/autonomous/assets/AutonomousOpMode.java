@@ -5,47 +5,86 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
-import com.pedropathing.follower.Follower;
-import com.pedropathing.localization.Pose;
-import com.pedropathing.util.Constants;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 
-import org.firstinspires.ftc.teamcode.pedroPathing.constants.FConstants;
-import org.firstinspires.ftc.teamcode.pedroPathing.constants.LConstants;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.util.DashboardPoseTracker;
+import org.firstinspires.ftc.teamcode.util.Drawing;
 
 public class AutonomousOpMode extends CommandOpMode {
-    public static final Pose START_POSE_SPECIMEN = new Pose(7.95, 66, Math.toRadians(180));
-    public static final Pose START_POSE_BASKET = new Pose(6.5, 104, Math.toRadians(270));
-
-    public static Follower follower;
+    public static final Pose2D START_POSE_SPECIMEN = new Pose2D(
+            DistanceUnit.INCH,
+            7.95,
+            66,
+            AngleUnit.DEGREES,
+            180
+    );
+    public static final Pose2D START_POSE_BASKET = new Pose2D(
+            DistanceUnit.INCH,
+            6.5,
+            104,
+            AngleUnit.DEGREES,
+            270
+    );
 
     public static IntakeSubsystem intake;
     public static OuttakeSubsystem outtake;
-//    public static LimelightSubsystem limelight;
+    public static DriveSubsystem drive;
 
     @Override
     public void initialize() {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        Constants.setConstants(FConstants.class, LConstants.class);
-
-        follower = new Follower(hardwareMap);
-
         intake = new IntakeSubsystem(hardwareMap);
         outtake = new OuttakeSubsystem(hardwareMap);
-//        limelight = new LimelightSubsystem(hardwareMap);
+        drive = new DriveSubsystem(hardwareMap);
 
-        register(intake, outtake);
+        drive.setTeleOpMode(false);
+        drive.setMotorBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        drive.setPosition(0, 0, 0);
+
+        DashboardPoseTracker poseTracker = new DashboardPoseTracker(drive);
+
+        register(intake, outtake, drive);
 
         schedule(
                 new RunCommand(() -> {
-                    follower.update();
-                    try {
-                        follower.telemetryDebug(telemetry);
-                        telemetry.update();
-                    } catch (RuntimeException ignored) {
-                    }
+                    Pose2D currentPosition = drive.getPosition();
+                    Pose2D targetPosition = drive.getTarget();
+                    telemetry.addData("Current Position",
+                            "X: %.2f in, Y: %.2f in, H: %.2f deg",
+                            currentPosition.getX(DistanceUnit.INCH),
+                            currentPosition.getY(DistanceUnit.INCH),
+                            currentPosition.getHeading(AngleUnit.DEGREES)
+                    );
+                    telemetry.addData("Target Position",
+                            "X: %.2f in, Y: %.2f in, H: %.2f deg",
+                            targetPosition.getX(DistanceUnit.INCH),
+                            targetPosition.getY(DistanceUnit.INCH),
+                            targetPosition.getHeading(AngleUnit.DEGREES)
+                    );
+                    telemetry.addData("At Target", drive.atTarget() ? "Yes" : "No");
+                    telemetry.addLine();
+
+                    telemetry.addData("X Error (inches)", drive.getXError(DistanceUnit.INCH));
+                    telemetry.addData("Y Error (inches)", drive.getYError(DistanceUnit.INCH));
+                    telemetry.addData("Total Distance Error (inches)", drive.getDistanceError(DistanceUnit.INCH));
+                    telemetry.addData("Heading Error (degrees)", drive.getHeadingError(AngleUnit.DEGREES));
+                    telemetry.addLine();
+
+                    telemetry.addData("Max Speed", "%d%", drive.getMaxSpeed());
+
+                    Drawing.drawPoseHistory(poseTracker, "#4CAF50");
+                    Drawing.drawRobot(currentPosition, "#4CAF50");
+                    Drawing.drawRobot(targetPosition, "#3F51B5");
+                    Drawing.sendPacket();
+
+                    telemetry.update();
                 })
         );
     }
@@ -72,19 +111,11 @@ public class AutonomousOpMode extends CommandOpMode {
         );
     }
 
-//    public void enableLimelight() {
-//        schedule(
-//                // TODO: Check if this works (use dashboard telemetry)
-//                new LimelightRelocalization(limelight, follower)
-//                        .enableUpdates(false)
-//        );
-//    }
-
     public void startSpecimen() {
-        follower.setStartingPose(START_POSE_SPECIMEN);
+        drive.setPosition(START_POSE_SPECIMEN);
     }
 
     public void startBasket() {
-        follower.setStartingPose(START_POSE_BASKET);
+        drive.setPosition(START_POSE_BASKET);
     }
 }

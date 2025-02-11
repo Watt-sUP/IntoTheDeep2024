@@ -72,8 +72,9 @@ public class TeleOpBase extends CommandOpMode {
 
         TransferCommand transferCommand = new TransferCommand(intake, outtake);
         isTransferringTrigger = new Trigger(() -> !transferCommand.isScheduled());
-
-        chassis.setAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
+        
+        chassis.setTeleOpMode(true);
+        chassis.setTeleOpAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
         /* Intake Commands */
 
@@ -197,6 +198,7 @@ public class TeleOpBase extends CommandOpMode {
                     telemetry.addLine();
 
                     telemetry.addData("Is Transferring", transferCommand.isScheduled() ? "Yes" : "No");
+                    telemetry.addData("Is Hanging", outtake.isHanging() ? "Yes" : "No");
                     telemetry.addLine();
 
                     telemetry.addData("Intake Extendo State", intake.getExtendoState().toString());

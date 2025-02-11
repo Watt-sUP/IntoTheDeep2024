@@ -23,8 +23,10 @@ import java.util.concurrent.TimeUnit;
 public class SlidesTuner extends LinearOpMode {
     public static int POSITION = 0;
     public static PIDFCoefficients SLIDES_PIDF = new PIDFCoefficients(0.005, 0, 0.00001, 0.05);
-    public static double CURRENT_THRESHOLD = 6;
-    public static boolean ENABLE_STALL_PAUSE = false, NORMALIZE_RESPONSE = true;
+    public static boolean ENABLE_1 = true,
+            ENABLE_2 = true,
+            ENABLE_3 = true,
+            ENABLE_4 = true;
 
     @Override
     public void runOpMode() {
@@ -46,13 +48,6 @@ public class SlidesTuner extends LinearOpMode {
         slidesMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if (ENABLE_STALL_PAUSE) {
-            slidesMotor1.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
-            slidesMotor2.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
-            slidesMotor3.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
-            slidesMotor4.setCurrentAlert(CURRENT_THRESHOLD, CurrentUnit.AMPS);
-        }
-
         waitForStart();
 
         double lastError = 0;
@@ -71,23 +66,13 @@ public class SlidesTuner extends LinearOpMode {
             }
 
             // Account for asymmetric response
-            double PID_output;
-            if (NORMALIZE_RESPONSE)
-                PID_output = Range.clip(SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative, SLIDES_PIDF.f - 1, 1 - SLIDES_PIDF.f);
-            else PID_output = SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative;
+            double PID_output = Range.clip(SLIDES_PIDF.p * error + SLIDES_PIDF.d * derivative, SLIDES_PIDF.f - 1, 1 - SLIDES_PIDF.f);
             double power = (PID_output + SLIDES_PIDF.f) * Math.min(12.0 / voltage, 1); // Account for voltage
 
-            if (ENABLE_STALL_PAUSE && slidesMotor1.isOverCurrent()) {
-                slidesMotor1.setPower(SLIDES_PIDF.f);
-                slidesMotor2.setPower(SLIDES_PIDF.f);
-                slidesMotor3.setPower(SLIDES_PIDF.f);
-                slidesMotor4.setPower(SLIDES_PIDF.f);
-            } else {
-                slidesMotor1.setPower(power);
-                slidesMotor2.setPower(power);
-                slidesMotor3.setPower(power);
-                slidesMotor4.setPower(power);
-            }
+            slidesMotor1.setPower(ENABLE_1 ? power : 0);
+            slidesMotor2.setPower(ENABLE_2 ? power : 0);
+            slidesMotor3.setPower(ENABLE_3 ? power : 0);
+            slidesMotor4.setPower(ENABLE_4 ? power : 0);
 
             telemetry.addData("Encoder Position", currentPosition);
             telemetry.addData("Target Position", POSITION);
