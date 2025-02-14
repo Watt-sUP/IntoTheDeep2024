@@ -162,19 +162,15 @@ public class TeleOpSolo extends CommandOpMode {
                 .whenActive(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.LOWERED));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .and(new Trigger(() -> outtake.getSlidesState() == OuttakeSubsystem.SlidesState.HANG_PREPARE))
-                .and(new Trigger(() -> hangTimer.milliseconds() <= 500))
-                .whenActive(() -> {
-                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG);
-                    hangTimer.reset();
-                });
-
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .and(new Trigger(() -> outtake.getSlidesState() != OuttakeSubsystem.SlidesState.HANG_PREPARE))
-                .whenActive(() -> {
-                    outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG_PREPARE);
-                    hangTimer.reset();
-                });
+                .and(new Trigger(() -> hangTimer.milliseconds() >= 500))
+                .whenActive(new SequentialCommandGroup(
+                        new ConditionalCommand(
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG_PREPARE)),
+                                new InstantCommand(() -> outtake.setSlidesState(OuttakeSubsystem.SlidesState.HANG)),
+                                () -> outtake.getSlidesState() != OuttakeSubsystem.SlidesState.HANG_PREPARE
+                        ),
+                        new InstantCommand(hangTimer::reset)
+                ));
 
         if (outtake.getSlidesState() == OuttakeSubsystem.SlidesState.HIGH_BASKET) {
             chassis.setMaxSpeed(0.8);
