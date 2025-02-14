@@ -53,7 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
         pinpoint.resetPosAndIMU();
 
         leftFront.setInverted(true);
-        rightFront.setInverted(true);
+        leftBack.setInverted(true);
 
         headingPID = new PIDController(
                 headingPIDCoefficients.p,

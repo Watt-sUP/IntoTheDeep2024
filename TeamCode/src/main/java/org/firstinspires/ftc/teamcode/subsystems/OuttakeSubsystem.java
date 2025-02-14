@@ -230,7 +230,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void _setSlidesPosition(double position) {
-        slidesPosition = Math.max(position, 0);
+        slidesPosition = Math.max(Math.min(position, SlidesState.HANG_PREPARE.position), 0);
     }
 
     public void nextSlidesState() {
@@ -301,7 +301,7 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public enum SlidesState {
         LOWERED(0),
-        SPECIMEN(1300),
+        SPECIMEN(1100),
         LOW_BASKET(1100),
         HIGH_BASKET(2900),
         HANG_PREPARE(3300),
