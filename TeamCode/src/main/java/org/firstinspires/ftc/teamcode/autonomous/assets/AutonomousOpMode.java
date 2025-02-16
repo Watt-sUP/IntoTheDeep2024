@@ -74,10 +74,10 @@ public class AutonomousOpMode extends CommandOpMode {
                     telemetry.addData("X Error (inches)", drive.getXError(DistanceUnit.INCH));
                     telemetry.addData("Y Error (inches)", drive.getYError(DistanceUnit.INCH));
                     telemetry.addData("Total Distance Error (inches)", drive.getDistanceError(DistanceUnit.INCH));
-                    telemetry.addData("Heading Error (degrees)", drive.getHeadingError(AngleUnit.DEGREES));
+                    telemetry.addData("Heading Error (degrees)", drive.getHeadingError());
                     telemetry.addLine();
 
-                    telemetry.addData("Max Speed", "%d%", drive.getMaxSpeed());
+                    telemetry.addData("Max Speed", "%d", (int) drive.getMaxSpeed() * 100);
 
                     Drawing.drawPoseHistory(poseTracker, "#4CAF50");
                     Drawing.drawRobot(currentPosition, "#4CAF50");

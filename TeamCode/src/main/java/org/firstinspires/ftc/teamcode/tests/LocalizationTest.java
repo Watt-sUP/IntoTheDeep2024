@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.tests;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -16,6 +18,8 @@ import org.firstinspires.ftc.teamcode.util.Drawing;
 public class LocalizationTest extends CommandOpMode {
     @Override
     public void initialize() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         DriveSubsystem chassis = new DriveSubsystem(hardwareMap);
 
         GamepadEx driver1 = new GamepadEx(gamepad1);
