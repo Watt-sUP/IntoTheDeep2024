@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -60,7 +61,8 @@ public class TeleOpSolo extends CommandOpMode {
         isTransferringTrigger = new Trigger(() -> !transferCommand.isScheduled());
 
         chassis.setTeleOpMode(true);
-        chassis.setTeleOpAxes(() -> -driver.getLeftY(), driver::getLeftX, driver::getRightX);
+        chassis.setTeleOpAxes(() -> driver.getLeftY(), driver::getLeftX, driver::getRightX);
+        chassis.setMotorBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         leftTrigger
                 .and(isTransferringTrigger)
@@ -173,7 +175,7 @@ public class TeleOpSolo extends CommandOpMode {
                 ));
 
         if (outtake.getSlidesState() == OuttakeSubsystem.SlidesState.HIGH_BASKET) {
-            chassis.setMaxSpeed(0.8);
+            chassis.setMaxSpeed(0.6);
         }
         else {
             chassis.setMaxSpeed(1);

@@ -27,15 +27,15 @@ public class ArmTest extends LinearOpMode {
         armRight.setInverted(true);
 
         armLeft.generatePositions(
-                new Pair<>(0.0, 9.0),
-                new Pair<>(90.0, 108.0),
-                new Pair<>(180.0, 202.0),
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 100.0),
+                new Pair<>(180.0, 192.0),
                 new Pair<>(198.0, 220.0)
         );
 
         armRight.generatePositions(
-                new Pair<>(0.0, 2.0),
-                new Pair<>(90.0, 98.0),
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 92.0),
                 new Pair<>(180.0, 193.0),
                 new Pair<>(205.0, 220.0)
         );
