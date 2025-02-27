@@ -52,24 +52,26 @@ public class OuttakeSubsystem extends SubsystemBase {
         clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
         clawServo.setInverted(false);
 
-        armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 220));
-        armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 220));
+        armLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_left", 0, 180));
+          armRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "arm_right", 0, 180));
 
-        armLeft.setInverted(false);
-        armRight.setInverted(true);
+        armLeft.setInverted(true);
+        armRight.setInverted(false);
 
         armLeft.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 100.0),
-                new Pair<>(180.0, 192.0),
-                new Pair<>(198.0, 220.0)
+                new Pair<>(45.0, 57.0),
+                new Pair<>(90.0, 107.0),
+                new Pair<>(135.0, 160.0),
+                new Pair<>(157.0, 180.0)
         );
 
         armRight.generatePositions(
                 new Pair<>(0.0, 0.0),
-                new Pair<>(90.0, 92.0),
-                new Pair<>(180.0, 193.0),
-                new Pair<>(205.0, 220.0)
+                new Pair<>(45.0, 57.0),
+                new Pair<>(90.0, 110.0),
+                new Pair<>(135.0, 160.0),
+                new Pair<>(152.0, 180.0)
         );
 
         armPivot = new SimpleServo(hardwareMap, "arm_pivot", 0, 180);

@@ -13,13 +13,13 @@ import org.firstinspires.ftc.teamcode.util.InterpolatedPositionServo;
 @Config
 public class IntakeSubsystem extends SubsystemBase {
     public static double EXTENDO_IN = 0, EXTENDO_QUARTER = 0.25, EXTENDO_HALF = 0.5, EXTENDO_THREE_QUARTERS = 0.75, EXTENDO_OUT = 1;
-    public static double PIVOT_DOWN = 175, PIVOT_COLLECT = 135, PIVOT_UP = 10, PIVOT_EXTENDING = 90;
+    public static double PIVOT_DOWN = 180, PIVOT_COLLECT = 135, PIVOT_UP = 0, PIVOT_EXTENDING = 80;
     public static double CLAW_OPEN = 0.5, CLAW_CLOSED = 0.05;
     public static double
-            ROT_LEFT = 0.71,
-            ROT_STRAIGHT = 0.5,
-            ROT_RIGHT = 0.3,
-            ROT_HORIZONTAL = 0.12;
+            ROT_LEFT = 0.7,
+            ROT_STRAIGHT = 0.53,
+            ROT_RIGHT = 0.35,
+            ROT_HORIZONTAL = 0.15;
 
     private final InterpolatedPositionServo extLeft, extRight;
     private final InterpolatedAngleServo pivLeft, pivRight;
@@ -54,27 +54,27 @@ public class IntakeSubsystem extends SubsystemBase {
                 new Pair<>(1.0, 0.35)
         );
 
-        pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 270));
-        pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 270));
+        pivLeft = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_left", 0, 185));
+        pivRight = new InterpolatedAngleServo(new SimpleServo(hardwareMap, "int_right", 0, 185));
 
-        pivLeft.setInverted(true);
-        pivRight.setInverted(false);
+        pivLeft.setInverted(false);
+        pivRight.setInverted(true);
 
         pivLeft.generatePositions(
-                new Pair<>(0.0, 7.0),
-                new Pair<>(90.0, 109.0),
-                new Pair<>(180.0, 214.0),
-                new Pair<>(215.0, 270.0)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 100.0),
+                new Pair<>(135.0, 130.0),
+                new Pair<>(180.0, 185.0)
         );
 
         pivRight.generatePositions(
-                new Pair<>(0.0, 24.0),
-                new Pair<>(90.0, 123.0),
-                new Pair<>(180.0, 222.0),
-                new Pair<>(210.0, 270.0)
+                new Pair<>(0.0, 0.0),
+                new Pair<>(90.0, 105.0),
+                new Pair<>(135.0, 130.0),
+                new Pair<>(180.0, 185.0)
         );
 
-        rotateServo = new SimpleServo(hardwareMap, "int_rotate", 0, 220);
+        rotateServo = new SimpleServo(hardwareMap, "int_rotate", 0, 270);
 
         clawServo = new SimpleServo(hardwareMap, "int_claw", 0, 220);
 
