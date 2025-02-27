@@ -73,8 +73,7 @@ public class TeleOpBase extends CommandOpMode {
         TransferCommand transferCommand = new TransferCommand(intake, outtake);
         isTransferringTrigger = new Trigger(() -> !transferCommand.isScheduled());
         
-        chassis.setTeleOpMode(true);
-        chassis.setTeleOpAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
+        chassis.setAxes(driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
         /* Intake Commands */
 

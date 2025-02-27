@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop.duo;
 
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -7,8 +7,9 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.teleop.TeleOpBase;
 
-@TeleOp(name = "TeleOp (Luca + Miron)", group = "TeleOp")
+@TeleOp(name = "TeleOp Luca + Miron", group = "Duo")
 public class TeleOpLucaMiron extends TeleOpBase {
     @Override
     public void initialize() {

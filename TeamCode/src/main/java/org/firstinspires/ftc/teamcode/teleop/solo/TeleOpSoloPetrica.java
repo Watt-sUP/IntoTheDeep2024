@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop.solo;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -11,7 +11,6 @@ import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,8 +22,8 @@ import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
 
 import java.util.List;
 
-@TeleOp(name = "Solo Drive")
-public class TeleOpSolo extends CommandOpMode {
+@TeleOp(name = "TeleOp Petrica", group = "Solo")
+public class TeleOpSoloPetrica extends CommandOpMode {
 
     public ElapsedTime clawTimer, hangTimer;
 
@@ -60,9 +59,8 @@ public class TeleOpSolo extends CommandOpMode {
         TransferCommand transferCommand = new TransferCommand(intake, outtake);
         isTransferringTrigger = new Trigger(() -> !transferCommand.isScheduled());
 
-        chassis.setTeleOpMode(true);
-        chassis.setTeleOpAxes(() -> driver.getLeftY(), driver::getLeftX, driver::getRightX);
-        chassis.setMotorBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        chassis.setMotorBrake(true);
+        chassis.setAxes(() -> driver.getLeftY(), driver::getLeftX, driver::getRightX);
 
         leftTrigger
                 .and(isTransferringTrigger)
@@ -176,8 +174,7 @@ public class TeleOpSolo extends CommandOpMode {
 
         if (outtake.getSlidesState() == OuttakeSubsystem.SlidesState.HIGH_BASKET) {
             chassis.setMaxSpeed(0.6);
-        }
-        else {
+        } else {
             chassis.setMaxSpeed(1);
         }
 

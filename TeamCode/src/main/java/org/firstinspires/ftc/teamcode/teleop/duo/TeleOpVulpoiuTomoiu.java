@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.teleop.duo;
 
 import com.arcrobotics.ftclib.command.ConditionalCommand;
 import com.arcrobotics.ftclib.command.InstantCommand;
@@ -7,10 +7,11 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.OuttakeSubsystem;
+import org.firstinspires.ftc.teamcode.teleop.TeleOpBase;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@TeleOp(name = "TeleOp (Vulpoiu + Tomoiu)", group = "TeleOp")
+@TeleOp(name = "TeleOp Vulpoiu + Tomoiu", group = "Duo")
 public class TeleOpVulpoiuTomoiu extends TeleOpBase {
     @Override
     public void initialize() {
@@ -20,7 +21,7 @@ public class TeleOpVulpoiuTomoiu extends TeleOpBase {
         /* Robot Face Integration */
         AtomicInteger robotFace = new AtomicInteger(1);
 
-        chassis.setTeleOpAxes(() -> driver1.getLeftY() * robotFace.get(), () -> driver1.getLeftX() * robotFace.get(), driver1::getRightX);
+        chassis.setAxes(() -> driver1.getLeftY() * robotFace.get(), () -> driver1.getLeftX() * robotFace.get(), driver1::getRightX);
         driver1.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(() -> robotFace.set(robotFace.get() * -1));
 
